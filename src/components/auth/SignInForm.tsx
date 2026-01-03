@@ -6,11 +6,21 @@ import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export default function SignInForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // 🔥 REQUIRED — stops page reload
+    // 👉 do validation / API call here if needed
+    router.push("/dashboard"); // ✅ client-side navigation
+  };
+
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -33,6 +43,7 @@ export default function SignInForm() {
               alt="Logo"
             />
           </div>
+
           <div className="mb-3 sm:mb-5 ">
             {/* <h3 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 ">
               Login into Your account
@@ -94,7 +105,8 @@ export default function SignInForm() {
                 </span>
               </div>
             </div> */}
-            <form>
+
+            <form method="post" onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div>
                   <Label>
@@ -138,7 +150,7 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
+                  <Button type={'submit'} className="w-full" size="sm" >
                     Sign in
                   </Button>
                 </div>
@@ -146,15 +158,12 @@ export default function SignInForm() {
             </form>
 
             <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
+              {/* <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                 Don&apos;t have an account? {""}
-                <Link
-                  href="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
+                <Link href="/" className="text-brand-500 hover:text-brand-600 dark:text-brand-400" >
                   Sign Up
                 </Link>
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
