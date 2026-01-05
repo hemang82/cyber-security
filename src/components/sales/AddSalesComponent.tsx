@@ -227,46 +227,6 @@ export default function AddSalesComponent() {
 
             <div className="border-b border-gray-200 p-4 sm:p-8 bg-white  ">
 
-                {/* TABLE */}
-                {/* <div className="overflow-x-auto rounded-xl border">
-                    <table className="min-w-full text-sm">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                {["S.No", "Product", "Qty", "Unit Cost", "Discount", "Total", ""].map(h => (
-                                    <th key={h} className="px-5 py-3 text-left font-medium text-gray-500">
-                                        {h}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {products.map((p, i) => {
-                                const discounted = p.price - (p.price * p.discount) / 100;
-                                return (
-                                    <tr key={i}>
-                                        <td className="px-5 py-3">{i + 1}</td>
-                                        <td className="px-5 py-3 font-medium">{p.name}</td>
-                                        <td className="px-5 py-3">{p.quantity}</td>
-                                        <td className="px-5 py-3">${p.price}</td>
-                                        <td className="px-5 py-3">{p.discount}%</td>
-                                        <td className="px-5 py-3">
-                                            ${(discounted * p.quantity).toFixed(2)}
-                                        </td>
-                                        <td className="px-5 py-3">
-                                            <button
-                                                onClick={() => removeProduct(i)}
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                ✕
-                                            </button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div> */}
-
                 <BasicTableOne />
 
                 {/* ADD PRODUCT */}
@@ -293,7 +253,7 @@ export default function AddSalesComponent() {
                                     { value: "10", label: "20%" },
                                     { value: "50", label: "50%" },
                                 ]}
-                                placeholder="Select Option"
+                                placeholder="GST Rate"
                                 onChange={handleSelectChange}
                                 className="dark:bg-dark-900"
                             />
@@ -303,23 +263,6 @@ export default function AddSalesComponent() {
                         </div>
                     </div>
 
-                    <div>
-                        <div className="relative">
-                            <Select
-                                options={[
-                                    { value: "0", label: "0%" },
-                                    { value: "10", label: "20%" },
-                                    { value: "50", label: "50%" },
-                                ]}
-                                placeholder="Select Option"
-                                onChange={handleSelectChange}
-                                className="dark:bg-dark-900"
-                            />
-                            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                                <ChevronDownIcon />
-                            </span>
-                        </div>
-                    </div>
                     <button
                         type="submit"
                         className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition  cursor-pointer"

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
+  CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
@@ -27,26 +28,31 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/"
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
+  {
+    icon: <CalenderIcon />,
+    name: "Sales",
+    path: "/sales",
+  },
+  {
+    icon: <CalenderIcon />,
+    name: "Purchase",
+    path: "/sales",
+  },
   // {
   //   icon: <UserCircleIcon />,
   //   name: "User Profile",
   //   path: "/profile",
   // },
-  {
-    name: "Inventory",
-    icon: <PageIcon />,
-    path: "/inventory"
-  },
-  {
-    name: "Domin",
-    icon: <ImLink />,
-    path: "/domin"
-  },
+  // {
+  //   name: "Inventory",
+  //   icon: <PageIcon />,
+  //   path: "/inventory"
+  // },
+  // {
+  //   name: "Domin",
+  //   icon: <ImLink />,
+  //   path: "/domin"
+  // },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,
