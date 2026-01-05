@@ -1,14 +1,12 @@
 "use client"
 
-import DatePicker from "@/components/form/date-picker";
 import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
-import Select from "@/components/form/Select";
-import BasicTableOne from "@/components/tables/BasicTableOne";
-import { ChevronDownIcon } from "@/icons";
 import { useState } from "react";
 import { TabContent } from "../AddInventory";
+import { useForm, FormProvider } from "react-hook-form";
+import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
 
 type Product = {
     name: string;
@@ -17,7 +15,24 @@ type Product = {
     discount: number;
 };
 
+export const ASSETS_INPUTS = {
+    ASSETS_NAME: {
+        placeholder: "Enter assets name ",
+        name: "assets_name",
+        validation: "Enter assets name.",
+    },
+    WEBSITE_URL: {
+        placeholder: "Enter website URL",
+        name: "website_url",
+        validation: "Enter website URL.",
+    }
+}
+
 export default function AddAssets() {
+
+    const methods = useForm({
+        mode: "onBlur", // validation timing
+    });
 
     const [products, setProducts] = useState<Product[]>([
         { name: "Macbook Pro 13”", price: 1200, quantity: 1, discount: 0 },
@@ -34,70 +49,97 @@ export default function AddAssets() {
     const vat = subtotal * 0.1;
     const total = subtotal + vat;
 
+    const onSubmit = (data: any) => {
+        console.log("FORM DATA 👉", data);
+    };
+
+    console.log('methods', methods.formState.errors);
+
     return (<>
-        <form className=" ">
+        <FormProvider {...methods}>
+            <form className=" " onSubmit={methods.handleSubmit(onSubmit)}>
+                <div className="p-2 sm:p-4 dark:border-gray-800 bg-white  ">
+                    {/* <form className="space-y-6"> */}
+                    <TabContent title="Add Assets">
+                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                            {/* Assets Name */}
+                            <div>
+                                <Label>Assets Name</Label>
+                                <Input
+                                    type={INPUT_TYPE.TEXT}
+                                    placeholder={ASSETS_INPUTS.ASSETS_NAME.placeholder}
+                                    name={ASSETS_INPUTS.ASSETS_NAME.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.ASSETS_NAME.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.NAME.pattern,
+                                            message: INPUT_PATTERN.NAME.message,
+                                        },
+                                    }}
+                                />
+                            </div>
 
-            <div className="p-2 sm:p-4 dark:border-gray-800 bg-white  ">
-                {/* <form className="space-y-6"> */}
-                <TabContent title="Add Assets">
-                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                            {/* Web URL */}
+                            <div>
+                                <Label>Web URL</Label>
+                                <Input
+                                    type={INPUT_TYPE?.TEXT}
+                                    placeholder={ASSETS_INPUTS?.WEBSITE_URL?.placeholder}
+                                    name={ASSETS_INPUTS.WEBSITE_URL.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.WEBSITE_URL.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.WEBSITE.pattern,
+                                            message: INPUT_PATTERN.WEBSITE.message,
+                                        },
+                                    }}
+                                />
+                            </div>
 
-                        {/* Assets Name */}
-                        <div>
-                            <Label>Assets Name</Label>
-                            <Input type="text" placeholder="Assets Name" />
+                            {/* Additional Info */}
+                            <div className="col-span-full">
+                                <Label>Additional Info</Label>
+                                <TextArea placeholder="Additional Info" className="!w-1/2" />
+                            </div>
+
                         </div>
+                    </TabContent>
+                    {/* </form> */}
+                </div >
 
-                        {/* Web URL */}
-                        <div>
-                            <Label>Web URL</Label>
-                            <Input type="text" placeholder="Web URL" />
+                <div className="border-gray-200 p-2 sm:p-4 bg-white  ">
+                    <TabContent title="Contact Details">
+                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                            {/* Name */}
+                            <div>
+                                <Label>Name</Label>
+                                <Input type="text" placeholder="Name" />
+                            </div>
+
+                            {/* Email */}
+                            <div>
+                                <Label>Email</Label>
+                                <Input type="email" placeholder="Email" />
+                            </div>
+
+                            {/* Phone Number */}
+                            <div>
+                                <Label>Phone Number</Label>
+                                <Input type="text" placeholder="Phone Number" />
+                            </div>
+
                         </div>
+                    </TabContent>
+                </div>
 
-                        {/* Additional Info */}
-                        <div className="col-span-full">
-                            <Label>Additional Info</Label>
-                            <TextArea placeholder="Additional Info" className="!w-1/2" />
-                        </div>
+                <div className="flex justify-center m-4">
+                    <button type="submit" className="bg-blue-600 hover:bg-blue-800 text-white rounded px-6 py-2" >
+                        Submit
+                    </button>
+                </div>
 
-                    </div>
-                </TabContent>
-                {/* </form> */}
-            </div >
-
-            <div className="border-gray-200 p-2 sm:p-4 bg-white  ">
-                <TabContent title="Contact Details">
-                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-                        {/* Name */}
-                        <div>
-                            <Label>Name</Label>
-                            <Input type="text" placeholder="Name" />
-                        </div>
-
-                        {/* Email */}
-                        <div>
-                            <Label>Email</Label>
-                            <Input type="email" placeholder="Email" />
-                        </div>
-
-                        {/* Phone Number */}
-                        <div>
-                            <Label>Phone Number</Label>
-                            <Input type="text" placeholder="Phone Number" />
-                        </div>
-
-                    </div>
-                </TabContent>
-            </div>
-
-            <div className="flex justify-center m-4">
-                <button type="submit" className="bg-blue-600 hover:bg-blue-800 text-white rounded px-6 py-2" >
-                    Submit
-                </button>
-            </div>
-
-        </form>
-
+            </form>
+        </FormProvider>
     </>)
 }

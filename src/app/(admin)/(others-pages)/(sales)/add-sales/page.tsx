@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 export default function AddSales() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Domin" />
+            <PageBreadcrumb pageTitle="Add Sales" />
             <div className="space-y-6">
-                <ComponentCard title="Domin" excel={false}>
+                <ComponentCard title="Add Sales" excel={false}>
                     <AddSalesComponent />
                 </ComponentCard>
             </div>
