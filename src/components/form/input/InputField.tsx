@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { useFormContext } from "react-hook-form";
 
 interface InputProps {
   type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
@@ -15,12 +16,13 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: string; // Optional hint text
+  rules?: any;
 }
 
 const Input: FC<InputProps> = ({
   type = "text",
   id,
-  name,
+  name = "no-name",
   placeholder,
   defaultValue,
   onChange,
@@ -32,7 +34,11 @@ const Input: FC<InputProps> = ({
   success = false,
   error = false,
   hint,
+  rules
 }) => {
+
+  const { register, formState: { errors }, } = useFormContext();
+
   // Determine input styles based on state (disabled, success, error)
   let inputClasses = `h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${className}`;
 
@@ -51,6 +57,7 @@ const Input: FC<InputProps> = ({
     <div className="relative">
 
       <input
+        {...register(name, rules)}
         type={type}
         id={id}
         name={name}
@@ -68,6 +75,13 @@ const Input: FC<InputProps> = ({
         {hint}
       </p>
       )}
+
+      {errors[name] && (
+        <p className="mt-1.5 text-xs text-error-500">
+          {errors[name]?.message as string}
+        </p>
+      )}
+
     </div>
   );
 };

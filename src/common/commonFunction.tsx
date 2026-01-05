@@ -1,0 +1,110 @@
+
+import * as CryptoJS from "crypto-js";
+import { toast } from "sonner";
+import moment from "moment";
+
+
+import CONSTENT from './constant';
+
+// const KEY = CryptoJS.enc.Utf8.parse(CONSTENT.KEY );
+// const IV = CryptoJS.enc.Utf8.parse(CONSTENT.IV);
+
+// ------------------------------------------------------- Authentication Function ---------------------------------------------------------------------------
+
+export const loginRedirection = (data: any) => {
+    localStorage.setItem(CONSTENT.LOGIN_KEY, 'false');
+    localStorage.setItem(CONSTENT.ACCESS_TOKEN_KEY, data?.token?.access_token)
+    localStorage.setItem(CONSTENT.REFRESH_TOKEN_KEY, data?.token?.refresh_token)
+    localStorage.setItem(CONSTENT.AUTH_KEY, JSON.stringify(data))
+    localStorage.setItem(CONSTENT.ROLE_KEY, data?.user?.role)
+}
+
+export const logoutRedirection = () => {
+    localStorage.removeItem(CONSTENT.LOGIN_KEY);
+    localStorage.removeItem(CONSTENT.ROLE_KEY);
+    localStorage.removeItem(CONSTENT.ACCESS_TOKEN_KEY);
+    localStorage.removeItem(CONSTENT.REFRESH_TOKEN_KEY);
+    localStorage.removeItem(CONSTENT.AUTH_KEY);
+}
+// ------------------------------------------------------- Encryption Decreption ---------------------------------------------------------------------------
+
+// export const Encryption = (request = {}, isStringify: boolean) => {
+//     const requestData = isStringify ? JSON.stringify(request) : request;
+//     let encrypted = CryptoJS.AES.encrypt(requestData, KEY, { iv: IV }).toString();
+//     return encrypted
+// }
+
+// export const Decryption = async (response: any) => {
+//     // console.log('Decreption response', response);
+//     let decrypted = await CryptoJS.AES.decrypt(response.toString(), KEY, { iv: IV });
+//     let decryptedData = await JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+//     if (decryptedData?.code === '0') {
+//         TOAST_ERROR(decryptedData?.message);
+//     }
+//     if (decryptedData?.code === -1) {
+//         logoutRedirection();
+//     }
+//     return decryptedData;
+// }
+
+// --------------------------------------------------------- Date Manage Function ---------------------------------------------------------------------------
+
+export const formatDate = (dateString: string, formatPattern: string) => {
+    return moment.utc(dateString).local().format(formatPattern);
+};
+
+export const TOAST_SUCCESS = (message: any) => {
+    return toast.success(message);
+};
+
+export const TOAST_INFO = (message: any) => {
+    return toast.info(message);
+};
+
+export const TOAST_ERROR = (message: any) => {
+    return toast.error(message);
+};
+
+export const TOAST_WARNING = (message: any) => {
+    return toast.warning(message);
+};
+
+export function formatIndianPrice(price : any) {
+    try {
+        let number = 0;
+
+        if (typeof price === "string") {
+            number = parseFloat(price) || 0;
+        } else if (typeof price === "number") {
+            number = price;
+        }
+
+        return number.toLocaleString("en-IN", {
+            style: "currency",
+            currency: "INR",
+            maximumFractionDigits: 2,
+        });
+    } catch (e) {
+        return "₹0";
+    }
+}
+
+export const truncateWords = (text : any, wordLimit = 3) => {
+    if (!text) return '-';
+    const words = text.split(' ');
+    return words.length > wordLimit
+        ? words.slice(0, wordLimit).join(' ') + '...'
+        : text;
+};
+
+export const convertToBase64 = async (file : any) => {
+    if (file.type.includes("video")) return URL.createObjectURL(file);
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.onload = () => {
+            resolve(fileReader.result);
+        };
+        fileReader.onerror = reject;
+        file && fileReader.readAsDataURL(file);
+    });
+};

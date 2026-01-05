@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 export default function page() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="Sales" />
+      <PageBreadcrumb pageTitle="Purchase" />
       <div className="space-y-6">
-        <ComponentCard title="Sales" buttonName={"Sales"} navigation={"/add-sales"}>
+        <ComponentCard title="Purchase" buttonName={"Add Purchase"} navigation={"/add-purchase"}>
           <BasicTableOne />
         </ComponentCard>
       </div>
