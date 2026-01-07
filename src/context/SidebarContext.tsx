@@ -1,4 +1,6 @@
 "use client";
+import CONSTENT from "@/common/constant";
+import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 type SidebarContextType = {
@@ -27,6 +29,9 @@ export const useSidebar = () => {
 export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+
+  const router = useRouter();
+  const is_login = localStorage.getItem(CONSTENT.LOGIN_KEY);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -50,6 +55,15 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+
+  useEffect(() => {
+    if (is_login) {
+      router.replace("/");
+    } else {
+      router.replace("/signin");
+    }
+  }, [is_login]);
 
   const toggleSidebar = () => {
     setIsExpanded((prev) => !prev);
