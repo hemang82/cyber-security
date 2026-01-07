@@ -69,7 +69,7 @@ export const TOAST_WARNING = (message: any) => {
     return toast.warning(message);
 };
 
-export function formatIndianPrice(price : any) {
+export function formatIndianPrice(price: any) {
     try {
         let number = 0;
 
@@ -89,7 +89,7 @@ export function formatIndianPrice(price : any) {
     }
 }
 
-export const truncateWords = (text : any, wordLimit = 3) => {
+export const truncateWords = (text: any, wordLimit = 3) => {
     if (!text) return '-';
     const words = text.split(' ');
     return words.length > wordLimit
@@ -97,7 +97,7 @@ export const truncateWords = (text : any, wordLimit = 3) => {
         : text;
 };
 
-export const convertToBase64 = async (file : any) => {
+export const convertToBase64 = async (file: any) => {
     if (file.type.includes("video")) return URL.createObjectURL(file);
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
@@ -107,4 +107,50 @@ export const convertToBase64 = async (file : any) => {
         fileReader.onerror = reject;
         file && fileReader.readAsDataURL(file);
     });
+};
+
+// ----------------------------------- Local storage manage ----------------------------------------------------
+
+type StorageData = { value: any; expiry: number | null; };
+
+export const storage = (key: string, value?: any, expireMinutes?: number): any => {
+    try {
+        // 👉 GET
+        if (value === undefined) {
+            const item = localStorage.getItem(key);
+            if (!item) return null;
+
+            const data: StorageData = JSON.parse(item);
+
+            // ⏳ expiry check
+            if (data.expiry && Date.now() > data.expiry) {
+                localStorage.removeItem(key);
+                return null;
+            }
+
+            return data.value;
+        }
+
+        // 👉 REMOVE
+        if (value === null) {
+            localStorage.removeItem(key);
+            return null;
+        }
+
+        // 👉 SET
+        const storeData: StorageData = {
+            value: value,
+            expiry: expireMinutes
+                ? Date.now() + expireMinutes * 60 * 1000
+                : null,
+        };
+
+        localStorage.setItem(key, JSON.stringify(storeData));
+
+        return true;
+        
+    } catch (error) {
+        console.error("LocalStorage error", error);
+        return null;
+    }
 };

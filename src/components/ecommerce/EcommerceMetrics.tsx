@@ -1,10 +1,23 @@
 "use client";
+
 import React from "react";
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon, PageIcon } from "@/icons";
 import { ImLink } from "react-icons/im";
+import { useRouter } from "next/navigation";
+import CONSTENT from "@/common/constant";
 
 export const EcommerceMetrics = () => {
+  // const router = useRouter();
+
+  // useEffect(() => {
+  //   const is_login = localStorage.getItem(CONSTENT.LOGIN_KEY);
+
+  //   if (!is_login) {
+  //     router.replace("/signin");
+  //   }
+  // }, []);
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
 
