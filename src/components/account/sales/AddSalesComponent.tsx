@@ -7,17 +7,17 @@ import {
     TableCell,
     TableHeader,
     TableRow,
-} from "../ui/table";
+} from "../../ui/table";
 
-import Badge from "../ui/badge/Badge";
+import Badge from "../../ui/badge/Badge";
 import Image from "next/image";
 
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import TextArea from "../form/input/TextArea";
-import DatePicker from "../form/date-picker";
-import BasicTableOne from "../tables/BasicTableOne";
-import Select from "../form/Select";
+import Label from "../../form/Label";
+import Input from "../../form/input/InputField";
+import TextArea from "../../form/input/TextArea";
+import DatePicker from "../../form/date-picker";
+import BasicTableOne from "../../tables/BasicTableOne";
+import Select from "../../form/Select";
 import { ChevronDownIcon } from "@/icons";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -180,20 +180,34 @@ export default function AddSalesComponent() {
 
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {/* Invoice Number */}
-                            <div>
-                                <Label>Invoice Number</Label>
-                                <Input
-                                    type="text"
-                                    placeholder="Invoice Number"
-                                    name="invoice_number"
-                                    rules={{
-                                        required: "Invoice number is required",
-                                        pattern: {
-                                            value: /^[A-Za-z0-9 ]{3,50}$/,
-                                            message: "Only letters & numbers (3–50 chars)",
-                                        },
-                                    }}
-                                />
+                            <div className="flex flex-row gap-2">
+                                <div className="w-full">
+                                    <Label>Invoice Number</Label>
+                                    <Input
+                                        type="text"
+                                        placeholder="Invoice Number"
+                                        name="invoice_number"
+                                        rules={{
+                                            required: "Invoice number is required",
+                                            pattern: {
+                                                value: /^[A-Za-z0-9 ]{3,50}$/,
+                                                message: "Only letters & numbers (3–50 chars)",
+                                            },
+                                        }}
+                                    />
+                                </div>
+                                {/* Issue Date */}
+                                <div className="w-full">
+                                    <DatePicker
+                                        id="date-picker"
+                                        label="Date"
+                                        placeholder="Select a date"
+                                        onChange={(dates, currentDateString) => {
+                                            // Handle your logic
+                                            console.log({ dates, currentDateString });
+                                        }}
+                                    />
+                                </div>
                             </div>
 
                             {/* Customer Name */}
@@ -213,40 +227,14 @@ export default function AddSalesComponent() {
                                 />
                             </div>
 
-                            {/* Issue Date */}
-                            <div>
-                                <DatePicker
-                                    id="date-picker"
-                                    label="Date Picker"
-                                    placeholder="Select a date"
-                                    onChange={(dates, currentDateString) => {
-                                        // Handle your logic
-                                        console.log({ dates, currentDateString });
-                                    }}
-                                />
-                            </div>
-
-                            {/* Due Date */}
-                            <div>
-                                <DatePicker
-                                    id="date-picker"
-                                    label="Due Date"
-                                    placeholder="Select a date"
-                                    onChange={(dates, currentDateString) => {
-                                        // Handle your logic
-                                        console.log({ dates, currentDateString });
-                                    }}
-                                />
-                            </div>
-
                             {/* Address */}
-                            <div className="col-span-full">
+                            <div className="col-span-1">
                                 <Label>Customer Address</Label>
                                 <TextArea placeholder="Customer Address" />
                             </div>
 
                             {/* Additional Info */}
-                            <div className="col-span-full">
+                            <div className="col-span-1">
                                 <Label>Additional Info</Label>
                                 <TextArea placeholder="Additional Info" />
                             </div>
@@ -255,8 +243,7 @@ export default function AddSalesComponent() {
                     </form>
                 </div>
 
-                <div className="border-b border-gray-200 p-4 sm:p-8 bg-white  ">
-
+                <div className="border-b border-gray-200 p-4 sm:p-8 bg-white">
                     {/* TABLE */}
                     {/* <div className="overflow-x-auto rounded-xl border">
                     <table className="min-w-full text-sm">
@@ -315,7 +302,7 @@ export default function AddSalesComponent() {
                                         { value: "10", label: "20%" },
                                         { value: "50", label: "50%" },
                                     ]}
-                                    placeholder="Select Option"
+                                    placeholder="Select GST Option"
                                     onChange={handleSelectChange}
                                     className="dark:bg-dark-900"
                                 />
@@ -325,23 +312,6 @@ export default function AddSalesComponent() {
                             </div>
                         </div>
 
-                        <div>
-                            <div className="relative">
-                                <Select
-                                    options={[
-                                        { value: "0", label: "0%" },
-                                        { value: "10", label: "20%" },
-                                        { value: "50", label: "50%" },
-                                    ]}
-                                    placeholder="Select Option"
-                                    onChange={handleSelectChange}
-                                    className="dark:bg-dark-900"
-                                />
-                                <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                                    <ChevronDownIcon />
-                                </span>
-                            </div>
-                        </div>
                         <button
                             type="submit"
                             className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition  cursor-pointer"
@@ -357,11 +327,15 @@ export default function AddSalesComponent() {
                             <span>${subtotal.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span>VAT (10%)</span>
+                            <span>Additional Charge</span>
+                            <span>${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>GST (10%)</span>
                             <span>${vat.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-lg font-semibold">
-                            <span>Total</span>
+                            <span>Total Amount</span>
                             <span>${total.toFixed(2)}</span>
                         </div>
                     </div>

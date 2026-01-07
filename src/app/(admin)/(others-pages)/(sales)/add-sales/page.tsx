@@ -1,6 +1,6 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import AddSalesComponent from "@/components/sales/AddSalesComponent";
+import AddSalesComponent from "@/components/account/sales/AddSalesComponent";
 import { Metadata } from "next";
 import React from "react";
 

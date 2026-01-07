@@ -5,18 +5,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { BiPurchaseTag } from "react-icons/bi";
-import {
-  CalenderIcon,
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-  PageIcon,
-  UserCircleIcon,
-
-} from "../icons/index";
+import { CalenderIcon, ChevronDownIcon, GridIcon, HorizontaLDots, PageIcon, UserCircleIcon } from "../icons/index";
 
 import { ImLink } from "react-icons/im";
 import { RiHandbagLine } from "react-icons/ri";
+import { PiBank } from "react-icons/pi";
+import { IoWalletOutline } from "react-icons/io5";
 
 type NavItem = {
   name: string;
@@ -33,29 +27,24 @@ const navItems: NavItem[] = [
   },
   {
     icon: <RiHandbagLine />,
-    name: "Inventory",
-    path: "/inventory",
+    name: "Sales",
+    path: "/sales",
   },
   {
-    icon: <RiHandbagLine />,
-    name: "Domin",
-    path: "/domin",
+    icon: <BiPurchaseTag />,
+    name: "Purchase",
+    path: "/purchase",
   },
-  // {
-  //   icon: <BiPurchaseTag />,
-  //   name: "Purchase",
-  //   path: "/purchase",
-  // },
-  // {
-  //   name: "Add Banks",
-  //   icon: <PageIcon />,
-  //   path: "/purchase"
-  // },
-  // {
-  //   name: "Expences",
-  //   icon: <ImLink />,
-  //   path: "/purchase"
-  // },
+  {
+    name: "Bank Accounts",
+    icon: <PiBank />,
+    path: "/bankaccount"
+  },
+  {
+    name: "Expences",
+    icon: <IoWalletOutline />,
+    path: "/expences"
+  }
   // {
   //   icon: <UserCircleIcon />,
   //   name: "Balancesheet",

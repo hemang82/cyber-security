@@ -9,6 +9,10 @@ import {
 
 import Badge from "../ui/badge/Badge";
 import Image from "next/image";
+import { TfiWorld } from "react-icons/tfi";
+import { LuFileCode2 } from "react-icons/lu";
+import { AiOutlineCloudServer } from "react-icons/ai";
+import { IoCloudOutline } from "react-icons/io5";
 
 interface Order {
   id: number;
@@ -111,9 +115,33 @@ const tableData: Order[] = [
   },
 ];
 
+
 export default function BasicTableOne() {
+  let iconClass = 'text-gray-800 size-6 dark:text-white/90'
+
+  const assets = [
+    {
+      image: <TfiWorld className={iconClass} />,
+      title: "Web App",
+      description: "Scan browser-based application hosted online"
+    },
+    {
+      image: <LuFileCode2 className={iconClass} />,
+      title: "API",
+      description: "Scan browser-based application hosted online"
+    },
+    {
+      image: <IoCloudOutline className={iconClass} />,
+      title: "Cloud",
+      description: "Scan browser-based application hosted online"
+    }
+  ]
+
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+
+     
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[1102px]">
           <Table>
@@ -219,7 +247,7 @@ export default function BasicTableOne() {
                 </TableRow>
               ))}
             </TableBody>
-            
+
           </Table>
         </div>
       </div>

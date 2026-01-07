@@ -4,6 +4,8 @@ import AddSalesComponent from "@/components/account/sales/AddSalesComponent";
 import { Metadata } from "next";
 import React from "react";
 import AddPurchaseComponent from "@/components/account/purchase/AddPurchaseComponent";
+import AddBankAccount from "@/components/account/bankaccounts/AddBankAccount";
+import AddExpences from "@/components/account/expences/AddExpences";
 
 export const metadata: Metadata = {
     title: "Next.js Basic Table | TailAdmin - Next.js Dashboard Template",
@@ -12,13 +14,13 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-export default function AddSales() {
+export default function bankAccount() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Create Purchase" />
+            <PageBreadcrumb pageTitle="Add Expences" />
             <div className="space-y-6">
-                <ComponentCard title="Create Purchase" excel={false}>
-                    <AddPurchaseComponent />
+                <ComponentCard title="Add Expences" excel={false}>
+                    <AddExpences />
                 </ComponentCard>
             </div>
         </div>
