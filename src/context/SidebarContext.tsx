@@ -31,7 +31,6 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
 
   const router = useRouter();
-  const is_login = localStorage.getItem(CONSTENT.LOGIN_KEY);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -57,13 +56,27 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
 
+  // useEffect(() => {
+  //   if (is_login) {
+  //     router.replace("/");
+  //   } else {
+  //     router.replace("/signin");
+  //   }
+  // }, [is_login]);
+
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    if (is_login) {
-      router.replace("/");
-    } else {
+    setMounted(true);
+
+    const isLogin = localStorage.getItem(CONSTENT.LOGIN_KEY);
+    if (!isLogin) {
       router.replace("/signin");
     }
-  }, [is_login]);
+  }, []);
+
+  // // ⛔ Prevent server render
+  // if (!mounted) return null;
 
   const toggleSidebar = () => {
     setIsExpanded((prev) => !prev);
