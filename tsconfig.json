@@ -39,3 +39,5 @@
     "node_modules"
   ]
 }
+// ".next/types/**/*.ts",
+//     ".next/dev/types/**/*.ts"

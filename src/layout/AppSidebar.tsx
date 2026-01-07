@@ -4,15 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
+import { BiPurchaseTag } from "react-icons/bi";
 import {
+  CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
   PageIcon,
+  UserCircleIcon,
 
 } from "../icons/index";
 
 import { ImLink } from "react-icons/im";
+import { RiHandbagLine } from "react-icons/ri";
 
 type NavItem = {
   name: string;
@@ -27,26 +31,36 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/"
   },
+  {
+    icon: <RiHandbagLine />,
+    name: "Inventory",
+    path: "/inventory",
+  },
+  {
+    icon: <RiHandbagLine />,
+    name: "Domin",
+    path: "/domin",
+  },
   // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
+  //   icon: <BiPurchaseTag />,
+  //   name: "Purchase",
+  //   path: "/purchase",
+  // },
+  // {
+  //   name: "Add Banks",
+  //   icon: <PageIcon />,
+  //   path: "/purchase"
+  // },
+  // {
+  //   name: "Expences",
+  //   icon: <ImLink />,
+  //   path: "/purchase"
   // },
   // {
   //   icon: <UserCircleIcon />,
-  //   name: "User Profile",
+  //   name: "Balancesheet",
   //   path: "/profile",
   // },
-  {
-    name: "Inventory",
-    icon: <PageIcon />,
-    path: "/inventory"
-  },
-  {
-    name: "Domin",
-    icon: <ImLink />,
-    path: "/domin"
-  },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,
@@ -67,6 +81,20 @@ const navItems: NavItem[] = [
   //   ],
   // },
 ];
+
+
+// - Add Banks
+
+// - Add Sales
+// - Add purchase  - Party name 
+// 		- Date		
+// 		- Unique Code
+
+// - Expences
+// - income
+
+// - Balancesheet 
+
 
 const othersItems: NavItem[] = [
   // {

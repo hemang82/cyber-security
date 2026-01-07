@@ -367,7 +367,6 @@ export default function AddSalesComponent() {
                     </div>
                 </div>
             </FormProvider>
-
         </>
     );
 }

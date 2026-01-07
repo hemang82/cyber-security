@@ -1,3 +1,5 @@
+"use client";
+
 import Label from "@/components/form/Label";
 import { TabContent } from "../AddInventory";
 import Input from "@/components/form/input/InputField";

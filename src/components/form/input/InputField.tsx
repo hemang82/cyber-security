@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC } from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -57,7 +59,7 @@ const Input: FC<InputProps> = ({
     <div className="relative">
 
       <input
-        {...register(name, rules)}
+        {...register(name || "" , rules || "")}
         type={type}
         id={id}
         name={name}
