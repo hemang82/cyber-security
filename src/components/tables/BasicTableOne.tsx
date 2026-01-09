@@ -219,7 +219,7 @@ export default function BasicTableOne() {
                 </TableRow>
               ))}
             </TableBody>
-            
+
           </Table>
         </div>
       </div>

@@ -88,7 +88,7 @@ export const INPUT_PATTERN = {
 
     WEBSITE: {
         pattern: /^(https?:\/\/)(([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:\d{1,5})?(\/.*)?$/,
-        message: "Website URL must start with http:// or https://",
+        message: "URL must start with http:// or https://",
     },
 };
 

@@ -17,6 +17,8 @@ import {
 
 import { ImLink } from "react-icons/im";
 import { RiHandbagLine } from "react-icons/ri";
+import { LuLink } from "react-icons/lu";
+import { FaRegLightbulb } from "react-icons/fa6";
 
 type NavItem = {
   name: string;
@@ -32,12 +34,12 @@ const navItems: NavItem[] = [
     path: "/"
   },
   {
-    icon: <RiHandbagLine />,
+    icon: <FaRegLightbulb  />,
     name: "Inventory",
     path: "/inventory",
   },
   {
-    icon: <RiHandbagLine />,
+    icon: <LuLink  />,
     name: "Domin",
     path: "/domin",
   },

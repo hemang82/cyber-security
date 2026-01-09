@@ -16,7 +16,7 @@ export default function page() {
     <div>
       <PageBreadcrumb pageTitle="Domin" />
       <div className="space-y-6">
-        <ComponentCard navigation={"/"}>
+        <ComponentCard title="Domin" buttonName={"Add Domin"} navigation={"/add-domin"} >
           <BasicTableOne />
         </ComponentCard>
       </div>
