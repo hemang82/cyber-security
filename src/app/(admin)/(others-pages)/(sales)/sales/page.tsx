@@ -1,4 +1,5 @@
 import ComponentCard from "@/components/common/ComponentCard";
+import ComponentCardList from "@/components/common/ComponentCardList";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import BasicTableOne from "@/components/tables/BasicTableOne";
 import { Metadata } from "next";
@@ -16,9 +17,9 @@ export default function page() {
     <div>
       <PageBreadcrumb pageTitle="Sales" />
       <div className="space-y-6">
-        <ComponentCard title="Sales" buttonName={"Sales"} navigation={"/add-sales"}>
+        <ComponentCardList title="Sales" buttonName={"Sales"} navigation={"/add-sales"}>
           <BasicTableOne />
-        </ComponentCard>
+        </ComponentCardList>
       </div>
     </div>
   );

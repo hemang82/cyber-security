@@ -23,7 +23,7 @@ interface ComponentCardProps {
   excel?: Boolean
 }
 
-const ComponentCard: React.FC<ComponentCardProps> = ({
+const ComponentCardList: React.FC<ComponentCardProps> = ({
   title,
   children,
   className = "",
@@ -65,7 +65,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   ]
 
   return (<>
-    {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {
         assets?.map((assets, index) => {
           return <div className="rounded-2xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-white/[0.03] md:p-3 hover:border-brand-500 hover:cursor-pointer hover:shadow-lg " key={index}>
@@ -87,7 +87,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
           </div>
         })
       }
-    </div> */}
+    </div>
 
     <div className={`rounded-2xl ${title && 'border-b border-gray-200 '}  bg-white dark:bg-white/[0.03] ${className}`} >
 
@@ -184,4 +184,4 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   </>);
 };
 
-export default ComponentCard;
+export default ComponentCardList;

@@ -237,7 +237,7 @@ const AppSidebar: React.FC = () => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
-              setOpenSubmenu({
+              ({
                 type: menuType as "main" | "others",
                 index,
               });
@@ -250,7 +250,10 @@ const AppSidebar: React.FC = () => {
 
     // If no submenu item matches, close the open submenu
     if (!submenuMatched) {
-      setOpenSubmenu(null);
+      // setOpenSubmenu({
+      //   type: "others",
+      //   index: 0
+      // });
     }
   }, [pathname, isActive]);
 
