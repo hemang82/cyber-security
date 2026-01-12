@@ -7,6 +7,7 @@ import { useState } from "react";
 import { TabContent } from "../AddInventory";
 import { useForm, FormProvider } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
+import { useInventoryStore } from "@/store";
 
 type Product = {
     name: string;
@@ -29,6 +30,8 @@ export const ASSETS_INPUTS = {
 }
 
 export default function AddAssets() {
+
+    const { assets_type, setAssetsType} = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing

@@ -117,7 +117,9 @@ export const storage = (key: string, value?: any, expireMinutes?: number): any =
     try {
         // 👉 GET
         if (value === undefined) {
+
             const item = localStorage.getItem(key);
+
             if (!item) return null;
 
             const data: StorageData = JSON.parse(item);
@@ -148,7 +150,7 @@ export const storage = (key: string, value?: any, expireMinutes?: number): any =
         localStorage.setItem(key, JSON.stringify(storeData));
 
         return true;
-        
+
     } catch (error) {
         console.error("LocalStorage error", error);
         return null;

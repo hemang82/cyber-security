@@ -64,16 +64,19 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   //   }
   // }, [is_login]);
 
-  const [mounted, setMounted] = useState(false);
+  // const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-
     const isLogin = localStorage.getItem(CONSTENT.LOGIN_KEY);
     if (!isLogin) {
       router.replace("/signin");
     }
-  }, []);
+  }, [router ]);
+
+
+// useEffect(() => {
+//   setMounted(true); // ✅ hydration fix
+// }, []);
 
   // // ⛔ Prevent server render
   // if (!mounted) return null;

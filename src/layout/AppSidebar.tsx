@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -34,12 +34,12 @@ const navItems: NavItem[] = [
     path: "/"
   },
   {
-    icon: <FaRegLightbulb  />,
+    icon: <FaRegLightbulb />,
     name: "Inventory",
     path: "/inventory",
   },
   {
-    icon: <LuLink  />,
+    icon: <LuLink />,
     name: "Domin",
     path: "/domin",
   },
@@ -238,34 +238,31 @@ const AppSidebar: React.FC = () => {
 
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+
   // const isActive = (path: string) => path === pathname;
   const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  // AppSidebar.tsx
+  const matchedSubmenu = useMemo(() => {
+    let result: { type: "main" | "others"; index: number } | null = null;
 
-  useEffect(() => {
-    // Check if the current path matches any submenu item
-    let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
+    (["main", "others"] as const).forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
+
       items.forEach((nav, index) => {
-        if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
-            if (isActive(subItem.path)) {
-              setOpenSubmenu({
-                type: menuType as "main" | "others",
-                index,
-              });
-              submenuMatched = true;
-            }
-          });
-        }
+        nav.subItems?.forEach((subItem) => {
+          if (isActive(subItem.path)) {
+            result = { type: menuType, index };
+          }
+        });
       });
     });
 
-    // If no submenu item matches, close the open submenu
-    if (!submenuMatched) {
-      setOpenSubmenu(null);
-    }
+    return result;
   }, [pathname, isActive]);
+
+  useEffect(() => {
+    setOpenSubmenu(matchedSubmenu);
+  }, [matchedSubmenu]);
 
   useEffect(() => {
     // Set the height of the submenu items when the submenu is opened
