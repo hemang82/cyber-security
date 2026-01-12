@@ -26,12 +26,33 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter website URL",
         name: "website_url",
         validation: "Enter website URL.",
+    },
+    ADDITIONL_INFO: {
+        placeholder: "Enter additional info",
+        name: "additional_info",
+        validation: "Enter additional info.",
+    },
+    NAME: {
+        placeholder: "Enter name",
+        name: "name",
+        validation: "Enter name.",
+    },
+    EMAIL: {
+        placeholder: "Enter email",
+        name: "email",
+        validation: "Enter email.",
+    },
+    PHONE_NUMBER: {
+        placeholder: "Enter phone number",
+        name: "phone_number",
+        validation: "Enter phone number.",
     }
+
 }
 
 export default function AddAssets() {
 
-    const { assets_type, setAssetsType} = useInventoryStore();
+    const { assets_type, setAssetsType } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
@@ -55,8 +76,6 @@ export default function AddAssets() {
     const onSubmit = (data: any) => {
         console.log("FORM DATA 👉", data);
     };
-
-    console.log('methods', methods.formState.errors);
 
     return (<>
         <FormProvider {...methods}>
@@ -102,7 +121,14 @@ export default function AddAssets() {
                             {/* Additional Info */}
                             <div className="col-span-full">
                                 <Label>Additional Info</Label>
-                                <TextArea placeholder="Additional Info" className="!w-1/2" />
+                                <TextArea
+                                    className="!w-1/2"
+                                    placeholder={ASSETS_INPUTS.ADDITIONL_INFO.placeholder}
+                                    name={ASSETS_INPUTS.ADDITIONL_INFO.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.ADDITIONL_INFO.validation
+                                    }}
+                                />
                             </div>
 
                         </div>
@@ -117,19 +143,52 @@ export default function AddAssets() {
                             {/* Name */}
                             <div>
                                 <Label>Name</Label>
-                                <Input type="text" placeholder="Name" />
+                                <Input
+                                    type={INPUT_TYPE.TEXT}
+                                    placeholder={ASSETS_INPUTS.NAME.placeholder}
+                                    name={ASSETS_INPUTS.NAME.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.NAME.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.NAME.pattern,
+                                            message: INPUT_PATTERN.NAME.message,
+                                        },
+                                    }}
+                                />
                             </div>
 
                             {/* Email */}
                             <div>
                                 <Label>Email</Label>
-                                <Input type="email" placeholder="Email" />
+                                <Input
+                                    placeholder={ASSETS_INPUTS.EMAIL.placeholder}
+                                    type={INPUT_TYPE.TEXT}
+                                    name={ASSETS_INPUTS.EMAIL.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.EMAIL.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.EMAIL.pattern,
+                                            message: INPUT_PATTERN.EMAIL.message,
+                                        },
+                                    }}
+                                />
                             </div>
 
                             {/* Phone Number */}
                             <div>
                                 <Label>Phone Number</Label>
-                                <Input type="text" placeholder="Phone Number" />
+                                <Input
+                                    placeholder={ASSETS_INPUTS.PHONE_NUMBER.placeholder}
+                                    type={INPUT_TYPE.TEXT}
+                                    name={ASSETS_INPUTS.PHONE_NUMBER.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.PHONE_NUMBER.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.MOBILE.pattern,
+                                            message: INPUT_PATTERN.MOBILE.message,
+                                        },
+                                    }}
+                                />
                             </div>
 
                         </div>

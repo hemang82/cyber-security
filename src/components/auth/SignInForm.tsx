@@ -25,7 +25,6 @@ export default function SignInForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 🔥 REQUIRED — stops page reload
-    // 👉 do validation / API call here if needed
     localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
     router.push("/");
   };
