@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
 import { ASSETS_INPUTS } from "../Inventory/Assets/AddAssets";
+import { useRouter } from "next/navigation";
 
 type Product = {
     name: string;
@@ -29,6 +30,7 @@ export const DOMIN_INPUTS = {
 }
 
 export default function AddDomin() {
+    const router = useRouter();
 
     const methods = useForm({ mode: "onBlur" });
 
@@ -49,6 +51,7 @@ export default function AddDomin() {
 
     const onSubmit = (data: any) => {
         console.log("FORM DATA 👉", data);
+        router.push(`/domin`);
     };
 
     return (<>

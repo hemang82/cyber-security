@@ -29,6 +29,26 @@ export default function SignInForm() {
     router.push("/");
   };
 
+  // React/Next.js Component ma
+  // async function handleLogin(email, password) {
+  //   const response = await fetch('/api/login', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ email, password })
+  //   });
+
+  //   const data = await response.json();
+
+  //   if (data.success) {
+  //     // Login successful
+  //     console.log("User:", data.data.user);
+  //     console.log("Token:", data.data.token);
+  //   } else {
+  //     // Login failed
+  //     console.error("Error:", data.message);
+  //   }
+  // }
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
 

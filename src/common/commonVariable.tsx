@@ -10,7 +10,7 @@ export const DATE_FORMAT = {
     DOT_DD_MM_YYYY: "DD.MM.YYYY",              // 12.06.2024
 
     SHORT_DAY_MONTH: "D MMM",                 // 12 Jun
-    FULL_DAY_MONTH_YEAR: "DD MMM YYYY",       // 12 Jun 2024
+    FULL_DAY_MONTH_YEAR: "DD MMM YYYY hh:mm:ss",       // 12 Jun 2024
     MONTH_DAY_YEAR_LONG: "MMMM D, YYYY",      // June 12, 2024
 
     WEEKDAY_MONTH_DAY: "ddd, MMMM DD",        // Wed, June 12
@@ -119,3 +119,11 @@ export const INPUT_TYPE = {
     HIDDEN: "hidden",
 
 } as const;
+
+export enum TAB_KEY {
+    ASSETS_TYPE = "assets_type",
+    ASSETS_DETAILS = "assets_details",
+    CREDENTIALS = "credentials",
+    OWNERS = "owners",
+    PREVIEW = "preview",
+}

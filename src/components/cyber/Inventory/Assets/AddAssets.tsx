@@ -3,11 +3,12 @@
 import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TabContent } from "../AddInventory";
 import { useForm, FormProvider } from "react-hook-form";
-import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
+import { INPUT_PATTERN, INPUT_TYPE, TAB_KEY } from "@/common/commonVariable";
 import { useInventoryStore } from "@/store";
+import { watch } from "fs";
 
 type Product = {
     name: string;
@@ -46,13 +47,19 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter phone number",
         name: "phone_number",
         validation: "Enter phone number.",
+    },
+    OWNER: {
+        placeholder: "Enter owner",
+        name: "owner",
+        validation: "Select owner.",
     }
+
 
 }
 
 export default function AddAssets() {
 
-    const { assets_type, setAssetsType } = useInventoryStore();
+    const { assets_details, setAssetsDetails, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
@@ -75,7 +82,21 @@ export default function AddAssets() {
 
     const onSubmit = (data: any) => {
         console.log("FORM DATA 👉", data);
+        setAssetsDetails({
+            value: data,
+            is_valid: true,
+        });
+        setActiveTab(TAB_KEY.CREDENTIALS);
     };
+
+    useEffect(() => {
+        methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
+        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
+        methods.setValue(ASSETS_INPUTS.ADDITIONL_INFO.name, assets_details?.value?.[ASSETS_INPUTS.ADDITIONL_INFO.name] || '');
+        methods.setValue(ASSETS_INPUTS.NAME.name, assets_details?.value?.[ASSETS_INPUTS.NAME.name] || '');
+        methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
+        methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
+    }, [methods]);
 
     return (<>
         <FormProvider {...methods}>
@@ -119,7 +140,7 @@ export default function AddAssets() {
                             </div>
 
                             {/* Additional Info */}
-                            <div className="col-span-full">
+                            {/* <div className="col-span-full">
                                 <Label>Additional Info</Label>
                                 <TextArea
                                     className="!w-1/2"
@@ -128,8 +149,9 @@ export default function AddAssets() {
                                     rules={{
                                         required: ASSETS_INPUTS.ADDITIONL_INFO.validation
                                     }}
+                                    value={methods.watch(ASSETS_INPUTS.ADDITIONL_INFO.name) || ""}
                                 />
-                            </div>
+                            </div> */}
 
                         </div>
                     </TabContent>

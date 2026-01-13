@@ -9,6 +9,7 @@ import Pagination from "@/components/tables/Pagination";
 import Badge from "@/components/ui/badge/Badge";
 import { Metadata } from "next";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 // export const metadata: Metadata = {
@@ -19,6 +20,9 @@ import React, { useState } from "react";
 // };
 
 export default function BasicTables() {
+
+  const router = useRouter();
+
   interface Order {
     // user: {
     //   image: string;
@@ -59,7 +63,7 @@ export default function BasicTables() {
       vulnerabilities: { values: ["1", "2", "8", "5", "15"] },
       serverity: "High",
       owner: "John Doe",
-      action: "Edit",
+      action: "View",
     },
     {
       // user: {
@@ -78,8 +82,9 @@ export default function BasicTables() {
       vulnerabilities: { values: ["0", "2", "5", "6", "15"] },
       serverity: "High",
       owner: "",
-      action: "Edit",
-    }, {
+      action: "View",
+    },
+    {
       // user: {
       //   image: "/images/user/user-17.jpg",
       //   name: "Lindsey Curtis",
@@ -96,7 +101,7 @@ export default function BasicTables() {
       vulnerabilities: { values: ["1", "2", "8", "5", "15"] },
       serverity: "High",
       owner: "John Doe",
-      action: "Edit",
+      action: "View",
     },
     {
       // user: {
@@ -115,192 +120,7 @@ export default function BasicTables() {
       vulnerabilities: { values: ["0", "2", "5", "6", "15"] },
       serverity: "High",
       owner: "",
-      action: "Edit",
-    }, {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Website",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "2",
-      vulnerabilities: { values: ["1", "2", "8", "5", "15"] },
-      serverity: "High",
-      owner: "John Doe",
-      action: "Edit",
-    },
-    {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Application",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "1",
-      vulnerabilities: { values: ["0", "2", "5", "6", "15"] },
-      serverity: "High",
-      owner: "",
-      action: "Edit",
-    }, {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Website",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "2",
-      vulnerabilities: { values: ["1", "2", "8", "5", "15"] },
-      serverity: "High",
-      owner: "John Doe",
-      action: "Edit",
-    },
-    {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Application",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "1",
-      vulnerabilities: { values: ["0", "2", "5", "6", "15"] },
-      serverity: "High",
-      owner: "",
-      action: "Edit",
-    }, {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Website",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "2",
-      vulnerabilities: { values: ["1", "2", "8", "5", "15"] },
-      serverity: "High",
-      owner: "John Doe",
-      action: "Edit",
-    },
-    {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Application",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "1",
-      vulnerabilities: { values: ["0", "2", "5", "6", "15"] },
-      serverity: "High",
-      owner: "",
-      action: "Edit",
-    }, {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Website",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "2",
-      vulnerabilities: { values: ["1", "2", "8", "5", "15"] },
-      serverity: "High",
-      owner: "John Doe",
-      action: "Edit",
-    },
-    {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Application",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "1",
-      vulnerabilities: { values: ["0", "2", "5", "6", "15"] },
-      serverity: "High",
-      owner: "",
-      action: "Edit",
-    }, {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Website",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "2",
-      vulnerabilities: { values: ["1", "2", "8", "5", "15"] },
-      serverity: "High",
-      owner: "John Doe",
-      action: "Edit",
-    },
-    {
-      // user: {
-      //   image: "/images/user/user-17.jpg",
-      //   name: "Lindsey Curtis",
-      //   role: "Web Designer",
-      // },
-      // projectName: "Agency Website",
-      // team: { images: ["/images/user/user-22.jpg"] },
-      // status: "Active",
-      // budget: "3.9K",
-      assets_name: "Application",
-      type: "Web",
-      created_at: "2023-10-01",
-      scan_status: "1",
-      vulnerabilities: { values: ["0", "2", "5", "6", "15"] },
-      serverity: "High",
-      owner: "",
-      action: "Edit",
+      action: "View",
     },
   ];
 
@@ -373,13 +193,21 @@ export default function BasicTables() {
       ),
     },
     { key: "owner", title: "Owner" },
-    // { key: "action", title: "Action" },
+    {
+      key: "action", title: "Action",
+      render: (row: any) => (
+        <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400" onClick={() => { router.push(`/Inventory-details`); }}>
+          {row.action}
+        </button>
+      ),
+    },
   ];
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
 
   return (
+    
     <div>
       <PageBreadcrumb pageTitle="Inventory" />
       <div className="space-y-6">
@@ -398,5 +226,6 @@ export default function BasicTables() {
         </ComponentCard>
       </div>
     </div>
+
   );
 }
