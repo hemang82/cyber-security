@@ -52,7 +52,12 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter owner",
         name: "owner",
         validation: "Select owner.",
-    }
+    },
+    PASSWORD: {
+        placeholder: "Enter password",
+        name: "password",
+        validation: "Enter password.",
+    },
 
 
 }

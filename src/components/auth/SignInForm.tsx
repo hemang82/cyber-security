@@ -1,5 +1,6 @@
 "use client";
 import { storage } from "@/common/commonFunction";
+import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
 import CONSTENT from "@/common/constant";
 import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
@@ -11,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { ASSETS_INPUTS } from "../cyber/Inventory/Assets/AddAssets";
 
 export default function SignInForm() {
 
@@ -49,9 +51,19 @@ export default function SignInForm() {
   //   }
   // }
 
+  const onSubmit = (data: any) => {
+    console.log("FORM DATA 👉", data);
+    // setAssetsDetails({
+    //   value: data,
+    //   is_valid: true,
+    // });
+    // setActiveTab(TAB_KEY.CREDENTIALS);
+    localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
+    router.push("/");
+  };
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-
       {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
           href="/"
@@ -136,23 +148,44 @@ export default function SignInForm() {
             </div> */}
 
             <FormProvider {...methods}>
-
-              <form method="post" onSubmit={handleSubmit}>
+              <form method="post" onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="space-y-6">
                   <div>
                     <Label>
                       Email <span className="text-error-500">*</span>{" "}
                     </Label>
-                    <Input placeholder="info@gmail.com" type="email" />
+                    <Input
+                      type={INPUT_TYPE?.EMAIL}
+                      placeholder={ASSETS_INPUTS?.EMAIL?.placeholder}
+                      name={ASSETS_INPUTS.EMAIL.name}
+                      rules={{
+                        required: ASSETS_INPUTS.EMAIL.validation,
+                        pattern: {
+                          value: INPUT_PATTERN.EMAIL.pattern,
+                          message: INPUT_PATTERN.EMAIL.message,
+                        },
+                      }}
+                    />
                   </div>
+
                   <div>
                     <Label>
                       Password <span className="text-error-500">*</span>{" "}
                     </Label>
                     <div className="relative">
                       <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
+                        // type={showPassword ? "text" : "password"}
+                        // placeholder="Enter your password"
+                        type={showPassword ? INPUT_TYPE?.TEXT : INPUT_TYPE?.PASSWORD}
+                        placeholder={ASSETS_INPUTS?.PASSWORD?.placeholder}
+                        name={ASSETS_INPUTS?.PASSWORD?.name}
+                        rules={{
+                          required: ASSETS_INPUTS.PASSWORD.validation,
+                          pattern: {
+                            value: INPUT_PATTERN.PASSWORD.pattern,
+                            message: INPUT_PATTERN.PASSWORD.message,
+                          },
+                        }}
                       />
                       <span
                         onClick={() => setShowPassword(!showPassword)}

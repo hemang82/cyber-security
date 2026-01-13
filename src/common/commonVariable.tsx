@@ -45,7 +45,8 @@ export const INPUT_PATTERN = {
         message: "Only alphabets are allowed",
     },
     NAME: {
-        pattern: /^[A-Za-z]{2,30}$/,
+        // pattern: /^[A-Za-z]{2,30}$/,
+        pattern: /^[A-Za-z\s]*$/,
         message: "Please enter only letters (2–30 chars)",
     },
 
