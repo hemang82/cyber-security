@@ -1,5 +1,5 @@
 "use client";
-import { storage } from "@/common/commonFunction";
+import { storage, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
 import CONSTENT from "@/common/constant";
 import Checkbox from "@/components/form/input/Checkbox";
@@ -51,19 +51,37 @@ export default function SignInForm() {
   //   }
   // }
 
-  const onSubmit = (data: any) => {
-    console.log("FORM DATA 👉", data);
-    // setAssetsDetails({
-    //   value: data,
-    //   is_valid: true,
-    // });
-    // setActiveTab(TAB_KEY.CREDENTIALS);
-    localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
-    router.push("/");
+  // const onSubmit = (data: any) => {
+  //   console.log("FORM DATA 👉", data);
+  //   // setAssetsDetails({
+  //   //   value: data,
+  //   //   is_valid: true,
+  //   // });
+  //   localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
+  //   router.push("/");
+  // };
+
+
+  const onSubmit = async (data: any) => {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: data[ASSETS_INPUTS.EMAIL.name], password: data[ASSETS_INPUTS.PASSWORD.name] }),
+    });
+
+    const responseData = await res.json();
+    if (responseData.success) {
+      router.replace("/"); // ✅ direct home
+      TOAST_SUCCESS(responseData.message)
+    } else {
+      alert(responseData.message);
+      TOAST_ERROR(responseData.message)
+    }
   };
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
+
       {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
           href="/"

@@ -55,7 +55,6 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, []);
 
-
   // useEffect(() => {
   //   if (is_login) {
   //     router.replace("/");
@@ -66,17 +65,18 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    const isLogin = localStorage.getItem(CONSTENT.LOGIN_KEY);
-    if (!isLogin) {
-      router.replace("/signin");
-    }
-  }, [router ]);
+  // useEffect(() => {
+  //   const isLogin = localStorage.getItem(CONSTENT.LOGIN_KEY);
+  //   if (!isLogin) {
+  //     router.replace("/signin");
+  //   }else{
+  //     router.replace("/");
+  //   }
+  // }, [router ]);
 
-
-// useEffect(() => {
-//   setMounted(true); // ✅ hydration fix
-// }, []);
+  // useEffect(() => {
+  //   setMounted(true); // ✅ hydration fix
+  // }, []);
 
   // // ⛔ Prevent server render
   // if (!mounted) return null;

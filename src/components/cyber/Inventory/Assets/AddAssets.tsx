@@ -58,8 +58,6 @@ export const ASSETS_INPUTS = {
         name: "password",
         validation: "Enter password.",
     },
-
-
 }
 
 export default function AddAssets() {
@@ -81,9 +79,6 @@ export default function AddAssets() {
         const discountAmount = (p.price * p.discount) / 100;
         return sum + (p.price - discountAmount) * p.quantity;
     }, 0);
-
-    const vat = subtotal * 0.1;
-    const total = subtotal + vat;
 
     const onSubmit = (data: any) => {
         console.log("FORM DATA 👉", data);
