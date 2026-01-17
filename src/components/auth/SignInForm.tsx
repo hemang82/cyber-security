@@ -80,6 +80,8 @@ export default function SignInForm() {
     }
   };
 
+  console.log('methods', methods?.formState?.errors);
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
 
@@ -193,8 +195,6 @@ export default function SignInForm() {
                     </Label>
                     <div className="relative">
                       <Input
-                        // type={showPassword ? "text" : "password"}
-                        // placeholder="Enter your password"
                         type={showPassword ? INPUT_TYPE?.TEXT : INPUT_TYPE?.PASSWORD}
                         placeholder={ASSETS_INPUTS?.PASSWORD?.placeholder}
                         name={ASSETS_INPUTS?.PASSWORD?.name}
@@ -206,10 +206,7 @@ export default function SignInForm() {
                           },
                         }}
                       />
-                      <span
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                      >
+                      <span onClick={() => setShowPassword(!showPassword)} className={`absolute z-30 -translate-y-1/2 cursor-pointer right-4 ${methods?.formState?.errors[ASSETS_INPUTS?.PASSWORD?.name] ? "top-6" : "top-1/2"}`} >
                         {showPassword ? (
                           <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
                         ) : (
