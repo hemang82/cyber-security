@@ -17,17 +17,6 @@ const CONSTENT = {
 
     KEY: process.env.NEXT_PUBLIC_CRYPTO_KEY,
     IV: process.env.NEXT_PUBLIC_CRYPTO_IV,
-
-    // --------------------------local storage creandtials-----------------------------------------
-
-    LOGIN_KEY: "CYBER_is_login",
-    AUTH_KEY: 'CYBER_auth',
-    ACCESS_TOKEN_KEY: 'CYBER_access_token',
-    REFRESH_TOKEN_KEY: 'CYBER_refresh_token',
-    LANGUAGE_KEY: 'CYBER_language',
-    ROLE_KEY: 'CYBER_role',
-    THEME_KEY: 'CYBER_theme',
-
 }
 
 // # ----------------------------- S3 bucket keys --------------------------------------
@@ -42,11 +31,11 @@ export const AWS_S3_REGION_NAME = process.env.REACT_APP_AWS_S3_REGION_NAME;
 
 export const CODES = {
     SUCCESS: 200,
+    ERROR: 550,
     VALIDATION_ERROR: 400,
     ACCESS_TOKEN_EXPIRE: 403,
     INACTIVE: 423,
     NOT_FOUND: 404,
-    ERROR: 550,
     INTERNAL_ERROR: 500,
     UNAUTHORIZED: 401,
     REFRESH_TOKEN_EXPIRED: 410,

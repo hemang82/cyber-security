@@ -3,6 +3,8 @@ import './globals.css';
 
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { Toaster } from 'sonner';
+import AuthProvider from './(full-width-pages)/(auth)/AuthProvider';
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -13,6 +15,12 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
         <ThemeProvider>
           <SidebarProvider>{children}</SidebarProvider>
         </ThemeProvider>
+        {/* ✅ Toast container */}
+        <Toaster
+          position="top-center"
+          richColors
+          closeButton
+        />
       </body>
     </html>
   );

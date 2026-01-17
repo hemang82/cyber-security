@@ -3,8 +3,8 @@ import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 
 export const metadata: Metadata = {
-  title: "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Home for TailAdmin Dashboard Template",
+  title: "CyberSafe Dashboard | Cyber Security Monitoring & Threat Analysis",
+  description: "CyberSafe Dashboard for real-time cyber security monitoring, vulnerability assessment, threat detection, and system protection management.",
 };
 
 export default function Ecommerce() {

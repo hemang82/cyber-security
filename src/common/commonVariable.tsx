@@ -94,7 +94,6 @@ export const INPUT_PATTERN = {
 };
 
 // INPUT TYPES (HTML)
-
 export const INPUT_TYPE = {
 
     TEXT: "text",

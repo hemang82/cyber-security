@@ -1,7 +1,7 @@
 "use client";
 import { storage, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
-import CONSTENT from "@/common/constant";
+import CONSTENT, { CODES } from "@/common/constant";
 import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { ASSETS_INPUTS } from "../cyber/Inventory/Assets/AddAssets";
+import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 
 export default function SignInForm() {
 
@@ -27,7 +28,7 @@ export default function SignInForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 🔥 REQUIRED — stops page reload
-    localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS?.LOGIN_KEY_COOKIE, JSON.stringify(true));
     router.push("/");
   };
 
@@ -61,8 +62,8 @@ export default function SignInForm() {
   //   router.push("/");
   // };
 
-
   const onSubmit = async (data: any) => {
+
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,11 +71,11 @@ export default function SignInForm() {
     });
 
     const responseData = await res.json();
-    if (responseData.success) {
+
+    if (responseData.code == CODES?.SUCCESS) {
       router.replace("/"); // ✅ direct home
-      TOAST_SUCCESS(responseData.message)
     } else {
-      alert(responseData.message);
+      // alert(responseData.message);
       TOAST_ERROR(responseData.message)
     }
   };
@@ -224,12 +225,12 @@ export default function SignInForm() {
                         Keep me logged in
                       </span>
                     </div>
-                    <Link
+                    {/* <Link
                       href="/reset-password"
                       className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                     >
                       Forgot password?
-                    </Link>
+                    </Link> */}
                   </div>
                   <div>
                     <Button type={'submit'} className="w-full" size="sm" >

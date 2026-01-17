@@ -14,12 +14,11 @@ import React, { useState } from "react";
 
 // export const metadata: Metadata = {
 //   title: "Next.js Basic Table | TailAdmin - Next.js Dashboard Template",
-//   description:
-//     "This is Next.js Basic Table  page for TailAdmin  Tailwind CSS Admin Dashboard Template",
+//   description: "This is Next.js Basic Table  page for TailAdmin  Tailwind CSS Admin Dashboard Template",
 //   // other metadata
 // };
 
-export default function BasicTables() {
+export default function page() {
 
   const router = useRouter();
 
@@ -207,7 +206,7 @@ export default function BasicTables() {
   const [perPage, setPerPage] = useState(50);
 
   return (
-    
+
     <div>
       <PageBreadcrumb pageTitle="Inventory" />
       <div className="space-y-6">
