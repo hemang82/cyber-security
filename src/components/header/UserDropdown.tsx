@@ -30,7 +30,7 @@ export default function UserDropdown() {
         method: "POST",
       });
       clearUserAuth(); // zustand clear
-      router.replace("/"); // redirect
+      router.replace("/signin"); // redirect
       TOAST_SUCCESS("Logout Successfully")
 
     } catch (error) {
