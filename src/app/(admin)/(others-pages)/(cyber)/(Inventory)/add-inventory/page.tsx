@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-export default function BasicTables() {
+export default function page() {
     return (
         <div>
             <PageBreadcrumb pageTitle="Add Assets" />

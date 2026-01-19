@@ -16,24 +16,7 @@ export default function BasicTables() {
         <div>
             <PageBreadcrumb pageTitle="Inventory Details" />
             <div className="space-y-6">
-                {/* <ComponentCard title="Inventory" buttonName={"Add Inventory"} navigation={"/add-inventory"}> */}
-               
-                    <InventoryDetailsComponent />
-
-
-                {/* <DynamicTable columns={columns} data={data} /> */}
-
-                {/* PAGINATION */}
-                {/* <Pagination
-            currentPage={page}
-            perPage={perPage}
-            totalCount={data.length}
-            onChange={(newPage, newPerPage) => {
-              setPage(newPage);
-              setPerPage(newPerPage);
-            }}
-          /> */}
-                {/* </ComponentCard> */}
+                <InventoryDetailsComponent />
             </div>
         </div>
     );

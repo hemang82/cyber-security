@@ -81,7 +81,7 @@ export default function AddInventory() {
 
                         {active_tab === TAB_KEY.PREVIEW && (
                             // <TabContent title="Preview">
-                         <PreviewPage />
+                            <PreviewPage />
                             // </TabContent>
                         )}
                     </div>

@@ -44,17 +44,21 @@ const severityColor = (severity: string) => {
 };
 
 /* ---------- Page ---------- */
+
 export default function InventoryDetailsComponent() {
+
     const [data, setData] = useState<any>(null);
     const [scanDate, setScanDate] = useState<string>("");
 
     useEffect(() => {
-        fetch("/api/inventoryDetails").then((res) => res.json()).then((res) => setData(res.data));
+        fetch("/api/inventoryDetails").then((res) => res.json()).then((res) => setData(res?.data));
     }, []);
+
+    console.log('data inventoryDetails', data);
 
     useEffect(() => {
         if (data?.scanned_at) {
-            setScanDate(formatDate(data.scanned_at, DATE_FORMAT.FULL_DAY_MONTH_YEAR));
+            setScanDate(formatDate(data?.scanned_at, DATE_FORMAT?.FULL_DAY_MONTH_YEAR));
         }
     }, [data]);
 
@@ -71,6 +75,29 @@ export default function InventoryDetailsComponent() {
             ),
         },
     ];
+
+    const columns2 = [
+        {
+            key: "type",
+            title: "Vulnerabilities Find",
+        },
+        {
+            key: "severity",
+            title: "Severity",
+            render: (row: any) => (
+                <span>{row?.severity || "-"}</span>
+            ),
+        },
+        {
+            key: "details",
+            title: "Detail",
+            render: (row: any) => (
+                <span>{row?.detail || "-"}</span>
+            ),
+        },
+    ];
+    const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
+    const safeJoin = (arr: any, separator = ", ") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
     return (<>
 
@@ -105,6 +132,7 @@ export default function InventoryDetailsComponent() {
 
             </div>
         </div>
+
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
@@ -170,6 +198,15 @@ export default function InventoryDetailsComponent() {
                         </span>
                     </li>
 
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Website BlackList
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.summary?.blacklisted ? "Blacklisted Webiste" : "Not Blacklist"}
+                        </span>
+                    </li>
+
                 </ul>
             </div>
 
@@ -186,7 +223,7 @@ export default function InventoryDetailsComponent() {
                         <li key={key} className="flex items-start gap-5 py-2.5">
 
                             <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400 overflow-hidden ">
-                                {key.replaceAll("-", " ")}
+                                {key?.replaceAll("-", " ")}
                             </span>
 
                             <div className="flex gap-2 w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
@@ -205,19 +242,204 @@ export default function InventoryDetailsComponent() {
 
 
             <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
+
+                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+                    Performance
+                </h2>
+                <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Load Time
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.performance?.load_time_ms} ms
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Page Size
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.performance?.page_size_kb || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Status
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.performance?.status || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Inline script count
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.performance?.script_analysis?.inline_script_count || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            External Script Count
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.performance?.script_analysis?.external_script_count || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            External Script Count
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.performance?.script_analysis?.large_files_count || "0"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Sitemap
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.seo_check?.sitemap_xml || "0"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Robot TXT File
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.seo_check?.robots_txt || "0"}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
+                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+                    Domain Information
+                </h2>
+
+                <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+
+                    {/* Registrar */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Registrar
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.network_info?.whois?.registrar)}
+                        </span>
+                    </li>
+
+                    {/* Expiry */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Expiry
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.network_info?.whois?.expiry)}
+                        </span>
+                    </li>
+
+                    {/* Server */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Server
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.website_security?.technologies?.[0])}
+                        </span>
+                    </li>
+
+                    {/* SSL */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            SSL Certificate
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.website_security?.ssl_certificate?.valid
+                                ? `${data.website_security.ssl_certificate.days_remaining} Days Valid`
+                                : "Not Found"}
+                        </span>
+                    </li>
+
+                    {/* A Record */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            A Record
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeJoin(data?.network_info?.dns_records?.A)}
+                        </span>
+                    </li>
+
+                    {/* MX Records */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            MX Records
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {Array.isArray(data?.network_info?.dns_records?.MX)
+                                ? data?.network_info?.dns_records.MX.map((mx: any) => `${mx.exchange} (Priority ${mx.priority})`).join(", ") : "N/A"}
+                        </span>
+                    </li>
+
+                    {/* TXT Records */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            TXT Records
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400 break-all">
+                            {safeJoin(data?.network_info?.dns_records?.TXT, "  ,   ")}
+                        </span>
+                    </li>
+
+                    {/* Name Servers */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Name Servers
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeJoin(data?.network_info?.dns_records?.NS)}
+                        </span>
+                    </li>
+
+                    {/* DNSSEC */}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            DNSSEC
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.network_info?.dns_records?.dnssec)}
+                        </span>
+                    </li>
+
+                </ul>
+            </div>
+
+
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
                 <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Network Information
                 </h2>
 
                 <ul className="divide-y divide-gray-100 dark:divide-gray-800">
-                    <li className="flex items-start gap-5 py-2.5">
+                    {/* <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
                             DNS Records
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
                             {data?.network_info?.dns_records?.A[0] || "N/A"}
                         </span>
-                    </li>
+                    </li> */}
 
                     <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
@@ -239,55 +461,25 @@ export default function InventoryDetailsComponent() {
                         </li>
                     ))}
 
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Registrar
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.network_info?.whois?.registrar || "N/A"}
-                        </span>
-                    </li>
 
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Expiry
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.network_info?.whois?.expiry} {/* {formatDate(data?.network_info?.whois?.expiry, DATE_FORMAT.FULL_DAY_MONTH_YEAR) || "N/A"} */}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Server
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.website_security?.technologies[0] || "N/A"}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
+                    {/* <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
                             Technologies
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
                             {data?.website_security?.technologies[1] || "N/A"}
                         </span>
-                    </li>
+                    </li> */}
 
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            SSL Certificate
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.website_security?.ssl_certificate?.valid ? data?.website_security?.ssl_certificate?.days_remaining + " Days Valid" : "Invalid"}
-                        </span>
-                    </li>
+
                 </ul>
             </div>
+
         </div>
 
         <DynamicTable columns={columns} data={data?.route_scans?.length > 0 ? data?.route_scans : []} />
-            
+
+        <DynamicTable columns={columns2} data={data?.findings?.length > 0 ? data?.findings : []} />
+
     </>);
 }

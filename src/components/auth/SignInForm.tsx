@@ -215,6 +215,7 @@ export default function SignInForm() {
                       </span>
                     </div>
                   </div>
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Checkbox checked={isChecked} onChange={setIsChecked} />
@@ -229,11 +230,13 @@ export default function SignInForm() {
                       Forgot password?
                     </Link> */}
                   </div>
+
                   <div>
                     <Button type={'submit'} className="w-full" size="sm" >
                       Sign in
                     </Button>
                   </div>
+
                 </div>
               </form>
 

@@ -7,6 +7,5 @@ export const MIDDLEWARE_COOKIE_KEYS = {
     LANGUAGE_KEY_COOKIE: 'CYBER_language',
     ROLE_KEY_COOKIE: 'CYBER_role',
     THEME_KEY_COOKIE: 'CYBER_theme'
-    
 };
 
