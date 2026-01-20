@@ -28,7 +28,7 @@ export const InformationModel: React.FC<InformationModelProps> = ({ title = "Inf
                     <Button size="sm" variant="outline" onClick={onClose}>
                         Close
                     </Button>
-                    <Button size="sm" className={"!bg-blue-light-500 hover:!bg-blue-light-600"} onClick={handleModelSave}>
+                    <Button size="sm" className={"bg-blue-light-500 hover:!bg-blue-light-600"} onClick={handleModelSave}>
                         Okay, Got It
                     </Button>
                 </div>

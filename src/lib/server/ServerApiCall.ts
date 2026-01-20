@@ -4,7 +4,7 @@
  * Always fresh per request
  */
 
-import { CODES } from "@/common/constant";
+import { CODES, TEMP_URL } from "@/common/constant";
 import { fetcher } from "@/lib/fetcher";
 import { headers } from "next/headers";
 
@@ -17,7 +17,9 @@ type InventoryResponse = {
 export async function getInventory() {
     try {
         const headerList = await headers();
-        const resList = await fetch(`http://localhost:3000/api/inventory/list`, {
+        console.log("TEMP_URL",`${TEMP_URL}/api/inventory/list`);
+
+        const resList = await fetch(`${TEMP_URL}/api/inventory/list`, {
             method: "GET",
             cache: "no-store",
             headers: {
@@ -33,7 +35,7 @@ export async function getInventory() {
         }
 
         return [];
-        
+
     } catch (err: any) {
         console.log(err.message);
         return [];

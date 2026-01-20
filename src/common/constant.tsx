@@ -1,6 +1,7 @@
-export const PRODUCTION = false;
+export const PRODUCTION = true;
 
 const CONSTENT = {
+
 
     APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
     API_KEY: process.env.NEXT_PUBLIC_API_KEY,
@@ -24,6 +25,8 @@ export const AWS_STORAGE_BUCKET_NAME = process.env.REACT_APP_AWS_STORAGE_BUCKET_
 export const AWS_ACCESS_KEY_ID = process.env.REACT_APP_AWS_ACCESS_KEY_ID;
 export const AWS_SECRET_ACCESS_KEY = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY;
 export const AWS_S3_REGION_NAME = process.env.REACT_APP_AWS_S3_REGION_NAME;
+
+export const TEMP_URL = PRODUCTION ? "https://cyber-security-seven-sigma.vercel.app" : "http://localhost:3000";
 
 // # ----------------------------- API Codes --------------------------------------
 

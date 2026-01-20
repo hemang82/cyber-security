@@ -3,6 +3,7 @@
 import { formatDate } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
 import DynamicTable from "@/components/tables/DynamicTable";
+import { useInventoryStore } from "@/store";
 import { useEffect, useState } from "react";
 
 /* ---------- UI Helpers ---------- */
@@ -52,11 +53,15 @@ export const severityColor = (severity: any) => {
 
 export default function InventoryDetailsComponent({ InventoryData }: any) {
 
+    const { setLoader, resetInventory } = useInventoryStore();
+
     const [data, setData] = useState<any>(null);
     const [scanDate, setScanDate] = useState<string>("");
 
     useEffect(() => {
         setData(InventoryData)
+        setLoader(false)
+        resetInventory()
     }, []);
 
     useEffect(() => {
@@ -188,9 +193,9 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
             {/* Right Section */}
             <div className="flex gap-3">
-                <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600">
+                {/* <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600">
                     Download
-                </button>
+                </button> */}
 
                 {/* <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
                     History
@@ -537,7 +542,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     </li>
 
                     <li className="flex items-start gap-5 py-2.5">
-                        
+
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
                             Open Ports
                         </span>

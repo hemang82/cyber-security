@@ -20,10 +20,10 @@ type Column<T> = {
 interface DynamicTableProps<T> {
     columns: Column<T>[];
     data: T[];
-    className ?: string
+    className?: string
 }
 
-export default function DynamicTable<T>({ columns, data , className}: DynamicTableProps<T>) {
+export default function DynamicTable<T>({ columns, data, className }: DynamicTableProps<T>) {
     return (
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
             <div className="max-w-full overflow-x-auto">
@@ -36,8 +36,7 @@ export default function DynamicTable<T>({ columns, data , className}: DynamicTab
                                     <TableCell
                                         key={index}
                                         isHeader
-                                        className={`px-5 py-3 text-start text-sm text-[#344054] font-medium text-gray-600 dark:text-gray-600 ${col.className ?? ""
-                                            }`}
+                                        className={`px-5 py-3 text-start text-sm text-[#344054] font-medium text-gray-600 dark:text-gray-600 ${col.className ?? ""}`}
                                     >
                                         {col.title}
                                     </TableCell>

@@ -7,12 +7,15 @@ export interface InventoryType {
 }
 
 interface InventoryState {
+
     assets_type: InventoryType | null;
     assets_details: InventoryType | null;
     credentials: InventoryType | null;
     owners: InventoryType | null;
     finel_validate_data: InventoryType | null;
     active_tab: string | TAB_KEY.ASSETS_TYPE | TAB_KEY.ASSETS_DETAILS | TAB_KEY.CREDENTIALS | TAB_KEY.OWNERS | TAB_KEY.PREVIEW;
+    is_loading: boolean;
+
     // actions
     setAssetsType: (data: InventoryType) => void;
     setAssetsDetails: (data: InventoryType) => void;
@@ -20,6 +23,8 @@ interface InventoryState {
     setOwners: (data: InventoryType) => void;
     setFinelValidateData: (data: InventoryType) => void;
     setActiveTab: (data: string) => void;
+    setLoader: (data: boolean) => void;
+
 
     resetInventory: () => void;
 }
@@ -32,6 +37,7 @@ export const useInventoryStore = create<InventoryState>((set) => ({
     owners: null,
     finel_validate_data: null,
     active_tab: TAB_KEY.ASSETS_TYPE,
+    is_loading: false,
 
     setAssetsType: (data) =>
         set({ assets_type: data }),
@@ -51,12 +57,14 @@ export const useInventoryStore = create<InventoryState>((set) => ({
     setActiveTab: (data) =>
         set({ active_tab: data }),
 
+    setLoader: (data) => set({ is_loading: data }),
+
     resetInventory: () =>
         set({
             assets_type: null,
             assets_details: null,
             credentials: null,
             owners: null,
-            finel_validate_data: null,
+            finel_validate_data: null
         }),
 }));

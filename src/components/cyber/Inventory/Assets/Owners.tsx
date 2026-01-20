@@ -56,9 +56,7 @@ export default function Owners() {
                                 <Select
                                     {...field}
                                     options={[
-                                        { value: "Test Owner 1", label: "Test Owner 1" },
-                                        { value: "Test Owner 2", label: "Test Owner 2" },
-                                        { value: "Test Owner 3", label: "Test Owner 3" },
+                                        { value: "admin", label: "Admin" },
                                     ]}
                                     placeholder="Select Option"
                                 />

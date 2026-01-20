@@ -16,7 +16,7 @@ export const WarningModel: React.FC<WarningProps> = ({ title = "Warning !", desc
         <div className="no-scrollbar relative w-full max-w-[600px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <div className="text-center">
                 <div className="relative flex items-center justify-center z-1 mb-7">
-                    <IoMdInformationCircleOutline className="text-warning-400 text-6xl" />
+                    <IoMdInformationCircleOutline className="text-warning-300 text-6xl" />
                 </div>
                 <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
                     {title}
@@ -28,7 +28,7 @@ export const WarningModel: React.FC<WarningProps> = ({ title = "Warning !", desc
                     <Button size="sm" variant="outline" onClick={onClose}>
                         Close
                     </Button>
-                    <Button size="sm" className={"!bg-warning-500 hover:!bg-warning-600"} onClick={handleModelSave}>
+                    <Button size="sm" className={"bg-[#465fff] hover:bg-[#3641f5]"} onClick={handleModelSave}>
                         Okay, Got It
                     </Button>
                 </div>

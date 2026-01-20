@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
 import Image from "next/image";
@@ -11,9 +11,12 @@ import { DATE_FORMAT } from "@/common/commonVariable";
 import { useRouter } from "next/navigation";
 import { ASSETS_INPUTS } from "./Assets/AddAssets";
 import { assets } from "./Assets/AssetsTypes";
+import { useInventoryStore } from "@/store";
 
 export default function InventoryComponent({ InventoryData }: any) {
   const router = useRouter();
+
+  const { setLoader } = useInventoryStore();
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
@@ -88,6 +91,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400" onClick={() => {
           router.push(`/Inventory-details?url=${encodeURIComponent(row?.assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])}`);
+          setLoader(true)
           // router.push(`/Inventory-details`); 
         }}>
           {row.action || "view"}
@@ -95,6 +99,8 @@ export default function InventoryComponent({ InventoryData }: any) {
       ),
     },
   ];
+
+
 
   return (
     <>

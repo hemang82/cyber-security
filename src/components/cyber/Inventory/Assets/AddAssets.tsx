@@ -86,7 +86,7 @@ export default function AddAssets() {
             value: data,
             is_valid: true,
         });
-        setActiveTab(TAB_KEY.CREDENTIALS);
+        setActiveTab(TAB_KEY.OWNERS);
     };
 
     useEffect(() => {

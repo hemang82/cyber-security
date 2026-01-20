@@ -10,13 +10,14 @@ import { ASSETS_INPUTS } from "./AddAssets";
 import { useRouter } from "next/navigation";
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
+import { assets } from "./AssetsTypes";
 // import { getInventoryDetails } from "@/lib/server/ServerApiCall";
 
 
 export default function PreviewPage() {
 
     const router = useRouter();
-    const { assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData } = useInventoryStore();
+    const { assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData, setLoader } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
@@ -28,7 +29,7 @@ export default function PreviewPage() {
     const onSubmit = async (data) => {
 
         console.log("FORM DATA 👉", data);
-        
+
         setFinelValidateData({
             value: new Date(),
             is_valid: true,
@@ -43,8 +44,8 @@ export default function PreviewPage() {
         //     finel_validate_data: finel_validate_data
         // })
 
-        console.log('finel_validate_data',finel_validate_data);
-        
+        console.log('finel_validate_data', finel_validate_data);
+
         const inventoryData = await fetch("/api/inventory/add", {
             method: "POST",
             headers: {
@@ -58,11 +59,13 @@ export default function PreviewPage() {
                 finel_validate_data,
             }),
         });
+
         const res = await inventoryData.json()
 
         if (res.code == CODES?.SUCCESS) {
             TOAST_SUCCESS(res?.message)
             // return
+            setLoader(true)
             router.push(`/Inventory-details?url=${encodeURIComponent(assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '')}`);
         } else {
             TOAST_ERROR(res?.message)
@@ -91,7 +94,7 @@ export default function PreviewPage() {
                                     [
                                         {
                                             title: "Assets Type",
-                                            value: assets_type?.value
+                                            value: assets.find((item) => item?.key === assets_type?.value)?.title
                                         },
                                         {
                                             title: "Assets Name",
@@ -113,10 +116,10 @@ export default function PreviewPage() {
                                             title: "Phone Number",
                                             value: assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name]
                                         },
-                                        {
-                                            title: "Credentials - Website URL",
-                                            value: credentials?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]
-                                        },
+                                        // {
+                                        //     title: "Credentials - Website URL",
+                                        //     value: credentials?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]
+                                        // },
                                         {
                                             title: "Owners - Name",
                                             value: owners?.value?.[ASSETS_INPUTS.OWNER.name]

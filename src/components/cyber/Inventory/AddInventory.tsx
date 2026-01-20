@@ -49,9 +49,9 @@ export default function AddInventory() {
                             <button className={tabClass(TAB_KEY.ASSETS_DETAILS, assets_details)} onClick={() => { assets_details?.is_valid && setActiveTab(TAB_KEY.ASSETS_DETAILS) }}>
                                 Assets Details
                             </button>
-                            <button className={tabClass(TAB_KEY.CREDENTIALS, credentials)} onClick={() => { credentials?.is_valid && setActiveTab(TAB_KEY.CREDENTIALS) }}>
+                            {/* <button className={tabClass(TAB_KEY.CREDENTIALS, credentials)} onClick={() => { credentials?.is_valid && setActiveTab(TAB_KEY.CREDENTIALS) }}>
                                 Credentials
-                            </button>
+                            </button> */}
                             <button className={tabClass(TAB_KEY.OWNERS, owners)} onClick={() => { owners?.is_valid && setActiveTab(TAB_KEY.OWNERS) }}>
                                 Owners
                             </button>
@@ -71,9 +71,9 @@ export default function AddInventory() {
                             <AddAssets />
                         )}
 
-                        {active_tab === TAB_KEY.CREDENTIALS && (
+                        {/* {active_tab === TAB_KEY.CREDENTIALS && (
                             <Credentials />
-                        )}
+                        )} */}
 
                         {active_tab === TAB_KEY.OWNERS && (
                             <Owners />
