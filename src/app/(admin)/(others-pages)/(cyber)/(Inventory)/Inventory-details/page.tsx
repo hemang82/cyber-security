@@ -1,6 +1,7 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import InventoryDetailsComponent from "@/components/cyber/Inventory/InventoryDetailsComponent";
+import { getInventoryDetails } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,13 +11,16 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-export default function BasicTables() {
+export default async function InventoryDetails({ searchParams, }: { searchParams: Promise<{ url?: string }> }) {
+    const params = await searchParams;
+
+    const InventoryData = await getInventoryDetails({ url:  params.url })
 
     return (
         <div>
             <PageBreadcrumb pageTitle="Inventory Details" />
             <div className="space-y-6">
-                <InventoryDetailsComponent />
+                <InventoryDetailsComponent InventoryData={InventoryData} />
             </div>
         </div>
     );

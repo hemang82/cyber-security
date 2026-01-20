@@ -8,25 +8,65 @@ import { useInventoryStore } from "@/store";
 import { useEffect } from "react";
 import { ASSETS_INPUTS } from "./AddAssets";
 import { useRouter } from "next/navigation";
+import { CODES } from "@/common/constant";
+import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
+// import { getInventoryDetails } from "@/lib/server/ServerApiCall";
 
 
 export default function PreviewPage() {
 
     const router = useRouter();
-    const { active_tab, setActiveTab, assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData } = useInventoryStore();
+    const { assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
     });
 
-    const onSubmit = (data) => {
+    console.log('assets_details', assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]);
+
+
+    const onSubmit = async (data) => {
+
         console.log("FORM DATA 👉", data);
+        
         setFinelValidateData({
-            value: data,
+            value: new Date(),
             is_valid: true,
-            // setActiveTab(TAB_KEY.OWNERS);
-        })
-        router.push(`/Inventory-details`);
+        });
+
+        // router.push(`/Inventory-details`);
+        // const addInventoryData = await getInventoryDetails({
+        //     assets_type: assets_type,
+        //     assets_details: assets_details,
+        //     credentials: credentials,
+        //     owners: owners,
+        //     finel_validate_data: finel_validate_data
+        // })
+
+        console.log('finel_validate_data',finel_validate_data);
+        
+        const inventoryData = await fetch("/api/inventory/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                assets_type,
+                assets_details,
+                credentials,
+                owners,
+                finel_validate_data,
+            }),
+        });
+        const res = await inventoryData.json()
+
+        if (res.code == CODES?.SUCCESS) {
+            TOAST_SUCCESS(res?.message)
+            // return
+            router.push(`/Inventory-details?url=${encodeURIComponent(assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '')}`);
+        } else {
+            TOAST_ERROR(res?.message)
+        }
     };
 
     useEffect(() => {
@@ -40,6 +80,7 @@ export default function PreviewPage() {
                 <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                         <div>
+
                             <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
                                 Preview
                             </h4>

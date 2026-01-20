@@ -8,18 +8,35 @@ import { NextResponse } from "next/server";
 
 // export const dynamic = "force-static";
 
-export async function GET() {
+export async function POST(req: Request) {
   try {
+
+    // ✅ frontend thi aavelu full body
+    const body = await req.json();
+
+    console.log("Incoming body:", body);
+
+    // // (optional) empty body check
+    // if (!body || Object.keys(body).length === 0) {
+    //   return NextResponse.json(
+    //     {
+    //       code: CODES?.ERROR,
+    //       success: false,
+    //       message: "Request body is required",
+    //     },
+    //     { status: 400 }
+    //   );
+    // }
+
+    // ✅ External API call (body direct forward)
     const response = await fetch(
       "http://cyberapi.tracewavetransparency.com/api/scan/website",
       {
-        method: "POST", // ⚠️ mostly scan APIs are POST
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          url: "https://greymarketipo.com/", // 👈 dynamic kari shako
-        }),
+        body: JSON.stringify(body), // 👈 DIRECT PASS
         cache: "no-store",
       }
     );
@@ -29,18 +46,18 @@ export async function GET() {
     }
 
     const data = await response.json();
-    console.log('data https://greymarketipo.com/ ', data);
 
-    // return
-    // ✅ Direct external API data return
+    // console.log("data response",data);
+    
     return NextResponse.json({
       code: CODES?.SUCCESS,
       success: true,
       data,
     });
-  } catch (error) {
-    console.error("SCAN API ERROR:", error);
 
+  } catch (error) {
+
+    console.error("SCAN API ERROR:", error);
     return NextResponse.json(
       {
         code: CODES?.ERROR,

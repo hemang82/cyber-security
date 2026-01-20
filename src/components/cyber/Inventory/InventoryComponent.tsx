@@ -9,6 +9,8 @@ import Pagination from "@/components/tables/Pagination";
 import { formatDate } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
 import { useRouter } from "next/navigation";
+import { ASSETS_INPUTS } from "./Assets/AddAssets";
+import { assets } from "./Assets/AssetsTypes";
 
 export default function InventoryComponent({ InventoryData }: any) {
   const router = useRouter();
@@ -20,23 +22,11 @@ export default function InventoryComponent({ InventoryData }: any) {
     {
       key: "assets_name",
       title: "Assets Name",
-      // render: (row: Order) => (
-      //   <div className="flex items-center gap-3">
-      //     <Image
-      //       src={row.user.image}
-      //       width={40}
-      //       height={40}
-      //       alt={row.user.name}
-      //       className="rounded-full"
-      //     />
-      //     <div>
-      //       <div className="font-medium text-gray-800 dark:text-white/90">
-      //         {row.user.name}
-      //       </div>
-      //       <div className="text-xs text-gray-500">{row.user.role}</div>
-      //     </div>
-      //   </div>
-      // ),
+      render: (row: any) => (
+        <div className="flex items-center gap-3">
+          {row?.assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name]}
+        </div>
+      ),
     },
     {
       key: "type",
@@ -44,24 +34,25 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {row.type}
+            {assets.find((item: any) => item?.key === row.assets_type?.value)?.title}
           </span>
         </div>
       ),
     },
     {
-      key: "created_at", title: "Created At",
-      render: (row: any) => (
-        <span>{formatDate(row.created_at, DATE_FORMAT?.DASH_DD_MM_YYYY)}</span>
-      ),
+      key: "website_url",
+      title: "Website URL",
+      render: (row: any) => (<>
+        {row?.assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]}
+      </>),
     },
-    { key: "scan_status", title: "Scans", },
     {
       key: "vulnerabilities", title: "Vulnerabilities", render: (row: any) => (
         <div className="flex flex-wrap gap-2">
-          {Array.isArray(row?.vulnerabilities?.values) &&
-            row.vulnerabilities.values.length > 0 ? (
-            row.vulnerabilities.values.map((item: string, index: number) => (
+          {
+            // Array.isArray(["1", "2", "8", "5", "15"]) &&
+            // ["1", "2", "8", "5", "15"] > 0 ? (
+            ["1", "2", "8", "5", "15"].map((item: string, index: number) => (
               <Badge
                 key={index}
                 size="sm"
@@ -70,9 +61,11 @@ export default function InventoryComponent({ InventoryData }: any) {
                 {item}
               </Badge>
             ))
-          ) : (
-            <span className="text-xs text-gray-400">—</span>
-          )}
+            // ) 
+            // : (
+            //   <span className="text-xs text-gray-400">—</span>
+            // )
+          }
         </div>
       ),
     },
@@ -80,16 +73,24 @@ export default function InventoryComponent({ InventoryData }: any) {
       key: "serverity", title: "Serverity",
       render: (row: any) => (
         <Badge size="sm" color={row.serverity === "Active" ? "success" : "warning"}>
-          {row.serverity}
+          {row.serverity || "Warning"}
         </Badge>
       ),
     },
-    { key: "owner", title: "Owner" },
+    {
+      key: "created_at", title: "Created At",
+      render: (row: any) => (
+        <span>{formatDate(row.finel_validate_data?.value, DATE_FORMAT?.FULL_DAY_MONTH_YEAR)}</span>
+      ),
+    },
     {
       key: "action", title: "Action",
       render: (row: any) => (
-        <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400" onClick={() => { router.push(`/Inventory-details`); }}>
-          {row.action}
+        <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400" onClick={() => {
+          router.push(`/Inventory-details?url=${encodeURIComponent(row?.assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])}`);
+          // router.push(`/Inventory-details`); 
+        }}>
+          {row.action || "view"}
         </button>
       ),
     },

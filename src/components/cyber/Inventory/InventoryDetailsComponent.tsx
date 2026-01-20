@@ -30,31 +30,34 @@ const Card = ({ title, children }: any) => (
     </div>
 );
 
-const severityColor = (severity: string) => {
-    switch (severity) {
-        case "Warning":
-            return "bg-yellow-100 text-yellow-700";
-        case "Medium":
-            return "bg-orange-100 text-orange-700";
-        case "Info":
-            return "bg-blue-100 text-blue-700";
-        default:
-            return "bg-gray-100 text-gray-600";
-    }
+const severityColorMap: Record<string, string> = {
+    critical: "bg-red-100 text-red-700",
+    high: "bg-orange-100 text-orange-700",
+    medium: "bg-yellow-100 text-yellow-700",
+    warning: "bg-yellow-50 text-yellow-600",
+    low: "bg-success-100 text-success-700",
+    info: "bg-blue-50 text-blue-500",
+};
+
+export const severityColor = (severity: any) => {
+    if (!severity) return "bg-blue-50 text-blue-500";
+
+    return (
+        severityColorMap[String(severity).toLowerCase()] ||
+        "bg-blue-50 text-blue-500"
+    );
 };
 
 /* ---------- Page ---------- */
 
-export default function InventoryDetailsComponent() {
+export default function InventoryDetailsComponent({ InventoryData }: any) {
 
     const [data, setData] = useState<any>(null);
     const [scanDate, setScanDate] = useState<string>("");
 
     useEffect(() => {
-        fetch("/api/inventoryDetails").then((res) => res.json()).then((res) => setData(res?.data));
+        setData(InventoryData)
     }, []);
-
-    console.log('data inventoryDetails', data);
 
     useEffect(() => {
         if (data?.scanned_at) {
@@ -85,38 +88,101 @@ export default function InventoryDetailsComponent() {
             key: "severity",
             title: "Severity",
             render: (row: any) => (
-                <span>{row?.severity || "-"}</span>
+                <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(row?.severity || "Info")}`} >
+                    {safeText(row?.severity) || "Info"}
+                </span>
             ),
         },
         {
             key: "details",
-            title: "Detail",
+            title: "Description",
             render: (row: any) => (
-                <span>{row?.detail || "-"}</span>
+                <span>{safeText(row?.detail) || "-"}</span>
             ),
         },
     ];
+
+    const column3 = [
+        {
+            key: "key",
+            title: "Header Name",
+        },
+        {
+            key: "status",
+            title: "Status",
+            render: (row: any) => (
+                <span>{row?.status || 0}</span>
+            ),
+        },
+        {
+            key: "severity",
+            title: "Severity",
+            render: (row: any) => (
+                <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(row?.severity || "Info")}`} >
+                    {safeText(row?.severity) || "Info"}
+                </span>
+            ),
+        },
+    ];
+
+    const column4 = [
+        {
+            key: "type",
+            title: "Type",
+        },
+        {
+            key: "detail",
+            title: "Description",
+            render: (row: any) => (
+                <span>{safeText(row?.detail) || 0}</span>
+            ),
+        },
+        {
+            key: "severity",
+            title: "Severity",
+            render: (row: any) => (
+                <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(row?.severity || "Info")}`} >
+                    {safeText(row?.severity) || "Info"}
+                </span>
+            ),
+        },
+    ];
+
     const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
     const safeJoin = (arr: any, separator = ", ") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
+
+    console.log("Data", data);
 
     return (<>
 
         <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-6 py-5 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
 
-            {/* Left Section */}
-            <div className="flex flex-col gap-2.5 divide-gray-300 sm:flex-row sm:divide-x dark:divide-gray-700">
-                <div className="flex items-center gap-2 sm:pr-3">
-                    <span className="text-base font-medium text-gray-700 dark:text-gray-400">
-                        Website : {data?.target}
+            {/* Header Section */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+                {/* Left Info */}
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+
+                    {/* Website */}
+                    <span className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-400 break-all">
+                        Website: {safeText(data?.target)}
                     </span>
 
-                    <span className="inline-flex items-center justify-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-sm font-medium text-red-600 dark:bg-success-500/15 dark:text-success-500">
-                        {data?.risk_level}
+                    {/* Risk Badge */}
+                    <span className="inline-flex w-fit items-center justify-center rounded-full bg-red-50 px-2.5 py-0.5 text-xs sm:text-sm font-medium text-red-600 dark:bg-success-500/15 dark:text-success-500">
+                        {safeText(data?.risk_level) || "Unknown"}
                     </span>
                 </div>
 
-                <p className="text-sm text-gray-500 sm:pl-3 dark:text-gray-400">
-                    Scan Date : <span className="font-medium">{scanDate}</span>
+                {/* Scan Date */}
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                    Scan Date:{" "}
+                    <span className="font-medium">
+                        {safeText(scanDate)}
+                    </span>
                 </p>
             </div>
 
@@ -131,8 +197,8 @@ export default function InventoryDetailsComponent() {
                 </button> */}
 
             </div>
-        </div>
 
+        </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
@@ -143,7 +209,7 @@ export default function InventoryDetailsComponent() {
                         {data?.findings?.length || 0}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        <Badge color="error">{data?.findings?.length || 0} Critical</Badge>
+                        <Badge color="error">{safeText(data?.findings?.length) || 0} {safeText(data?.risk_level)}</Badge>
                         <Badge color="gray">0 High</Badge>
                         <Badge color="gray">0 Medium</Badge>
                         <Badge color="gray">0 Low</Badge>
@@ -151,12 +217,13 @@ export default function InventoryDetailsComponent() {
                 </div>
 
                 <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-                    ⚠ Vulnerabilities Not Fixed : <b>{data?.findings?.length || 0} / {data?.findings?.length || 0}</b>
+                    ⚠ Vulnerabilities Not Fixed : <b>{safeText(data?.findings?.length) || 0} / {data?.findings?.length || 0}</b>
                 </div>
             </Card>
 
-
+            {/* Scan Details */}
             <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
+
                 <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Scan Details
                 </h2>
@@ -176,7 +243,7 @@ export default function InventoryDetailsComponent() {
                             Asset Name
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.scan_context}
+                            {safeText(data?.scan_context)}
                         </span>
                     </li>
 
@@ -185,7 +252,7 @@ export default function InventoryDetailsComponent() {
                             Asset Type
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.asset_type || "Web Site"}
+                            {safeText(data?.asset_type) || "Web Site"}
                         </span>
                     </li>
 
@@ -194,7 +261,7 @@ export default function InventoryDetailsComponent() {
                             Created at
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {scanDate}
+                            {safeText(scanDate)}
                         </span>
                     </li>
 
@@ -210,118 +277,7 @@ export default function InventoryDetailsComponent() {
                 </ul>
             </div>
 
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
-
-                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
-                    Website Security Headers
-                </h2>
-
-                <ul className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {Object.entries(
-                        data?.website_security?.security_headers ?? {}
-                    ).map(([key, value]: any) => (
-                        <li key={key} className="flex items-start gap-5 py-2.5">
-
-                            <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400 overflow-hidden ">
-                                {key?.replaceAll("-", " ")}
-                            </span>
-
-                            <div className="flex gap-2 w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs">
-                                    {value?.status || "N/A"}
-                                </span>
-                                <span
-                                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(value?.severity || "Info")}`} >
-                                    {value?.severity || "Info"}
-                                </span>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
-
-                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
-                    Performance
-                </h2>
-                <ul className="divide-y divide-gray-100 dark:divide-gray-800">
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Load Time
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.performance?.load_time_ms} ms
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Page Size
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.performance?.page_size_kb || "-"}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Status
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.performance?.status || "-"}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Inline script count
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.performance?.script_analysis?.inline_script_count || "-"}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            External Script Count
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.performance?.script_analysis?.external_script_count || "-"}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            External Script Count
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.performance?.script_analysis?.large_files_count || "0"}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Sitemap
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.seo_check?.sitemap_xml || "0"}
-                        </span>
-                    </li>
-
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Robot TXT File
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.seo_check?.robots_txt || "0"}
-                        </span>
-                    </li>
-                </ul>
-            </div>
-
+            {/*  Domain Information */}
             <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
                 <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Domain Information
@@ -405,7 +361,7 @@ export default function InventoryDetailsComponent() {
                     {/* Name Servers */}
                     <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Name Servers
+                            Name Server
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
                             {safeJoin(data?.network_info?.dns_records?.NS)}
@@ -425,13 +381,134 @@ export default function InventoryDetailsComponent() {
                 </ul>
             </div>
 
+            {/*  Performance */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
+                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+                    Performance
+                </h2>
+                <ul className="divide-y divide-gray-100 dark:divide-gray-800">
 
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Load Time
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.performance?.load_time_ms)} ms
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Page Size
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.performance?.page_size_kb) || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Status
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.performance?.status) || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Inline script count
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.performance?.script_analysis?.inline_script_count) || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            External Script Count
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.performance?.script_analysis?.external_script_count) || "-"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            External Script Count
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.performance?.script_analysis?.large_files_count) || "0"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Sitemap
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.seo_check?.sitemap_xml) || "0"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Robot TXT File
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeText(data?.seo_check?.robots_txt) || "0"}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            {/*  Website Security Headers */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
+
+                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+                    Website Security Headers
+                </h2>
+
+                {/* <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+                    {Object.entries(
+                        data?.website_security?.security_headers ?? {}
+                    ).map(([key, value]: any) => (
+                        <li key={key} className="flex items-start gap-5 py-2.5">
+
+                            <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400 overflow-hidden ">
+                                {key?.replaceAll("-", " ")}
+                            </span>
+
+                            <div className="flex gap-2 w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs">
+                                    {safeText(value?.status) || "N/A"}
+                                </span>
+                                <span
+                                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(value?.severity || "Info")}`} >
+                                    {safeText(value?.severity) || "Info"}
+                                </span>
+                            </div>
+                        </li>
+                    ))}
+
+                </ul> */}
+
+                <DynamicTable columns={column3} data={Object.entries(data?.website_security?.security_headers ?? {}).map(([key, value]: any) => ({
+                    key: key.replaceAll("-", " "),
+                    status: value?.status ?? "N/A",
+                    severity: value?.severity ?? "Info",
+                })
+                ) || []} className={"min-w-[400px]"} />
+
+            </div>
+
+            {/*  Network Information */}
             <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
                 <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Network Information
                 </h2>
 
-                <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+                <ul className="divide-y divide-gray-100 dark:divide-gray-800 mb-4 border-b pb-4">
                     {/* <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
                             DNS Records
@@ -445,22 +522,37 @@ export default function InventoryDetailsComponent() {
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
                             Host
                         </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.network_info?.host || "N/A"}
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400 break-all">
+                            {safeText(data?.network_info?.host) || "N/A"}
                         </span>
                     </li>
 
-                    {data?.network_info?.open_ports?.map((portItem: any, i: number) => (
-                        <li key={i} className="flex items-start gap-5 py-2.5">
-                            <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                                Port : {i + 1}
-                            </span>
-                            <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                                {portItem?.port ?? "N/A"} ({portItem?.status ?? "Unknown"})
-                            </span>
-                        </li>
-                    ))}
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            IP Address
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {safeJoin(data?.network_info?.dns_records?.A)}
+                        </span>
+                    </li>
 
+                    <li className="flex items-start gap-5 py-2.5">
+                        
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Open Ports
+                        </span>
+
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {
+                                data?.network_info?.open_ports?.length > 0 ? (data?.network_info?.open_ports ?? []).map(
+                                    (portItem: any) =>
+                                        `${safeText(portItem?.port) ?? "N/A"} (${safeText(
+                                            portItem?.status
+                                        ) ?? "Unknown"})`
+                                ).join("   ,   ") : "N/A"}
+                        </span>
+
+                    </li>
 
                     {/* <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
@@ -471,15 +563,18 @@ export default function InventoryDetailsComponent() {
                         </span>
                     </li> */}
 
-
                 </ul>
+
+                <div className="pt-4">
+                    {data?.network_info?.findings?.length > 0 && <DynamicTable columns={column4} data={data?.network_info?.findings?.length > 0 ? data?.network_info?.findings : []} className={"min-w-[600px] "} />}
+                </div>
             </div>
 
         </div>
 
-        <DynamicTable columns={columns} data={data?.route_scans?.length > 0 ? data?.route_scans : []} />
+        {data?.route_scans?.length > 0 && <DynamicTable columns={columns} data={data?.route_scans?.length > 0 ? data?.route_scans : []} className={"min-w-[500px]"} />}
 
-        <DynamicTable columns={columns2} data={data?.findings?.length > 0 ? data?.findings : []} />
+        {data?.findings?.length > 0 && <DynamicTable columns={columns2} data={data?.findings?.length > 0 ? data?.findings : []} className={"min-w-[600px]"} />}
 
     </>);
 }

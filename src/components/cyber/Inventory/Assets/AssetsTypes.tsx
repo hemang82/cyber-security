@@ -7,35 +7,37 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useInventoryStore } from "@/store";
 import { TAB_KEY } from "@/common/commonVariable";
 
+let iconClass = 'text-gray-800 size-6 dark:text-white/90'
+
+export const assets = [
+    {
+        image: <TfiWorld className={iconClass} />,
+        title: "Web App",
+        key: 'web_app',
+        description: "Scan browser-based application hosted online"
+    },
+    {
+        image: <LuFileCode2 className={iconClass} />,
+        title: "API",
+        key: 'api',
+        description: "Scan browser-based application hosted online"
+    },
+    {
+        image: <IoCloudOutline className={iconClass} />,
+        title: "Cloud",
+        key: 'cloud',
+        description: "Scan browser-based application hosted online"
+    }
+]
 export default function AssetsType() {
 
     const { assets_type, setAssetsType, setActiveTab } = useInventoryStore();
 
-    let iconClass = 'text-gray-800 size-6 dark:text-white/90'
     const methods = useForm({
         mode: "onBlur", // validation timing
     });
 
-    const assets = [
-        {
-            image: <TfiWorld className={iconClass} />,
-            title: "Web App",
-            key: 'web_app',
-            description: "Scan browser-based application hosted online"
-        },
-        {
-            image: <LuFileCode2 className={iconClass} />,
-            title: "API",
-            key: 'api',
-            description: "Scan browser-based application hosted online"
-        },
-        {
-            image: <IoCloudOutline className={iconClass} />,
-            title: "Cloud",
-            key: 'cloud',
-            description: "Scan browser-based application hosted online"
-        }
-    ]
+
 
     const handleAssetSelect = (data: any) => {
         console.log("AssetsType FORM DATA 👉", data);

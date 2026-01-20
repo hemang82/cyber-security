@@ -11,15 +11,15 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  
+
   const InventoryData = await getInventory();
 
   return (
     <div>
       <PageBreadcrumb pageTitle="Inventory" />
       <div className="space-y-6">
-        <ComponentCard title="Inventory" buttonName={"Add Inventory"} navigation={"/add-inventory"} excel={true}>
-          <InventoryComponent InventoryData={InventoryData} />
+        <ComponentCard title="Inventory" buttonName={"Add Inventory"} navigation={"/add-inventory"} excel={false}>
+          <InventoryComponent InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
         </ComponentCard>
       </div>
     </div>

@@ -6,6 +6,8 @@ export const MIDDLEWARE_COOKIE_KEYS = {
     REFRESH_TOKEN_KEY_COOKIE: 'CYBER_refresh_token',
     LANGUAGE_KEY_COOKIE: 'CYBER_language',
     ROLE_KEY_COOKIE: 'CYBER_role',
-    THEME_KEY_COOKIE: 'CYBER_theme'
+    THEME_KEY_COOKIE: 'CYBER_theme',
+    INVENTORY_LIST: 'inventory_list'
+
 };
 

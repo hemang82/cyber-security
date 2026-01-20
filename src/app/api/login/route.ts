@@ -33,15 +33,6 @@ export async function POST(request: Request) {
     setCookie(response, MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, DefaultUser)
     setCookie(response, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, DefaultUser?.role)
 
-    // ✅ AUTH COOKIE SET
-    // response.cookies.set(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, "true", {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   path: "/",
-    //   maxAge: 60 * 60 * 24, // 1 day
-    // });
-
     return response;
   }
 
