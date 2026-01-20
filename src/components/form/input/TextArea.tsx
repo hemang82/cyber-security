@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import { useFormContext } from "react-hook-form";
 
 interface TextareaProps {
   placeholder?: string; // Placeholder text
@@ -9,6 +11,8 @@ interface TextareaProps {
   disabled?: boolean; // Disabled state
   error?: boolean; // Error state
   hint?: string; // Hint text to display
+  name?: string; // Name for form registration
+  rules?: any; // Validation rules
 }
 
 const TextArea: React.FC<TextareaProps> = ({
@@ -20,12 +24,18 @@ const TextArea: React.FC<TextareaProps> = ({
   disabled = false, // Disabled state
   error = false, // Error state
   hint = "", // Default hint text
+  name = "",
+  rules = {},
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) {
-      onChange(e.target.value);
-    }
-  };
+
+  const methods = useFormContext();
+
+  // 🛡️ VERY IMPORTANT SAFETY CHECK
+  if (!methods) return null;
+
+  const { register, formState: { errors }, } = methods;
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => { if (onChange) { onChange(e.target.value); } };
 
   let textareaClasses = `w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden ${className}`;
 
@@ -40,6 +50,7 @@ const TextArea: React.FC<TextareaProps> = ({
   return (
     <div className="relative">
       <textarea
+        {...register(name || "", rules || "")}
         placeholder={placeholder}
         rows={rows}
         value={value}
@@ -49,13 +60,19 @@ const TextArea: React.FC<TextareaProps> = ({
       />
       {hint && (
         <p
-          className={`mt-2 text-sm ${
-            error ? "text-error-500" : "text-gray-500 dark:text-gray-400"
-          }`}
+          className={`mt-2 text-sm ${error ? "text-error-500" : "text-gray-500 dark:text-gray-400"
+            }`}
         >
           {hint}
         </p>
       )}
+
+      {errors[name] && (
+        <p className="mt-1.5 text-xs text-error-500">
+          {errors[name]?.message as string}
+        </p>
+      )}
+
     </div>
   );
 };

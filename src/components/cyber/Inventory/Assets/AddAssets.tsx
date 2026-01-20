@@ -3,10 +3,12 @@
 import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TabContent } from "../AddInventory";
 import { useForm, FormProvider } from "react-hook-form";
-import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
+import { INPUT_PATTERN, INPUT_TYPE, TAB_KEY } from "@/common/commonVariable";
+import { useInventoryStore } from "@/store";
+import { watch } from "fs";
 
 type Product = {
     name: string;
@@ -25,10 +27,42 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter website URL",
         name: "website_url",
         validation: "Enter website URL.",
-    }
+    },
+    ADDITIONL_INFO: {
+        placeholder: "Enter additional info",
+        name: "additional_info",
+        validation: "Enter additional info.",
+    },
+    NAME: {
+        placeholder: "Enter name",
+        name: "name",
+        validation: "Enter name.",
+    },
+    EMAIL: {
+        placeholder: "Enter email",
+        name: "email",
+        validation: "Enter email.",
+    },
+    PHONE_NUMBER: {
+        placeholder: "Enter phone number",
+        name: "phone_number",
+        validation: "Enter phone number.",
+    },
+    OWNER: {
+        placeholder: "Enter owner",
+        name: "owner",
+        validation: "Select owner.",
+    },
+    PASSWORD: {
+        placeholder: "Enter password",
+        name: "password",
+        validation: "Enter password.",
+    },
 }
 
 export default function AddAssets() {
+
+    const { assets_details, setAssetsDetails, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
@@ -46,14 +80,23 @@ export default function AddAssets() {
         return sum + (p.price - discountAmount) * p.quantity;
     }, 0);
 
-    const vat = subtotal * 0.1;
-    const total = subtotal + vat;
-
     const onSubmit = (data: any) => {
         console.log("FORM DATA 👉", data);
+        setAssetsDetails({
+            value: data,
+            is_valid: true,
+        });
+        setActiveTab(TAB_KEY.OWNERS);
     };
 
-    console.log('methods', methods.formState.errors);
+    useEffect(() => {
+        methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
+        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
+        methods.setValue(ASSETS_INPUTS.ADDITIONL_INFO.name, assets_details?.value?.[ASSETS_INPUTS.ADDITIONL_INFO.name] || '');
+        methods.setValue(ASSETS_INPUTS.NAME.name, assets_details?.value?.[ASSETS_INPUTS.NAME.name] || '');
+        methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
+        methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
+    }, [methods]);
 
     return (<>
         <FormProvider {...methods}>
@@ -97,10 +140,18 @@ export default function AddAssets() {
                             </div>
 
                             {/* Additional Info */}
-                            <div className="col-span-full">
+                            {/* <div className="col-span-full">
                                 <Label>Additional Info</Label>
-                                <TextArea placeholder="Additional Info" className="!w-1/2" />
-                            </div>
+                                <TextArea
+                                    className="!w-1/2"
+                                    placeholder={ASSETS_INPUTS.ADDITIONL_INFO.placeholder}
+                                    name={ASSETS_INPUTS.ADDITIONL_INFO.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.ADDITIONL_INFO.validation
+                                    }}
+                                    value={methods.watch(ASSETS_INPUTS.ADDITIONL_INFO.name) || ""}
+                                />
+                            </div> */}
 
                         </div>
                     </TabContent>
@@ -114,19 +165,52 @@ export default function AddAssets() {
                             {/* Name */}
                             <div>
                                 <Label>Name</Label>
-                                <Input type="text" placeholder="Name" />
+                                <Input
+                                    type={INPUT_TYPE.TEXT}
+                                    placeholder={ASSETS_INPUTS.NAME.placeholder}
+                                    name={ASSETS_INPUTS.NAME.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.NAME.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.NAME.pattern,
+                                            message: INPUT_PATTERN.NAME.message,
+                                        },
+                                    }}
+                                />
                             </div>
 
                             {/* Email */}
                             <div>
                                 <Label>Email</Label>
-                                <Input type="email" placeholder="Email" />
+                                <Input
+                                    placeholder={ASSETS_INPUTS.EMAIL.placeholder}
+                                    type={INPUT_TYPE.TEXT}
+                                    name={ASSETS_INPUTS.EMAIL.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.EMAIL.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.EMAIL.pattern,
+                                            message: INPUT_PATTERN.EMAIL.message,
+                                        },
+                                    }}
+                                />
                             </div>
 
                             {/* Phone Number */}
                             <div>
                                 <Label>Phone Number</Label>
-                                <Input type="text" placeholder="Phone Number" />
+                                <Input
+                                    placeholder={ASSETS_INPUTS.PHONE_NUMBER.placeholder}
+                                    type={INPUT_TYPE.TEXT}
+                                    name={ASSETS_INPUTS.PHONE_NUMBER.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.PHONE_NUMBER.validation,
+                                        pattern: {
+                                            value: INPUT_PATTERN.MOBILE.pattern,
+                                            message: INPUT_PATTERN.MOBILE.message,
+                                        },
+                                    }}
+                                />
                             </div>
 
                         </div>

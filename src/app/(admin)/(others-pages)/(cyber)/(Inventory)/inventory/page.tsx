@@ -1,23 +1,25 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import BasicTableOne from "@/components/tables/BasicTableOne";
+import InventoryComponent from "@/components/cyber/Inventory/InventoryComponent";
+import { getInventory } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
-import React from "react";
 
 export const metadata: Metadata = {
   title: "Next.js Basic Table | TailAdmin - Next.js Dashboard Template",
-  description:
-    "This is Next.js Basic Table  page for TailAdmin  Tailwind CSS Admin Dashboard Template",
+  description: "This is Next.js Basic Table  page for TailAdmin  Tailwind CSS Admin Dashboard Template",
   // other metadata
 };
 
-export default function BasicTables() {
+export default async function Page() {
+
+  const InventoryData = await getInventory();
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Inventory" />
       <div className="space-y-6">
-        <ComponentCard title="Inventory" buttonName={"Add Inventory"} navigation={"/add-inventory"}>
-          <BasicTableOne />
+        <ComponentCard title="Inventory" buttonName={"Add Inventory"} navigation={"/add-inventory"} excel={false}>
+          <InventoryComponent InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
         </ComponentCard>
       </div>
     </div>

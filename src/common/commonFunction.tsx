@@ -5,6 +5,7 @@ import moment from "moment";
 
 
 import CONSTENT from './constant';
+import { MIDDLEWARE_COOKIE_KEYS } from "./middleware.constants";
 
 // const KEY = CryptoJS.enc.Utf8.parse(CONSTENT.KEY );
 // const IV = CryptoJS.enc.Utf8.parse(CONSTENT.IV);
@@ -12,19 +13,19 @@ import CONSTENT from './constant';
 // ------------------------------------------------------- Authentication Function ---------------------------------------------------------------------------
 
 export const loginRedirection = (data: any) => {
-    localStorage.setItem(CONSTENT.LOGIN_KEY, 'false');
-    localStorage.setItem(CONSTENT.ACCESS_TOKEN_KEY, data?.token?.access_token)
-    localStorage.setItem(CONSTENT.REFRESH_TOKEN_KEY, data?.token?.refresh_token)
-    localStorage.setItem(CONSTENT.AUTH_KEY, JSON.stringify(data))
-    localStorage.setItem(CONSTENT.ROLE_KEY, data?.user?.role)
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, 'false');
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE, data?.token?.access_token)
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.REFRESH_TOKEN_KEY_COOKIE, data?.token?.refresh_token)
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, JSON.stringify(data))
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, data?.user?.role)
 }
 
 export const logoutRedirection = () => {
-    localStorage.removeItem(CONSTENT.LOGIN_KEY);
-    localStorage.removeItem(CONSTENT.ROLE_KEY);
-    localStorage.removeItem(CONSTENT.ACCESS_TOKEN_KEY);
-    localStorage.removeItem(CONSTENT.REFRESH_TOKEN_KEY);
-    localStorage.removeItem(CONSTENT.AUTH_KEY);
+    localStorage.removeItem(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE);
+    localStorage.removeItem(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE);
+    localStorage.removeItem(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE);
+    localStorage.removeItem(MIDDLEWARE_COOKIE_KEYS.REFRESH_TOKEN_KEY_COOKIE);
+    localStorage.removeItem(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE);
 }
 // ------------------------------------------------------- Encryption Decreption ---------------------------------------------------------------------------
 
@@ -62,6 +63,8 @@ export const TOAST_INFO = (message: any) => {
 };
 
 export const TOAST_ERROR = (message: any) => {
+    console.log('TOAST_ERROR', message);
+    
     return toast.error(message);
 };
 
@@ -117,7 +120,9 @@ export const storage = (key: string, value?: any, expireMinutes?: number): any =
     try {
         // 👉 GET
         if (value === undefined) {
+
             const item = localStorage.getItem(key);
+
             if (!item) return null;
 
             const data: StorageData = JSON.parse(item);
@@ -148,7 +153,7 @@ export const storage = (key: string, value?: any, expireMinutes?: number): any =
         localStorage.setItem(key, JSON.stringify(storeData));
 
         return true;
-        
+
     } catch (error) {
         console.error("LocalStorage error", error);
         return null;

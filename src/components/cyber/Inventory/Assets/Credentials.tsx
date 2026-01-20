@@ -1,12 +1,19 @@
+"use client";
+
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
 import { TabContent } from "../AddInventory";
 import Input from "@/components/form/input/InputField";
 import { FormProvider, useForm } from "react-hook-form";
 import { ASSETS_INPUTS } from "./AddAssets";
-import { INPUT_PATTERN } from "@/common/commonVariable";
+import { INPUT_PATTERN, TAB_KEY } from "@/common/commonVariable";
+import { useInventoryStore } from "@/store";
+import { useEffect } from "react";
+
 
 export default function Credentials() {
+
+    const { credentials, setCredentials, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
@@ -14,7 +21,17 @@ export default function Credentials() {
 
     const onSubmit = (data: any) => {
         console.log("FORM DATA 👉", data);
+        setCredentials({
+            value: data,
+            is_valid: true,
+        })
+        setActiveTab(TAB_KEY.OWNERS);
     };
+
+    useEffect(() => {
+        console.log("credentials store data 👉", credentials);
+        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, credentials?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
+    }, [methods]);
 
     return (<>
         <FormProvider {...methods}>
@@ -23,7 +40,6 @@ export default function Credentials() {
                     {/* <form className="space-y-6"> */}
                     <TabContent title="Credentials">
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
                             <div>
                                 <Label>Website URL</Label>
                                 <Input type="text"
@@ -38,7 +54,6 @@ export default function Credentials() {
                                     }}
                                 />
                             </div>
-
                         </div>
                     </TabContent>
                     {/* </form> */}
@@ -52,5 +67,5 @@ export default function Credentials() {
             </form>
         </FormProvider>
     </>)
-    
+
 }

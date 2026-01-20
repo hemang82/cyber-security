@@ -10,7 +10,7 @@ export const DATE_FORMAT = {
     DOT_DD_MM_YYYY: "DD.MM.YYYY",              // 12.06.2024
 
     SHORT_DAY_MONTH: "D MMM",                 // 12 Jun
-    FULL_DAY_MONTH_YEAR: "DD MMM YYYY",       // 12 Jun 2024
+    FULL_DAY_MONTH_YEAR: "DD MMM YYYY hh:mm:ss",       // 12 Jun 2024
     MONTH_DAY_YEAR_LONG: "MMMM D, YYYY",      // June 12, 2024
 
     WEEKDAY_MONTH_DAY: "ddd, MMMM DD",        // Wed, June 12
@@ -45,7 +45,8 @@ export const INPUT_PATTERN = {
         message: "Only alphabets are allowed",
     },
     NAME: {
-        pattern: /^[A-Za-z]{2,30}$/,
+        // pattern: /^[A-Za-z]{2,30}$/,
+        pattern: /^[A-Za-z\s]*$/,
         message: "Please enter only letters (2–30 chars)",
     },
 
@@ -88,12 +89,11 @@ export const INPUT_PATTERN = {
 
     WEBSITE: {
         pattern: /^(https?:\/\/)(([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:\d{1,5})?(\/.*)?$/,
-        message: "Website URL must start with http:// or https://",
+        message: "URL must start with http:// or https://",
     },
 };
 
 // INPUT TYPES (HTML)
-
 export const INPUT_TYPE = {
 
     TEXT: "text",
@@ -119,3 +119,11 @@ export const INPUT_TYPE = {
     HIDDEN: "hidden",
 
 } as const;
+
+export enum TAB_KEY {
+    ASSETS_TYPE = "assets_type",
+    ASSETS_DETAILS = "assets_details",
+    CREDENTIALS = "credentials",
+    OWNERS = "owners",
+    PREVIEW = "preview",
+}

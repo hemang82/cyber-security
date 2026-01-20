@@ -3,34 +3,59 @@ import { TfiWorld } from "react-icons/tfi";
 import { LuFileCode2 } from "react-icons/lu";
 import { AiOutlineCloudServer } from "react-icons/ai";
 import { IoCloudOutline } from "react-icons/io5";
+import { FormProvider, useForm } from "react-hook-form";
+import { useInventoryStore } from "@/store";
+import { TAB_KEY } from "@/common/commonVariable";
 
+let iconClass = 'text-gray-800 size-6 dark:text-white/90'
+
+export const assets = [
+    {
+        image: <TfiWorld className={iconClass} />,
+        title: "Web App",
+        key: 'web_app',
+        description: "Scan browser-based application hosted online"
+    },
+    {
+        image: <LuFileCode2 className={iconClass} />,
+        title: "API",
+        key: 'api',
+        description: "Scan browser-based application hosted online"
+    },
+    {
+        image: <IoCloudOutline className={iconClass} />,
+        title: "Cloud",
+        key: 'cloud',
+        description: "Scan browser-based application hosted online"
+    }
+]
 export default function AssetsType() {
 
-    let iconClass = 'text-gray-800 size-6 dark:text-white/90'
+    const { assets_type, setAssetsType, setActiveTab } = useInventoryStore();
 
-    const assets = [
-        {
-            image: <TfiWorld className={iconClass} />,
-            title: "Web App",
-            description: "Scan browser-based application hosted online"
-        },
-        {
-            image: <LuFileCode2 className={iconClass} />,
-            title: "API",
-            description: "Scan browser-based application hosted online"
-        },
-        {
-            image: <IoCloudOutline className={iconClass} />,
-            title: "Cloud",
-            description: "Scan browser-based application hosted online"
-        }
-    ]
+    const methods = useForm({
+        mode: "onBlur", // validation timing
+    });
+
+
+
+    const handleAssetSelect = (data: any) => {
+        console.log("AssetsType FORM DATA 👉", data);
+        setAssetsType({
+            value: data?.key,
+            is_valid: true,
+        });
+        setActiveTab(TAB_KEY.ASSETS_DETAILS);
+    };
 
     return (<>
+        {/* <FormProvider {...methods}>
+            <form className=" " onSubmit={methods.handleSubmit(onSubmit)}> */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {
                 assets?.map((assets, index) => {
-                    return <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-5 hover:border-brand-500 hover:cursor-pointer hover:shadow-lg " key={index}>
+                    return <div className={`rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-5 hover:border-brand-500 hover:cursor-pointer hover:shadow-lg ${assets_type?.value == assets.key ? '!border-brand-500 shadow-lg' : ''}`} key={index} onClick={() => handleAssetSelect(assets)}>
+
                         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
                             {assets.image}
                         </div>
@@ -45,10 +70,11 @@ export default function AssetsType() {
                                 </span>
                             </div>
                         </div>
-
                     </div>
                 })
             }
         </div>
+        {/* </form>
+        </FormProvider> */}
     </>)
 }

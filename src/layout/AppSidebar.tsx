@@ -1,14 +1,24 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { BiPurchaseTag } from "react-icons/bi";
-import { CalenderIcon, ChevronDownIcon, GridIcon, HorizontaLDots, PageIcon, UserCircleIcon } from "../icons/index";
+import {
+  CalenderIcon,
+  ChevronDownIcon,
+  GridIcon,
+  HorizontaLDots,
+  PageIcon,
+  UserCircleIcon,
+
+} from "../icons/index";
 
 import { ImLink } from "react-icons/im";
 import { RiHandbagLine } from "react-icons/ri";
+import { LuLink } from "react-icons/lu";
+import { FaRegLightbulb } from "react-icons/fa6";
 import { PiBank } from "react-icons/pi";
 import { IoWalletOutline } from "react-icons/io5";
 
@@ -71,7 +81,6 @@ const navItems: NavItem[] = [
   // },
 ];
 
-
 // - Add Banks
 
 // - Add Sales
@@ -83,7 +92,6 @@ const navItems: NavItem[] = [
 // - income
 
 // - Balancesheet 
-
 
 const othersItems: NavItem[] = [
   // {
@@ -227,35 +235,28 @@ const AppSidebar: React.FC = () => {
 
   // const isActive = (path: string) => path === pathname;
   const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  // AppSidebar.tsx
+  const matchedSubmenu = useMemo(() => {
+    let result: { type: "main" | "others"; index: number } | null = null;
 
-  useEffect(() => {
-    // Check if the current path matches any submenu item
-    let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
+    (["main", "others"] as const).forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
+
       items.forEach((nav, index) => {
-        if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
-            if (isActive(subItem.path)) {
-              ({
-                type: menuType as "main" | "others",
-                index,
-              });
-              submenuMatched = true;
-            }
-          });
-        }
+        nav.subItems?.forEach((subItem) => {
+          if (isActive(subItem.path)) {
+            result = { type: menuType, index };
+          }
+        });
       });
     });
 
-    // If no submenu item matches, close the open submenu
-    if (!submenuMatched) {
-      // setOpenSubmenu({
-      //   type: "others",
-      //   index: 0
-      // });
-    }
+    return result;
   }, [pathname, isActive]);
+
+  useEffect(() => {
+    setOpenSubmenu(matchedSubmenu);
+  }, [matchedSubmenu]);
 
   useEffect(() => {
     // Set the height of the submenu items when the submenu is opened
@@ -284,16 +285,9 @@ const AppSidebar: React.FC = () => {
   };
 
   return (
-    <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${isExpanded || isMobileOpen
-          ? "w-[290px]"
-          : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
-        }
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
+    
+    <aside className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+        ${isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"} ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

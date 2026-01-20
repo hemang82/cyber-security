@@ -1,5 +1,6 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import DominComponent from "@/components/cyber/domin/DominComponent";
 import BasicTableOne from "@/components/tables/BasicTableOne";
 import { Metadata } from "next";
 import React from "react";
@@ -16,8 +17,8 @@ export default function page() {
     <div>
       <PageBreadcrumb pageTitle="Domin" />
       <div className="space-y-6">
-        <ComponentCard navigation={"/"}>
-          <BasicTableOne />
+        <ComponentCard title="Domin" buttonName={"Add Domin"} navigation={"/add-domin"} >
+          <DominComponent />
         </ComponentCard>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
-import { storage } from "@/common/commonFunction";
-import CONSTENT from "@/common/constant";
+import { storage, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
+import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
+import CONSTENT, { CODES } from "@/common/constant";
 import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -11,6 +12,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { ASSETS_INPUTS } from "../cyber/Inventory/Assets/AddAssets";
+import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 
 export default function SignInForm() {
 
@@ -25,14 +28,63 @@ export default function SignInForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 🔥 REQUIRED — stops page reload
-    // 👉 do validation / API call here if needed
-    localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS?.LOGIN_KEY_COOKIE, JSON.stringify(true));
     router.push("/");
   };
 
+  // React/Next.js Component ma
+  // async function handleLogin(email, password) {
+  //   const response = await fetch('/api/login', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ email, password })
+  //   });
+
+  //   const data = await response.json();
+
+  //   if (data.success) {
+  //     // Login successful
+  //     console.log("User:", data.data.user);
+  //     console.log("Token:", data.data.token);
+  //   } else {
+  //     // Login failed
+  //     console.error("Error:", data.message);
+  //   }
+  // }
+
+  // const onSubmit = (data: any) => {
+  //   console.log("FORM DATA 👉", data);
+  //   // setAssetsDetails({
+  //   //   value: data,
+  //   //   is_valid: true,
+  //   // });
+  //   localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
+  //   router.push("/");
+  // };
+
+  const onSubmit = async (data: any) => {
+
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: data[ASSETS_INPUTS.EMAIL.name], password: data[ASSETS_INPUTS.PASSWORD.name] }),
+    });
+
+    const responseData = await res.json();
+
+    if (responseData.code == CODES?.SUCCESS) {
+      router.replace("/"); // ✅ direct home
+    } else {
+      // alert(responseData.message);
+      TOAST_ERROR(responseData.message)
+    }
+  };
+
+  console.log('methods', methods?.formState?.errors);
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
+
       {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
           href="/"
@@ -117,28 +169,44 @@ export default function SignInForm() {
             </div> */}
 
             <FormProvider {...methods}>
-
-              <form method="post" onSubmit={handleSubmit}>
+              <form method="post" onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="space-y-6">
                   <div>
                     <Label>
                       Email <span className="text-error-500">*</span>{" "}
                     </Label>
-                    <Input placeholder="info@gmail.com" type="email" />
+                    <Input
+                      type={INPUT_TYPE?.EMAIL}
+                      placeholder={ASSETS_INPUTS?.EMAIL?.placeholder}
+                      name={ASSETS_INPUTS.EMAIL.name}
+                      rules={{
+                        required: ASSETS_INPUTS.EMAIL.validation,
+                        pattern: {
+                          value: INPUT_PATTERN.EMAIL.pattern,
+                          message: INPUT_PATTERN.EMAIL.message,
+                        },
+                      }}
+                    />
                   </div>
+
                   <div>
                     <Label>
                       Password <span className="text-error-500">*</span>{" "}
                     </Label>
                     <div className="relative">
                       <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
+                        type={showPassword ? INPUT_TYPE?.TEXT : INPUT_TYPE?.PASSWORD}
+                        placeholder={ASSETS_INPUTS?.PASSWORD?.placeholder}
+                        name={ASSETS_INPUTS?.PASSWORD?.name}
+                        rules={{
+                          required: ASSETS_INPUTS.PASSWORD.validation,
+                          pattern: {
+                            value: INPUT_PATTERN.PASSWORD.pattern,
+                            message: INPUT_PATTERN.PASSWORD.message,
+                          },
+                        }}
                       />
-                      <span
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                      >
+                      <span onClick={() => setShowPassword(!showPassword)} className={`absolute z-30 -translate-y-1/2 cursor-pointer right-4 ${methods?.formState?.errors[ASSETS_INPUTS?.PASSWORD?.name] ? "top-6" : "top-1/2"}`} >
                         {showPassword ? (
                           <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
                         ) : (
@@ -147,6 +215,7 @@ export default function SignInForm() {
                       </span>
                     </div>
                   </div>
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Checkbox checked={isChecked} onChange={setIsChecked} />
@@ -154,18 +223,20 @@ export default function SignInForm() {
                         Keep me logged in
                       </span>
                     </div>
-                    <Link
+                    {/* <Link
                       href="/reset-password"
                       className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                     >
                       Forgot password?
-                    </Link>
+                    </Link> */}
                   </div>
+
                   <div>
                     <Button type={'submit'} className="w-full" size="sm" >
                       Sign in
                     </Button>
                   </div>
+
                 </div>
               </form>
 

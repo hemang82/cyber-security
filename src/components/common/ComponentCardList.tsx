@@ -91,8 +91,6 @@ const ComponentCardList: React.FC<ComponentCardProps> = ({
 
     <div className={`rounded-2xl ${title && 'border-b border-gray-200 '}  bg-white dark:bg-white/[0.03] ${className}`} >
 
-
-
       <div className={`flex flex-col justify-between gap-5 ${title && 'border-b border-gray-200'} px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800`}>
 
         {title && <div>
