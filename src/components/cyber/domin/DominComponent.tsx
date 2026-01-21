@@ -9,8 +9,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 // export const metadata: Metadata = {
-//   title: "Next.js Basic Table | TailAdmin - Next.js Dashboard Template",
-//   description: "This is Next.js Basic Table  page for TailAdmin  Tailwind CSS Admin Dashboard Template",
+//   title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
+//   description: "This is Next.js Basic Table  page for Cyber Admin  Tailwind CSS Admin Dashboard Template",
 //   // other metadata
 // };
 

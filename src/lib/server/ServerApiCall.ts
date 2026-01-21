@@ -42,7 +42,6 @@ export async function getInventory() {
     }
 }
 
-
 export async function getInventoryDetails(data: Record<string, any>) {
     try {
 
