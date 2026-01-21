@@ -229,7 +229,7 @@ export default function AddSalesComponent() {
                             {/* Address */}
                             <div className="col-span-1">
                                 <Label>Customer Address</Label>
-                                <TextArea placeholder="Customer Address" name="address" />
+                                <TextArea placeholder="Customer Address" name="address"  />
                             </div>
 
                             {/* Additional Info */}

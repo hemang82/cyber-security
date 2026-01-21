@@ -54,12 +54,12 @@ const navItems: NavItem[] = [
     name: "Expences",
     icon: <IoWalletOutline />,
     path: "/expences"
-  }
-  // {
-  //   icon: <UserCircleIcon />,
-  //   name: "Balancesheet",
-  //   path: "/profile",
-  // },
+  },
+  {
+    icon: <UserCircleIcon />,
+    name: "Parties",
+    path: "/parties",
+  },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,
