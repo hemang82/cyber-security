@@ -36,25 +36,35 @@ const navItems: NavItem[] = [
     path: "/"
   },
   {
-    icon: <RiHandbagLine />,
-    name: "Sales",
-    path: "/sales",
-  },
-  {
     icon: <BiPurchaseTag />,
-    name: "Purchase",
-    path: "/purchase",
+    name: "Inventory",
+    path: "/inventory",
   },
   {
-    name: "Bank Accounts",
-    icon: <PiBank />,
-    path: "/bankaccount"
+    icon: <RiHandbagLine />,
+    name: "Domain",
+    path: "/domain",
   },
-  {
-    name: "Expences",
-    icon: <IoWalletOutline />,
-    path: "/expences"
-  }
+  // {
+  //   icon: <RiHandbagLine />,
+  //   name: "Sales",
+  //   path: "/sales",
+  // },
+  // {
+  //   icon: <BiPurchaseTag />,
+  //   name: "Purchase",
+  //   path: "/purchase",
+  // },
+  // {
+  //   name: "Bank Accounts",
+  //   icon: <PiBank />,
+  //   path: "/bankaccount"
+  // },
+  // {
+  //   name: "Expences",
+  //   icon: <IoWalletOutline />,
+  //   path: "/expences"
+  // }
   // {
   //   icon: <UserCircleIcon />,
   //   name: "Balancesheet",
@@ -285,7 +295,7 @@ const AppSidebar: React.FC = () => {
   };
 
   return (
-    
+
     <aside className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"} ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}

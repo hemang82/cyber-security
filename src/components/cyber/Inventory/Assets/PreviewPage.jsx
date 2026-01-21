@@ -23,9 +23,6 @@ export default function PreviewPage() {
         mode: "onBlur", // validation timing
     });
 
-    console.log('assets_details', assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]);
-
-
     const onSubmit = async (data) => {
 
         console.log("FORM DATA 👉", data);

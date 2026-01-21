@@ -65,6 +65,7 @@ export const useInventoryStore = create<InventoryState>((set) => ({
             assets_details: null,
             credentials: null,
             owners: null,
-            finel_validate_data: null
+            finel_validate_data: null,
+            active_tab: TAB_KEY.ASSETS_TYPE,
         }),
 }));
