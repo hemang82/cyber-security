@@ -5,7 +5,7 @@ import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import React from "react";
-import AuthProvider from "../(full-width-pages)/(auth)/AuthProvider";
+import AuthProvider from "../(authentication)/(auth)/AuthProvider";
 
 export default function AdminLayout({
   children,

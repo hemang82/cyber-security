@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "CyberSafe Dashboard for real-time cyber security monitoring, vulnerability assessment, threat detection, and system protection management.",
 };
 
-export default function Ecommerce() {
+export default function page() {
 
   // redirect("/signin");
   return (<>
