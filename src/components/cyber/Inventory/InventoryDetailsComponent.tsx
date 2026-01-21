@@ -157,17 +157,13 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
     ];
 
     const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
-    const safeJoin = (arr: any, separator = ", ") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
-
-    console.log("Data", data);
+    const safeJoin = (arr: any, separator = "  ,\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
     return (<>
-
         <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-6 py-5 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
 
             {/* Header Section */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-
                 {/* Left Info */}
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
 
@@ -270,14 +266,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </span>
                     </li>
 
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Website BlackList
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {data?.summary?.blacklisted ? "Blacklisted Webiste" : "Not Blacklist"}
-                        </span>
-                    </li>
 
                 </ul>
             </div>
@@ -348,8 +336,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                             MX Records
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {Array.isArray(data?.network_info?.dns_records?.MX)
-                                ? data?.network_info?.dns_records.MX.map((mx: any) => `${mx.exchange} (Priority ${mx.priority})`).join(", ") : "N/A"}
+                            {
+                                data?.network_info?.dns_records?.MX?.length > 0 &&
+                                    Array.isArray(data?.network_info?.dns_records?.MX)
+                                    ? data?.network_info?.dns_records.MX.map((mx: any) => `${mx.exchange} (Priority ${mx.priority})`).join(",\n") : "N/A"}
                         </span>
                     </li>
 
@@ -358,11 +348,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
                             TXT Records
                         </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400 break-all">
-                            {safeJoin(data?.network_info?.dns_records?.TXT, "  ,   ")}
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400 break-all whitespace-pre-line">
+                            {safeJoin(data?.network_info?.dns_records?.TXT)}
                         </span>
                     </li>
-
                     {/* Name Servers */}
                     <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
@@ -464,6 +453,16 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                             {safeText(data?.seo_check?.robots_txt) || "0"}
                         </span>
                     </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Website BlackList
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            {data?.summary?.blacklisted ? "Blacklisted Webiste" : "Not Blacklist"}
+                        </span>
+                    </li>
+
                 </ul>
             </div>
 
