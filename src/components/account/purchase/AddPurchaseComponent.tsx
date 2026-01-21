@@ -217,6 +217,7 @@ export default function AddPurchaseComponent() {
                                     type="text"
                                     placeholder="Customer Name"
                                     name="customer_name"
+
                                     rules={{
                                         required: "Customer name is required",
                                         pattern: {
@@ -230,13 +231,17 @@ export default function AddPurchaseComponent() {
                             {/* Address */}
                             <div className="col-span-1">
                                 <Label>Customer Address</Label>
-                                <TextArea placeholder="Customer Address" />
+                                <TextArea placeholder="Customer Address"
+                                    name="address"
+                                />
                             </div>
 
                             {/* Additional Info */}
                             <div className="col-span-1">
                                 <Label>Additional Info</Label>
-                                <TextArea placeholder="Additional Info" />
+                                <TextArea placeholder="Additional Info"
+                                    name="address"
+                                />
                             </div>
 
                         </div>
@@ -287,16 +292,17 @@ export default function AddPurchaseComponent() {
                     <BasicTableOne />
                     {/* ADD PRODUCT */}
                     <form onSubmit={addProduct} className="mt-6 grid grid-cols-1 md:grid-cols-6 gap-4 bg-gray-50 p-4 rounded-xl">
-                        <Input type="text" placeholder="Product Name" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                        <Input type="text" placeholder="Product Name" name="address" onChange={(e) => setForm({ ...form, name: e.target.value })} />
 
 
-                        <Input type="number" placeholder="Price" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                        <Input type="number" placeholder="Price" name="Price" onChange={(e) => setForm({ ...form, name: e.target.value })} />
 
-                        <Input type="number" placeholder="Quantity" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                        <Input type="number" placeholder="Quantity" name="Quantity" onChange={(e) => setForm({ ...form, name: e.target.value })} />
 
                         <div>
                             <div className="relative">
                                 <Select
+                                name="GST" 
                                     options={[
                                         { value: "0", label: "0%" },
                                         { value: "10", label: "20%" },

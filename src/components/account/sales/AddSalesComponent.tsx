@@ -174,9 +174,8 @@ export default function AddSalesComponent() {
     return (
         <>
             <FormProvider {...methods}>
-                <div className="border-b border-gray-200 p-4 sm:p-8 dark:border-gray-800 bg-white">
-
-                    <form className="space-y-6">
+                <form className="space-y-6">
+                    <div className="border-b border-gray-200 p-4 sm:p-8 dark:border-gray-800 bg-white">
 
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {/* Invoice Number */}
@@ -230,22 +229,22 @@ export default function AddSalesComponent() {
                             {/* Address */}
                             <div className="col-span-1">
                                 <Label>Customer Address</Label>
-                                <TextArea placeholder="Customer Address" />
+                                <TextArea placeholder="Customer Address" name="address" />
                             </div>
 
                             {/* Additional Info */}
                             <div className="col-span-1">
                                 <Label>Additional Info</Label>
-                                <TextArea placeholder="Additional Info" />
+                                <TextArea placeholder="Additional Info"  name="additionl"/>
                             </div>
 
                         </div>
-                    </form>
-                </div>
+                        {/*  */}
+                    </div>
 
-                <div className="border-b border-gray-200 p-4 sm:p-8 bg-white">
-                    {/* TABLE */}
-                    {/* <div className="overflow-x-auto rounded-xl border">
+                    <div className="border-b border-gray-200 p-4 sm:p-8 bg-white">
+                        {/* TABLE */}
+                        {/* <div className="overflow-x-auto rounded-xl border">
                     <table className="min-w-full text-sm">
                         <thead className="bg-gray-50">
                             <tr>
@@ -284,15 +283,15 @@ export default function AddSalesComponent() {
                     </table>
                 </div> */}
 
-                    <BasicTableOne />
-                    {/* ADD PRODUCT */}
-                    <form onSubmit={addProduct} className="mt-6 grid grid-cols-1 md:grid-cols-6 gap-4 bg-gray-50 p-4 rounded-xl">
-                        <Input type="text" placeholder="Product Name" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                        <BasicTableOne />
+                        {/* ADD PRODUCT */}
+                        {/* <form onSubmit={addProduct} className="mt-6 grid grid-cols-1 md:grid-cols-6 gap-4 bg-gray-50 p-4 rounded-xl"> */}
+                        <Input type="text" placeholder="Product Name" name="p_name" onChange={(e) => setForm({ ...form, name: e.target.value })} />
 
 
-                        <Input type="number" placeholder="Price" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                        <Input type="number" placeholder="Price" name="p_price" onChange={(e) => setForm({ ...form, name: e.target.value })} />
 
-                        <Input type="number" placeholder="Quantity" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                        <Input type="number" placeholder="Quantity" name="p_qty" onChange={(e) => setForm({ ...form, name: e.target.value })} />
 
                         <div>
                             <div className="relative">
@@ -302,6 +301,7 @@ export default function AddSalesComponent() {
                                         { value: "10", label: "20%" },
                                         { value: "50", label: "50%" },
                                     ]}
+                                    name="gst"
                                     placeholder="Select GST Option"
                                     onChange={handleSelectChange}
                                     className="dark:bg-dark-900"
@@ -318,28 +318,29 @@ export default function AddSalesComponent() {
                         >
                             Save
                         </button>
-                    </form>
+                        {/* </form> */}
 
-                    {/* SUMMARY */}
-                    <div className="mt-6 max-w-sm ml-auto space-y-2 text-sm">
-                        <div className="flex justify-between">
-                            <span>Sub Total</span>
-                            <span>${subtotal.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>Additional Charge</span>
-                            <span>${subtotal.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>GST (10%)</span>
-                            <span>${vat.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-lg font-semibold">
-                            <span>Total Amount</span>
-                            <span>${total.toFixed(2)}</span>
+                        {/* SUMMARY */}
+                        <div className="mt-6 max-w-sm ml-auto space-y-2 text-sm">
+                            <div className="flex justify-between">
+                                <span>Sub Total</span>
+                                <span>${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Additional Charge</span>
+                                <span>${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>GST (10%)</span>
+                                <span>${vat.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-lg font-semibold">
+                                <span>Total Amount</span>
+                                <span>${total.toFixed(2)}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </FormProvider>
         </>
     );

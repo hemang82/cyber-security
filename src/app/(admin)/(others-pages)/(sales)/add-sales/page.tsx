@@ -17,6 +17,7 @@ export default function AddSales() {
             <PageBreadcrumb pageTitle="Create Sales" />
             <div className="space-y-6">
                 <ComponentCard title="Create Sales" excel={false}>
+
                     <AddSalesComponent />
                 </ComponentCard>
             </div>

@@ -262,12 +262,9 @@ export default function AddBankAccount() {
                                     }}
                                 />
                             </div>
-
                         </div>
                     </form>
                 </div>
-
-            
             </FormProvider>
         </>
     );
