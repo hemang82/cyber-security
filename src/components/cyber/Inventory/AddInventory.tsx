@@ -63,6 +63,7 @@ export default function AddInventory() {
 
                     {/* Content */}
                     <div className="pt-4">
+                        
                         {active_tab === TAB_KEY.ASSETS_TYPE && (
                             <AssetsType />
                         )}
