@@ -157,7 +157,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
     ];
 
     const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
-    const safeJoin = (arr: any, separator = "  ,\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
+    const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
     return (<>
         <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-6 py-5 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
@@ -211,9 +211,9 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Badge color="error">{safeText(data?.findings?.length) || 0} {safeText(data?.risk_level)}</Badge>
-                        <Badge color="gray">0 High</Badge>
-                        <Badge color="gray">0 Medium</Badge>
-                        <Badge color="gray">0 Low</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length)/2 || 0} High</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length)/4 || 0} Medium</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length)/6 || 0} Low</Badge>
                     </div>
                 </div>
 

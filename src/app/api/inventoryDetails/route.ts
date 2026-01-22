@@ -56,8 +56,6 @@ export async function POST(req: Request) {
     });
 
   } catch (error) {
-
-    console.error("SCAN API ERROR:", error);
     return NextResponse.json(
       {
         code: CODES?.ERROR,
