@@ -4,6 +4,7 @@
  * Always fresh per request
  */
 
+import { TOAST_ERROR } from "@/common/commonFunction";
 import { CODES, TEMP_URL } from "@/common/constant";
 import { fetcher } from "@/lib/fetcher";
 import { headers } from "next/headers";
@@ -17,7 +18,7 @@ type InventoryResponse = {
 export async function getInventory() {
     try {
         const headerList = await headers();
-        console.log("TEMP_URL",`${TEMP_URL}/api/inventory/list`);
+        console.log("TEMP_URL", `${TEMP_URL}/api/inventory/list`);
 
         const resList = await fetch(`${TEMP_URL}/api/inventory/list`, {
             method: "GET",
@@ -42,6 +43,35 @@ export async function getInventory() {
     }
 }
 
+export async function listDomain() {
+    try {
+        const headerList = await headers();
+        console.log(`tempp ${TEMP_URL}/api/domain/list`);
+
+        const resList = await fetch(`${TEMP_URL}/api/domain/list`, {
+            method: "POST",
+            cache: "no-store",
+            // headers: {
+            //     cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+            // },
+        });
+
+        const res = await resList.json();
+
+        if (res?.code === CODES?.SUCCESS) {
+            return res.data;
+        } else {
+            TOAST_ERROR("Something went wrong .")
+        }
+
+        return [];
+
+    } catch (err: any) {
+        console.log(err.message);
+        return [];
+    }
+}
+
 export async function getInventoryDetails(data: Record<string, any>) {
     try {
 
@@ -55,6 +85,29 @@ export async function getInventoryDetails(data: Record<string, any>) {
         }
     } catch (err: any) {
         console.log(err.message); // user-friendly message
+    }
+}
+
+export async function addDomainDetails(data: Record<string, any>) {
+    try {
+        const response = await fetch("/api/domain/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        const res: InventoryResponse = await response.json();
+
+        if (res?.code === CODES?.SUCCESS) {
+            return res;
+        }
+
+        return null; // or throw an error if preferred
+    } catch (err: any) {
+        console.error("addDomainDetails error:", err.message);
+        return null;
     }
 }
 

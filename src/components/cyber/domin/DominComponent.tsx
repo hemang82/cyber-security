@@ -14,7 +14,7 @@ import React, { useState } from "react";
 //   // other metadata
 // };
 
-export default function DominComponent() {
+export default function DominComponent({ resDomainList }: any) {
 
     const router = useRouter();
 
@@ -24,18 +24,31 @@ export default function DominComponent() {
         // }
         domin: string;
         txt_record: string;
+        status?: string
     }
 
     const data: Order[] = [
         {
             domin: "https://ipo-trend.com/",
-            txt_record: "asfghjkl1234567890qwertyuiop"
+            txt_record: "asfghjkl1234567890qwertyuiop",
+            status: "verified"
+        },
+        {
+            domin: "Domin",
+            txt_record: "asfghjkl1234567890qwertyuior",
+            status: "pending"
         }
     ];
 
+    const statusClasses: any = {
+        pending: "bg-yellow-100 text-yellow-700",
+        verified: "bg-green-100 text-green-700",
+        cancelled: "bg-red-100 text-red-700",
+    };
+
     const columns = [
         {
-            key: "domin",
+            key: "domain",
             title: "Domin",
             // render: (row: Order) => (
             //   <div className="flex items-center gap-3">
@@ -56,7 +69,7 @@ export default function DominComponent() {
             // ),
         },
         {
-            key: "txt_record",
+            key: "txt_value",
             title: "TXT record",
             // render: (row: any) => (
             //     // <div className="">
@@ -67,9 +80,20 @@ export default function DominComponent() {
             // ),
         },
         {
-            key: "created_at", title: "Created At",
+            key: "status",
+            title: "Status",
             render: (row: any) => (
-                <span>{formatDate(row.created_at, DATE_FORMAT?.DASH_DD_MM_YYYY)}</span>
+                <div>
+                    <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium capitalize ${statusClasses[row.status?.toLowerCase()] || "bg-gray-100 text-gray-700"} `} >
+                        {row.status}
+                    </span>
+                </div>
+            ),
+        },
+        {
+            key: "created_at", title: "Created",
+            render: (row: any) => (
+                <span>{formatDate(row.created_at, DATE_FORMAT?.FULL_DAY_MONTH_YEAR)}</span>
             ),
         },
     ];
@@ -78,13 +102,12 @@ export default function DominComponent() {
     const [perPage, setPerPage] = useState(50);
 
     return (<>
-
-        <DynamicTable columns={columns} data={data} />
+        <DynamicTable columns={columns} data={resDomainList} />
         {/* PAGINATION */}
         <Pagination
             currentPage={page}
             perPage={perPage}
-            totalCount={data.length}
+            totalCount={resDomainList.length}
             onChange={(newPage, newPerPage) => {
                 setPage(newPage);
                 setPerPage(newPerPage);

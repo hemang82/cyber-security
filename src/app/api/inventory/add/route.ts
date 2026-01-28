@@ -50,8 +50,8 @@ export async function POST(req: Request) {
             message: "Inventory added successfully",
             data: inventory,
         });
+
     } catch (error) {
-        
         console.error("Inventory Add API Error:", error);
         return NextResponse.json(
             {

@@ -64,7 +64,7 @@ export const TOAST_INFO = (message: any) => {
 
 export const TOAST_ERROR = (message: any) => {
     console.log('TOAST_ERROR', message);
-    
+
     return toast.error(message);
 };
 

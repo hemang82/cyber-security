@@ -8,6 +8,9 @@ import { useForm, FormProvider } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
 import { ASSETS_INPUTS } from "../Inventory/Assets/AddAssets";
 import { useRouter } from "next/navigation";
+import { addDomainDetails } from "@/lib/server/ServerApiCall";
+import { CODES } from "@/common/constant";
+import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 
 type Product = {
     name: string;
@@ -34,24 +37,31 @@ export default function AddDomin() {
 
     const methods = useForm({ mode: "onBlur" });
 
-    const [products, setProducts] = useState<Product[]>([
-        { name: "Macbook Pro 13”", price: 1200, quantity: 1, discount: 0 },
-        { name: "Apple Watch Ultra", price: 300, quantity: 1, discount: 50 },
-        { name: "iPhone 15 Pro Max", price: 800, quantity: 2, discount: 0 },
-        { name: "iPad Pro 3rd Gen", price: 900, quantity: 1, discount: 0 },
-    ]);
+    const onSubmit = async (data: any) => {
 
-    const subtotal = products.reduce((sum, p) => {
-        const discountAmount = (p.price * p.discount) / 100;
-        return sum + (p.price - discountAmount) * p.quantity;
-    }, 0);
+        // const res = await addDomainDetails({ domain: data[DOMIN_INPUTS.DOMIN_URL.name] });
 
-    const vat = subtotal * 0.1;
-    const total = subtotal + vat;
+        const response = await fetch("/api/domain/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ domain: data[DOMIN_INPUTS.DOMIN_URL.name] }),
+        });
 
-    const onSubmit = (data: any) => {
-        console.log("FORM DATA 👉", data);
-        router.push(`/domin`);
+        const res: any = await response.json();
+
+        if (res?.code == CODES?.SUCCESS) {
+            TOAST_SUCCESS("Domain add suceessfully")
+            router.push(`/domain`);
+        } else {
+            TOAST_ERROR("Something went wrong")
+
+        }
+        // if (res.code == CODES?.SUCCESS) {
+
+        // } else {
+        // }
     };
 
     return (<>
@@ -78,7 +88,7 @@ export default function AddDomin() {
                         </div>
 
                         {/* Web URL */}
-                        <div>
+                        {/* <div>
                             <Label>TXT Record (Auto Genrate)</Label>
                             <Input
                                 type={INPUT_TYPE?.TEXT}
@@ -90,7 +100,7 @@ export default function AddDomin() {
                                 }}
                                 disabled={true}
                             />
-                        </div>
+                        </div> */}
 
                     </div>
                     {/* </form> */}

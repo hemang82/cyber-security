@@ -79,7 +79,7 @@ export const EcommerceMetrics = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid rounded-2xl border border-gray-200 bg-white sm:grid-cols-2 xl:grid-cols-6 dark:border-gray-800 dark:bg-gray-900">
+      <div className="grid rounded-2xl border border-gray-200 bg-white sm:grid-cols-2 xl:grid-cols-6 dark:border-gray-800 dark:bg-gray-900 mb-3">
         {[
           { title: "Total Vulnerabilities", value: "0", icon: <GrDocumentLocked className="text-yellow-500 text-sm shrink-0 size-5" /> },
           { title: "Fixed", value: "0", icon: <SiTicktick className="text-green-500 text-sm shrink-0 size-5" /> },
@@ -104,7 +104,6 @@ export const EcommerceMetrics = () => {
         ))}
       </div>
 
-
       {/* <!-- Metric Item Start --> */}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
@@ -126,6 +125,7 @@ export const EcommerceMetrics = () => {
           </Badge> */}
         </div>
       </div>
+
     </div>
   </>);
 };

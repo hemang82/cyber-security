@@ -29,8 +29,7 @@ export async function POST(req: Request) {
     // }
 
     // ✅ External API call (body direct forward)
-    const response = await fetch(
-      "http://cyberapi.tracewavetransparency.com/api/scan/website",
+    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/scan/website",
       {
         method: "POST",
         headers: {
@@ -47,12 +46,11 @@ export async function POST(req: Request) {
 
     const data = await response.json();
 
-    // console.log("data response",data);
-    
     return NextResponse.json({
       code: CODES?.SUCCESS,
+      message: data?.message,
       success: true,
-      data,
+      data: data?.data,
     });
 
   } catch (error) {
