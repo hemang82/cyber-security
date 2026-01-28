@@ -19,7 +19,8 @@ const DEFAULT_ERROR_MESSAGE = "Something went wrong. Please try again later.";
 
 export async function fetcher(
   url: string,
-  options: FetcherOptions = {}
+  options: FetcherOptions = {},
+  basePath?: boolean
 ) {
   const {
     method = "GET",
@@ -38,10 +39,14 @@ export async function fetcher(
   }
 
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-
-  const fullUrl = url.startsWith("http")
-    ? url
-    : `${protocol}://${host}${url}`;
+  let fullUrl
+  if (basePath) {
+    fullUrl = process.env.NEXT_PUBLIC_API_BASE_URL + url
+  } else {
+    fullUrl = url.startsWith("http")
+      ? url
+      : `${protocol}://${host}${url}`;
+  }
 
   try {
     const response = await fetch(fullUrl, {
@@ -49,7 +54,7 @@ export async function fetcher(
       cache,
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.API_KEY!,
+        "api-key": "cyber123",
         ...customHeaders,
       },
       ...(body ? { body: JSON.stringify(body) } : {}),
@@ -57,10 +62,12 @@ export async function fetcher(
     });
 
     if (!response.ok) {
-      console.error("API ERROR", {
+      console.log("API ERROR", {
         url: fullUrl,
         status: response.status,
       });
+
+      console.log("API ERROR", response.status);
 
       throw {
         message: DEFAULT_ERROR_MESSAGE,
@@ -70,7 +77,7 @@ export async function fetcher(
 
     return await response.json();
   } catch (error) {
-    console.error("FETCH ERROR", error);
+    console.log("FETCH ERROR", error);
 
     throw {
       message: "Unable to process your request. Please try again.",

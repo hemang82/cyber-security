@@ -47,7 +47,7 @@ export async function getInventoryDetails(data: Record<string, any>) {
 
         console.log("getInventoryDetails", data);
 
-        const res: InventoryResponse = await fetcher("/api/inventoryDetails", { method: "POST", body: data });
+        const res: InventoryResponse = await fetcher("/api/inventoryDetails", { method: "POST", body: data } , false);
         if (res?.code == CODES?.SUCCESS) {
             return res?.data;
         } else {

@@ -36,8 +36,6 @@ export const DATE_TIME_FORMAT = {
     FULL_DATE_TIME_24H: "dddd, MMMM D, YYYY HH:mm",  // Tuesday, June 12, 2024 18:43
 };
 
-// ===============================
-
 // INPUT REGEX + VALIDATION MESSAGE
 export const INPUT_PATTERN = {
     CHAR_ONLY: {

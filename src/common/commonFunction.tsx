@@ -3,7 +3,6 @@ import * as CryptoJS from "crypto-js";
 import { toast } from "sonner";
 import moment from "moment";
 
-
 import CONSTENT from './constant';
 import { MIDDLEWARE_COOKIE_KEYS } from "./middleware.constants";
 
@@ -27,6 +26,7 @@ export const logoutRedirection = () => {
     localStorage.removeItem(MIDDLEWARE_COOKIE_KEYS.REFRESH_TOKEN_KEY_COOKIE);
     localStorage.removeItem(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE);
 }
+
 // ------------------------------------------------------- Encryption Decreption ---------------------------------------------------------------------------
 
 // export const Encryption = (request = {}, isStringify: boolean) => {
