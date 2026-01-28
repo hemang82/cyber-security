@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate } from "@/common/commonFunction";
+import { formatDate, safeText } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
 import DynamicTable from "@/components/tables/DynamicTable";
 import { useInventoryStore } from "@/store";
@@ -38,6 +38,9 @@ const severityColorMap: Record<string, string> = {
     warning: "bg-yellow-50 text-yellow-600",
     low: "bg-success-100 text-success-700",
     info: "bg-blue-50 text-blue-500",
+    ["critical risk"]: "bg-yellow-100 text-yellow-700",
+    ["safe"]: "bg-success-100 text-success-700",
+    ["high risk"]: "bg-orange-100 text-orange-700"
 };
 
 export const severityColor = (severity: any) => {
@@ -48,6 +51,8 @@ export const severityColor = (severity: any) => {
         "bg-blue-50 text-blue-500"
     );
 };
+
+
 
 /* ---------- Page ---------- */
 
@@ -156,7 +161,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
         },
     ];
 
-    const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
     const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
     return (<>
@@ -211,9 +215,9 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Badge color="error">{safeText(data?.findings?.length) || 0} {safeText(data?.risk_level)}</Badge>
-                        <Badge color="gray">{safeText(data?.findings?.length)/2 || 0} High</Badge>
-                        <Badge color="gray">{safeText(data?.findings?.length)/4 || 0} Medium</Badge>
-                        <Badge color="gray">{safeText(data?.findings?.length)/6 || 0} Low</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length) / 2 || 0} High</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length) / 4 || 0} Medium</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length) / 6 || 0} Low</Badge>
                     </div>
                 </div>
 

@@ -27,7 +27,7 @@ export function TabContent({ title, children }: {
     );
 }
 
-export default function AddInventory() {
+export default function AddInventory({ resDomainList }: any) {
 
     const { active_tab, setActiveTab, assets_type, assets_details, credentials, owners, finel_validate_data } = useInventoryStore();
 
@@ -63,13 +63,13 @@ export default function AddInventory() {
 
                     {/* Content */}
                     <div className="pt-4">
-                        
+
                         {active_tab === TAB_KEY.ASSETS_TYPE && (
                             <AssetsType />
                         )}
 
                         {active_tab === TAB_KEY.ASSETS_DETAILS && (
-                            <AddAssets />
+                            <AddAssets resDomainList={resDomainList}/>
                         )}
 
                         {/* {active_tab === TAB_KEY.CREDENTIALS && (
@@ -82,7 +82,7 @@ export default function AddInventory() {
 
                         {active_tab === TAB_KEY.PREVIEW && (
                             // <TabContent title="Preview">
-                            <PreviewPage />
+                            <PreviewPage resDomainList={resDomainList}/>
                             // </TabContent>
                         )}
                     </div>

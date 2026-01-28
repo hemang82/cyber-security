@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     // ✅ External API call (body direct forward)
-    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/auth/login",
+    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/auth/signup",
       {
         method: "POST",
         headers: {
@@ -78,9 +78,9 @@ export async function POST(req: Request) {
         data: data?.data,
       });
 
-      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, true)
-      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, data?.data?.user)
-      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, DefaultUser?.role)
+      // setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, true)
+      // setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, data?.data)
+      // setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, DefaultUser?.role)
 
     } else {
 

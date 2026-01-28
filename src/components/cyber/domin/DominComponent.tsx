@@ -1,12 +1,14 @@
 "use client"
 
-import { formatDate } from "@/common/commonFunction";
+import { formatDate, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
+import { CODES } from "@/common/constant";
 import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
 import Badge from "@/components/ui/badge/Badge";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { IoMdRefresh } from "react-icons/io";
 
 // export const metadata: Metadata = {
 //   title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
@@ -15,8 +17,10 @@ import React, { useState } from "react";
 // };
 
 export default function DominComponent({ resDomainList }: any) {
+    const [domains, setDomains] = useState(resDomainList);
 
     const router = useRouter();
+    const [refreshingId, setRefreshingId] = useState<number | null>(null);
 
     interface Order {
         // vulnerabilities: {
@@ -47,6 +51,11 @@ export default function DominComponent({ resDomainList }: any) {
     };
 
     const columns = [
+        {
+            key: "id",
+            title: "Id",
+          
+        },
         {
             key: "domain",
             title: "Domin",
@@ -82,13 +91,46 @@ export default function DominComponent({ resDomainList }: any) {
         {
             key: "status",
             title: "Status",
-            render: (row: any) => (
-                <div>
-                    <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium capitalize ${statusClasses[row.status?.toLowerCase()] || "bg-gray-100 text-gray-700"} `} >
-                        {row.status}
-                    </span>
-                </div>
-            ),
+            render: (row: any) => {
+                const isPending = row.status?.toLowerCase() == "verified";
+                const isRefreshing = refreshingId === row.id;
+
+                return (
+                    <div className="flex items-center gap-3">
+                        {/* Status badge */}
+                        <span
+                            className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium capitalize
+            ${statusClasses[row.status?.toLowerCase()] || "bg-gray-100 text-gray-700"}
+          `}
+                        >
+                            {row.status}
+                        </span>
+
+                        {/* Refresh button */}
+                        <button
+                            type="button"
+                            disabled={isPending || isRefreshing}
+                            title={
+                                isPending
+                                    ? "Status update in progress"
+                                    : "Refresh status"
+                            }
+                            onClick={() => handleRefresh(row)}
+                            className={`
+            p-1 rounded-full transition
+            ${isPending
+                                    ? "cursor-not-allowed text-gray-300"
+                                    : "cursor-pointer text-gray-500 hover:text-blue-600 hover:bg-blue-50"}
+          `}
+                        >
+                            <IoMdRefresh
+                                size={18}
+                                className={isRefreshing ? "animate-spin" : ""}
+                            />
+                        </button>
+                    </div>
+                );
+            },
         },
         {
             key: "created_at", title: "Created",
@@ -101,8 +143,48 @@ export default function DominComponent({ resDomainList }: any) {
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(50);
 
+    const handleRefresh = async (row: any) => {
+        try {
+
+            if (refreshingId === row.id) return;
+
+            setRefreshingId(row.id);
+
+            const response = await fetch("/api/domain/refresh", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ domain: row?.domain, token: row?.token }),
+            });
+
+            const res: any = await response.json();
+
+            if (res?.code == CODES?.SUCCESS) {
+                setDomains((prev: any[]) =>
+                    prev.map(item =>
+                        item.id === row.id
+                            ? { ...item, status: res?.data?.status }
+                            : item
+                    )
+                );
+                TOAST_SUCCESS("Status refresh successfully");
+            } else {
+                TOAST_ERROR("Something went wrong")
+            }
+        } catch (error: any) {
+            TOAST_ERROR(error.message || "Something went wrong");
+        } finally {
+            setRefreshingId(null);
+        }
+    };
+
+    useEffect(() => {
+        setDomains(resDomainList);
+    }, [resDomainList]);
+
     return (<>
-        <DynamicTable columns={columns} data={resDomainList} />
+        <DynamicTable columns={columns} data={domains} />
         {/* PAGINATION */}
         <Pagination
             currentPage={page}

@@ -39,8 +39,6 @@ export default function AddDomin() {
 
     const onSubmit = async (data: any) => {
 
-        // const res = await addDomainDetails({ domain: data[DOMIN_INPUTS.DOMIN_URL.name] });
-
         const response = await fetch("/api/domain/add", {
             method: "POST",
             headers: {
@@ -58,10 +56,6 @@ export default function AddDomin() {
             TOAST_ERROR("Something went wrong")
 
         }
-        // if (res.code == CODES?.SUCCESS) {
-
-        // } else {
-        // }
     };
 
     return (<>

@@ -47,7 +47,6 @@ export default function Owners() {
             <form className="" onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="p-2 sm:p-4 dark:border-gray-800 bg-white  ">
                     <div className="relative w-1/2">
-
                         <Controller
                             control={methods.control}
                             name={ASSETS_INPUTS.OWNER.name}

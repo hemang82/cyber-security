@@ -44,9 +44,9 @@ export const EcommerceMetrics = () => {
 
     <div className="grid rounded-2xl  border-gray-200  sm:grid-cols-2 xl:grid-cols-4 dark:border-gray-800 dark:bg-gray-900 gap-4">
       {[
-        { title: "Total Vulnerabilities", value: "10", icon: <FaRegLightbulb className="text-brand-500 size-5 dark:text-white/90" /> },
-        { title: "Scan", value: "10", icon: <LuFileSearch className="text-brand-500 size-5 dark:text-white/90" /> },
-        { title: "User", value: "10", icon: <FaUserFriends className="text-brand-500 size-5 dark:text-white/90" /> },
+        // { title: "Total Vulnerabilities", value: "10", icon: <FaRegLightbulb className="text-brand-500 size-5 dark:text-white/90" /> },
+        // { title: "Scan", value: "10", icon: <LuFileSearch className="text-brand-500 size-5 dark:text-white/90" /> },
+        { title: "Inventory", value: "12", icon: <FaUserFriends className="text-brand-500 size-5 dark:text-white/90" /> },
         { title: "Domin", value: "10", icon: <ImLink className="text-brand-500 size-5 dark:text-white/90" /> },
       ].map((item, index) => (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6" key={index}>

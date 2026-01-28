@@ -48,6 +48,8 @@ export const logoutRedirection = () => {
 //     return decryptedData;
 // }
 
+ export  const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
+
 // --------------------------------------------------------- Date Manage Function ---------------------------------------------------------------------------
 
 export const formatDate = (dateString: string, formatPattern: string) => {

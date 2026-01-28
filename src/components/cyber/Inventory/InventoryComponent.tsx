@@ -6,12 +6,13 @@ import Badge from "../../ui/badge/Badge";
 import Image from "next/image";
 import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
-import { formatDate } from "@/common/commonFunction";
+import { formatDate, safeText } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
 import { useRouter } from "next/navigation";
 import { ASSETS_INPUTS } from "./Assets/AddAssets";
 import { assets } from "./Assets/AssetsTypes";
 import { useInventoryStore } from "@/store";
+import { severityColor } from "./InventoryDetailsComponent";
 
 export default function InventoryComponent({ InventoryData }: any) {
   const router = useRouter();
@@ -23,21 +24,12 @@ export default function InventoryComponent({ InventoryData }: any) {
 
   const columns = [
     {
-      key: "assets_name",
-      title: "Assets Name",
-      render: (row: any) => (
-        <div className="flex items-center gap-3">
-          {row?.assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name]}
-        </div>
-      ),
-    },
-    {
       key: "type",
-      title: "Type",
+      title: "Assets Type",
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {assets.find((item: any) => item?.key === row.assets_type?.value)?.title}
+            {row?.scan_context}
           </span>
         </div>
       ),
@@ -46,7 +38,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       key: "website_url",
       title: "Website URL",
       render: (row: any) => (<>
-        {row?.assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]}
+        {row?.target_url}
       </>),
     },
     {
@@ -75,22 +67,27 @@ export default function InventoryComponent({ InventoryData }: any) {
     {
       key: "serverity", title: "Serverity",
       render: (row: any) => (
-        <Badge size="sm" color={row.serverity === "Active" ? "success" : "warning"}>
-          {row.serverity || "Warning"}
-        </Badge>
+        // <Badge size="sm" color={row.risk_level && severityColor(row.risk_level) || '12'}>
+        //   {row.risk_level || "Warning"}
+        // </Badge>
+
+        <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(row?.risk_level || "Info")}`} >
+                    {safeText(row?.risk_level) || "Info"}
+                </span>
       ),
     },
     {
       key: "created_at", title: "Created At",
       render: (row: any) => (
-        <span>{formatDate(row.finel_validate_data?.value, DATE_FORMAT?.FULL_DAY_MONTH_YEAR)}</span>
+        <span>{formatDate(row?.scanned_at, DATE_FORMAT?.FULL_DAY_MONTH_YEAR)}</span>
       ),
     },
     {
       key: "action", title: "Action",
       render: (row: any) => (
         <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400" onClick={() => {
-          router.push(`/Inventory-details?url=${encodeURIComponent(row?.assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])}`);
+          router.push(`/Inventory-details?url=${encodeURIComponent(row?.target_url)}`);
           setLoader(true)
           // router.push(`/Inventory-details`); 
         }}>
@@ -99,8 +96,6 @@ export default function InventoryComponent({ InventoryData }: any) {
       ),
     },
   ];
-
-
 
   return (
     <>

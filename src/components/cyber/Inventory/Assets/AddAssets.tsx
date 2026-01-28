@@ -3,12 +3,14 @@
 import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TabContent } from "../AddInventory";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, Controller } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE, TAB_KEY } from "@/common/commonVariable";
 import { useInventoryStore } from "@/store";
 import { watch } from "fs";
+import Select from "@/components/form/Select";
+import Badge from "@/components/ui/badge/Badge";
 
 type Product = {
     name: string;
@@ -38,6 +40,11 @@ export const ASSETS_INPUTS = {
         name: "name",
         validation: "Enter name.",
     },
+    COMPANY_NAME: {
+        placeholder: "Enter company name",
+        name: "company_name",
+        validation: "Enter company name.",
+    },
     EMAIL: {
         placeholder: "Enter email",
         name: "email",
@@ -60,7 +67,7 @@ export const ASSETS_INPUTS = {
     },
 }
 
-export default function AddAssets() {
+export default function AddAssets({ resDomainList }: any) {
 
     const { assets_details, setAssetsDetails, setActiveTab } = useInventoryStore();
 
@@ -91,12 +98,27 @@ export default function AddAssets() {
 
     useEffect(() => {
         methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
-        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
+        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.id : 0 || '');
         methods.setValue(ASSETS_INPUTS.ADDITIONL_INFO.name, assets_details?.value?.[ASSETS_INPUTS.ADDITIONL_INFO.name] || '');
         methods.setValue(ASSETS_INPUTS.NAME.name, assets_details?.value?.[ASSETS_INPUTS.NAME.name] || '');
         methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
         methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
+
     }, [methods]);
+
+    const selectList = useMemo(() => {
+        return resDomainList?.map((item: any) => ({
+            value: item.id,
+            label: item.domain,
+            status: item.status
+            // <>
+            //     <p>{item.domain}
+            //     {/* <Badge size="sm"  variant="light" color="success">
+            //         {item.status || "Pending"}
+            //     </Badge> */}
+            // </>
+        })) || [];
+    }, [resDomainList]);
 
     return (<>
         <FormProvider {...methods}>
@@ -124,8 +146,9 @@ export default function AddAssets() {
 
                             {/* Web URL */}
                             <div>
-                                <Label>Web URL</Label>
-                                <Input
+                                <Label> Web URL <span className="text-gray-500">(Note : Verified after selection)</span> </Label>
+
+                                {/* <Input
                                     type={INPUT_TYPE?.TEXT}
                                     placeholder={ASSETS_INPUTS?.WEBSITE_URL?.placeholder}
                                     name={ASSETS_INPUTS.WEBSITE_URL.name}
@@ -136,6 +159,22 @@ export default function AddAssets() {
                                             message: INPUT_PATTERN.WEBSITE.message,
                                         },
                                     }}
+                                /> */}
+
+                                <Controller
+                                    control={methods.control}
+                                    name={ASSETS_INPUTS?.WEBSITE_URL.name}
+                                    rules={{ required: ASSETS_INPUTS.WEBSITE_URL.validation }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={selectList}
+                                            // options={[
+                                            //     { value: "admin", label: "Admin" },
+                                            // ]}
+                                            placeholder="Select Option"
+                                        />
+                                    )}
                                 />
                             </div>
 

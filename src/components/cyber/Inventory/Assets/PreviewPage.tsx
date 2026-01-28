@@ -14,7 +14,9 @@ import { assets } from "./AssetsTypes";
 // import { getInventoryDetails } from "@/lib/server/ServerApiCall";
 
 
-export default function PreviewPage() {
+export default function PreviewPage({ resDomainList }: any) {
+
+    console.log('resDomainList', resDomainList);
 
     const router = useRouter();
     const { assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData, setLoader } = useInventoryStore();
@@ -23,25 +25,12 @@ export default function PreviewPage() {
         mode: "onBlur", // validation timing
     });
 
-    const onSubmit = async (data) => {
-
-        console.log("FORM DATA 👉", data);
+    const onSubmit = async (data: any) => {
 
         setFinelValidateData({
             value: new Date(),
             is_valid: true,
         });
-
-        // router.push(`/Inventory-details`);
-        // const addInventoryData = await getInventoryDetails({
-        //     assets_type: assets_type,
-        //     assets_details: assets_details,
-        //     credentials: credentials,
-        //     owners: owners,
-        //     finel_validate_data: finel_validate_data
-        // })
-
-        console.log('finel_validate_data', finel_validate_data);
 
         const inventoryData = await fetch("/api/inventory/add", {
             method: "POST",
@@ -63,7 +52,7 @@ export default function PreviewPage() {
             TOAST_SUCCESS(res?.message)
             // return
             setLoader(true)
-            router.push(`/Inventory-details?url=${encodeURIComponent(assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '')}`);
+            router.push(`/Inventory-details?url=${encodeURIComponent(resDomainList?.length > 0 && resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || '')}`);
         } else {
             TOAST_ERROR(res?.message)
         }
@@ -99,7 +88,8 @@ export default function PreviewPage() {
                                         },
                                         {
                                             title: "Website URL",
-                                            value: assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]
+                                            value: resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain : "N/A"
+
                                         },
                                         {
                                             title: "Name",

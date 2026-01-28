@@ -6,6 +6,7 @@ import { useFormContext } from "react-hook-form";
 interface Option {
   value: string;
   label: string;
+  status?: string;
 }
 
 interface SelectProps {
@@ -65,18 +66,22 @@ const Select: React.FC<SelectProps> = ({
       </option>
 
 
-
       {/* Map over options */}
       {options.map((option) => (
         <option
           key={option.value}
           value={option.value}
-          className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
+          disabled={option?.status ? option?.status == "pending" : false}
+          className={`
+      ${option?.status == "pending" ? "text-red-300" : ""}
+      ${option?.status == "verified" ? "text-green-700" : ""}
+      dark:bg-gray-900 dark:text-gray-400 cursor-pointer
+    `}
         >
           {option.label}
+          {option?.status && ` (${option.status})`}
         </option>
       ))}
-
 
     </select>
 
