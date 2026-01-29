@@ -67,33 +67,31 @@ export default function SignInForm() {
   // };
 
   const onSubmit = async (data: any) => {
-  setLoader(true);
+    setLoader(true);
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data[ASSETS_INPUTS.EMAIL.name],
+          password: data[ASSETS_INPUTS.PASSWORD.name],
+        }),
+      });
 
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: data[ASSETS_INPUTS.EMAIL.name],
-        password: data[ASSETS_INPUTS.PASSWORD.name],
-      }),
-    });
+      const responseData = await res.json();
 
-    const responseData = await res.json();
-
-    if (responseData.code === CODES?.SUCCESS) {
-      router.replace("/"); // ✅ direct home
-    } else {
-      TOAST_ERROR(responseData.message);
+      if (responseData.code === CODES?.SUCCESS) {
+        router.replace("/"); // ✅ direct home
+      } else {
+        TOAST_ERROR(responseData.message);
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      TOAST_ERROR("Something went wrong. Please try again.");
+    } finally {
+      setLoader(false); // ✅ always stop loader
     }
-  } catch (error: any) {
-    console.error("Login error:", error);
-    TOAST_ERROR("Something went wrong. Please try again.");
-  } finally {
-    setLoader(false); // ✅ always stop loader
-  }
-};
-
+  };
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">

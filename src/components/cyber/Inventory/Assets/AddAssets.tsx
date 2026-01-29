@@ -146,7 +146,8 @@ export default function AddAssets({ resDomainList }: any) {
 
                             {/* Web URL */}
                             <div>
-                                <Label> Web URL <span className="text-gray-500">(Note : Verified after selection)</span> </Label>
+                                
+                                <Label>Website URL <span className="text-gray-500">(Note : Domain verified after selection)</span> </Label>
 
                                 {/* <Input
                                     type={INPUT_TYPE?.TEXT}

@@ -90,7 +90,6 @@ export async function POST(req: Request) {
         success: true,
         data: data?.data,
       });
-
     }
 
     return updatedRes

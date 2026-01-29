@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     // ✅ frontend thi aavelu full body
     const body = await req.json();
 
-    console.log("inventoryDetails Incoming body:", body);
+    console.log("scan-details Incoming body:", body);
 
     // // (optional) empty body check
     // if (!body || Object.keys(body).length === 0) {
@@ -29,8 +29,8 @@ export async function POST(req: Request) {
     // }
 
     // ✅ External API call (body direct forward)
-    
-    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/scan/website",
+
+    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/scan/scan-details",
       {
         method: "POST",
         headers: {
@@ -47,6 +47,8 @@ export async function POST(req: Request) {
 
     const data = await response.json();
 
+    console.log("scan-details data",data);
+    
     return NextResponse.json({
       code: CODES?.SUCCESS,
       message: data?.message,

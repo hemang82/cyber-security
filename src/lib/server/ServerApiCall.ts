@@ -88,6 +88,21 @@ export async function getInventoryDetails(data: Record<string, any>) {
     }
 }
 
+export async function getInventoryView(data: Record<string, any>) {
+    try {
+
+        const res: InventoryResponse = await fetcher("/api/inventoryView", { method: "POST", body: data });
+        
+        if (res?.code == CODES?.SUCCESS) {
+            return res?.data;
+        } else {
+            return [];
+        }
+    } catch (err: any) {
+        console.log(err.message); // user-friendly message
+    }
+}
+
 export async function addDomainDetails(data: Record<string, any>) {
     try {
         const response = await fetch("/api/domain/add", {

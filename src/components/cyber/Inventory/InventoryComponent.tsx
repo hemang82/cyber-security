@@ -13,6 +13,7 @@ import { ASSETS_INPUTS } from "./Assets/AddAssets";
 import { assets } from "./Assets/AssetsTypes";
 import { useInventoryStore } from "@/store";
 import { severityColor } from "./InventoryDetailsComponent";
+import { GoEye } from "react-icons/go";
 
 export default function InventoryComponent({ InventoryData }: any) {
   const router = useRouter();
@@ -72,9 +73,9 @@ export default function InventoryComponent({ InventoryData }: any) {
         // </Badge>
 
         <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(row?.risk_level || "Info")}`} >
-                    {safeText(row?.risk_level) || "Info"}
-                </span>
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(row?.risk_level || "Info")}`} >
+          {safeText(row?.risk_level) || "Info"}
+        </span>
       ),
     },
     {
@@ -87,11 +88,13 @@ export default function InventoryComponent({ InventoryData }: any) {
       key: "action", title: "Action",
       render: (row: any) => (
         <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400" onClick={() => {
-          router.push(`/Inventory-details?url=${encodeURIComponent(row?.target_url)}`);
+          router.push(`/Inventory-view?id=${encodeURIComponent(row?.id)}`);
           setLoader(true)
           // router.push(`/Inventory-details`); 
         }}>
-          {row.action || "view"}
+          {/* {row.action || "view"} */}
+          <GoEye size={20}/>
+
         </button>
       ),
     },
