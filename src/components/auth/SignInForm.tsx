@@ -82,8 +82,9 @@ export default function SignInForm() {
 
       const responseData = await res.json();
 
-      if (responseData.code === CODES?.SUCCESS) {
-        router.replace("/"); // ✅ direct home
+      if (responseData.code == CODES?.SUCCESS) {
+        router.replace("/");
+  window.location.reload();
       } else {
         TOAST_ERROR(responseData.message);
       }
