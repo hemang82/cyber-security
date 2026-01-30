@@ -5,6 +5,7 @@ import { DATE_FORMAT } from "@/common/commonVariable";
 import DynamicTable from "@/components/tables/DynamicTable";
 import { useInventoryStore } from "@/store";
 import { useEffect, useState } from "react";
+import { RiInformation2Line } from "react-icons/ri";
 
 /* ---------- UI Helpers ---------- */
 const Badge = ({ color, children }: any) => {
@@ -22,11 +23,35 @@ const Badge = ({ color, children }: any) => {
     );
 };
 
-const Card = ({ title, children }: any) => (
+// const Card = ({ title, children }: any) => (
+//     <div className="h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+//         <h3 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
+//             {title}
+//         </h3>
+//         {children}
+//     </div>
+// );
+
+const Card = ({ title, tooltip, children }: any) => (
     <div className="h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <h3 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
-            {title}
-        </h3>
+
+        <div className="mb-4 flex items-center gap-2">
+
+            <h3 className=" text-lg font-semibold text-gray-800 dark:text-white/90">
+                {title}
+            </h3>
+
+            {tooltip && (
+                <div className="group relative cursor-pointer">
+                    <span className="text-xs text-gray-700"><RiInformation2Line size={20} /></span>
+
+                    <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-70 -translate-x-1/2 rounded-md bg-gray-100 px-3 py-2 text-sm text-dark opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                        {tooltip}
+                    </div>
+                </div>
+            )}
+        </div>
+
         {children}
     </div>
 );
@@ -208,7 +233,11 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
             {/* Vulnerabilities */}
-            <Card title="Vulnerabilities">
+            <Card title="Vulnerabilities" tooltip={<>
+                <h1 className="mb-1">How Security Score Is Calculated ?</h1>  &nbsp;
+                <p>The security score is calculated based on the total number of vulnerabilities, their severity level, and compliance with security best practices.
+                    High-risk issues significantly reduce the overall score.</p>
+            </>}>
                 <div className="flex flex-col items-center gap-4 sm:flex-row">
                     <div className="flex h-24 w-24 items-center justify-center rounded-full border-[6px] border-red-500 text-lg font-bold">
                         {data?.findings?.length || 0}
@@ -221,9 +250,16 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     </div>
                 </div>
 
-                <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 ">
                     ⚠ Vulnerabilities Not Fixed : <b>{safeText(data?.findings?.length) || 0} / {data?.findings?.length || 0}</b>
                 </div>
+
+                <div className="my-3">
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 ">What Does High Risk Mean?</h3>
+                    <p className="text-gray-500 text-sm mt-2">High-risk vulnerabilities can allow attackers to gain unauthorized access, steal sensitive data, or completely compromise the website.
+                        These issues should be fixed on priority to reduce business, legal, and reputation risk.</p>
+                </div>
+
             </Card>
 
             {/* Scan Details */}
@@ -234,14 +270,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                 </h2>
 
                 <ul className="divide-y divide-gray-100 dark:divide-gray-800">
-                    <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
-                            Scan Method
-                        </span>
-                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            Manual
-                        </span>
-                    </li>
 
                     <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
@@ -257,7 +285,16 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                             Asset Type
                         </span>
                         <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
-                            {safeText(data?.asset_type) || "Web Site"}
+                            {"Web Site"}
+                        </span>
+                    </li>
+
+                    <li className="flex items-start gap-5 py-2.5">
+                        <span className="w-1/2 text-sm text-gray-500 sm:w-1/3 dark:text-gray-400">
+                            Scan Method
+                        </span>
+                        <span className="w-1/2 text-sm text-gray-700 sm:w-2/3 dark:text-gray-400">
+                            Automated
                         </span>
                     </li>
 
@@ -270,15 +307,21 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </span>
                     </li>
 
-
                 </ul>
             </div>
 
             {/*  Domain Information */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
-                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+            {/* <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3"> */}
+
+            <Card title="Domain Information" tooltip={<>
+                <h1 className="mb-1">Domain & Infrastructure Information</h1>  &nbsp;
+                <p>This section provides publicly available domain and infrastructure details.
+                    Misconfigured DNS or server settings may increase security risks.</p>
+            </>}>
+
+                {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Domain Information
-                </h2>
+                </h2> */}
 
                 <ul className="divide-y divide-gray-100 dark:divide-gray-800">
 
@@ -377,7 +420,8 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     </li>
 
                 </ul>
-            </div>
+            </Card>
+            {/* </div> */}
 
             {/*  Performance */}
             <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
@@ -471,11 +515,17 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
             </div>
 
             {/*  Website Security Headers */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
+            {/* <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3"> */}
 
-                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+            <Card title=" Website Security Headers" tooltip={<>
+                <h1 className="mb-1">Why Security Headers Matter</h1>  &nbsp;
+                <p>Security headers protect the website from common attacks such as cross-site scripting, clickjacking, and data injection.
+                    Missing or misconfigured headers weaken browser-level protection.</p>
+            </>}>
+
+                {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Website Security Headers
-                </h2>
+                </h2> */}
 
                 {/* <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                     {Object.entries(
@@ -508,13 +558,26 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                 })
                 ) || []} className={"min-w-[400px]"} />
 
-            </div>
+            </Card>
+            {/* </div> */}
 
             {/*  Network Information */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
-                <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+            {/* <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3"> */}
+            <Card title="Network Information" tooltip={<>
+                <h1 className="mb-1">Attack Surface Overview</h1>  &nbsp;
+                <p>The attack surface represents all publicly accessible entry points that attackers can target.
+                    Reducing exposed services and endpoints minimizes the risk of exploitation.</p>
+            </>}>
+
+                {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Network Information
-                </h2>
+                </h2> */}
+
+                {/* <div className="my-3">
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 ">Attack Surface Overview</h3>
+                    <p className="text-gray-500 text-sm mt-2">The attack surface represents all publicly accessible entry points that attackers can target.
+                        Reducing exposed services and endpoints minimizes the risk of exploitation.</p>
+                </div> */}
 
                 <ul className="divide-y divide-gray-100 dark:divide-gray-800 mb-4 border-b pb-4">
                     {/* <li className="flex items-start gap-5 py-2.5">
@@ -576,7 +639,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                 <div className="pt-4">
                     {data?.network_info?.findings?.length > 0 && <DynamicTable columns={column4} data={data?.network_info?.findings?.length > 0 ? data?.network_info?.findings : []} className={"min-w-[600px] "} />}
                 </div>
-            </div>
+
+            </Card>
+
+            {/* </div> */}
 
         </div>
 

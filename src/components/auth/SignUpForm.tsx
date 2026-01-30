@@ -67,7 +67,7 @@ export default function SignUpForm() {
     <div className="flex flex-col flex-1  w-full overflow-y-auto no-scrollbar">
 
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto ">
-        <div className="w-full max-w-md mx-auto mb-5 mb-10 flex justify-center">
+        {/* <div className="w-full max-w-md mx-auto mb-5 mb-10 flex justify-center">
           <Image
             src="/images/logo/logo.png"
             alt="Logo"
@@ -75,8 +75,8 @@ export default function SignUpForm() {
             height={48}
             priority
           />
-        </div>
-        <div className="border !border-gray-500 rounded-lg py-6 px-6 shadow-lg">
+        </div> */}
+        <div className="border !border-gray-200 rounded-lg py-6 px-6 ">
           <div className="mb-5 sm:mb-8">
             <h3 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 ">
               Sign Up
@@ -228,16 +228,14 @@ export default function SignUpForm() {
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                 Already have an account?
-                <Link
-                  href="/signin"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400 ms-1"
-                >
+                <Link href="/signin" className="text-brand-500 hover:text-brand-600 dark:text-brand-400 ms-1" >
                   Sign In
                 </Link>
               </p>
             </div>
           </div>
         </div>
+        
       </div>
     </div>
 

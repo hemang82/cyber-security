@@ -98,7 +98,7 @@ export default function SignInForm() {
   return (<>
 
     {is_loading && <Spinner isActive={is_loading} />}
-    
+
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
 
       {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -112,7 +112,7 @@ export default function SignInForm() {
       </div> */}
 
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto ">
-        <div className="w-full max-w-md mx-auto mb-5 mb-10 flex justify-center">
+        {/* <div className="w-full max-w-md mx-auto mb-5 mb-10 flex justify-center">
           <Image
             src="/images/logo/logo.png"
             alt="Logo"
@@ -120,8 +120,8 @@ export default function SignInForm() {
             height={48}
             priority
           />
-        </div>
-        <div className="border !border-gray-500 rounded-lg py-6 px-12 shadow-lg">
+        </div> */}
+        <div className="border !border-gray-200 rounded-lg py-6 px-12 ">
 
           <div className="mb-3 sm:mb-5 ">
             <h3 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 ">
