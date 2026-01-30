@@ -58,7 +58,7 @@ export default function DominComponent({ resDomainList }: any) {
         },
         {
             key: "domain",
-            title: "Domin",
+            title: "Domain",
             // render: (row: Order) => (
             //   <div className="flex items-center gap-3">
             //     <Image

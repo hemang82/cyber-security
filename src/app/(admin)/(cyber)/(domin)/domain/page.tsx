@@ -19,9 +19,9 @@ export default async function page() {
 
   return (
     <div>
-      <PageBreadcrumb pageTitle="Domin" />
+      <PageBreadcrumb pageTitle="All Domains" />
       <div className="space-y-6">
-        <ComponentCard title="Domin" buttonName={"Add Domin"} navigation={"/add-domin"} >
+        <ComponentCard title="" desc="Note: TXT records may take some time to appear. Please click the refresh button after a few minutes." buttonName={"Add Domain"} navigation={"/add-domin"} >
           <DominComponent resDomainList={resDomainList} />
         </ComponentCard>
       </div>

@@ -24,9 +24,16 @@ export default function InventoryComponent({ InventoryData }: any) {
   const [perPage, setPerPage] = useState(50);
 
   const columns = [
+    //  {
+    //   key: "id",
+    //   title: "ID",
+    //   render: (row: any) => (<>
+    //     {row?.id}
+    //   </>),
+    // },
     {
       key: "type",
-      title: "Assets Type",
+      title: "Type",
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">

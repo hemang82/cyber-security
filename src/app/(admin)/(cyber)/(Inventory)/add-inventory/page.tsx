@@ -18,7 +18,7 @@ export default async function page() {
     
     return (
         <div>
-            <PageBreadcrumb pageTitle="Add Assets" />
+            <PageBreadcrumb pageTitle="Add Inventory" />
             <div className="space-y-6">
                 <ComponentCard  >
                     <AddInventory resDomainList={resDomainList}/>

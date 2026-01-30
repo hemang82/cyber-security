@@ -44,10 +44,10 @@ export default function AddInventory({ resDomainList }: any) {
                     <div className="border-b border-gray-200 dark:border-gray-800">
                         <nav className="-mb-px flex space-x-2 overflow-x-auto">
                             <button className={tabClass(TAB_KEY.ASSETS_TYPE, assets_type)} onClick={() => { assets_type?.is_valid && setActiveTab(TAB_KEY.ASSETS_TYPE) }}>
-                                Assets Type
+                                Type
                             </button>
                             <button className={tabClass(TAB_KEY.ASSETS_DETAILS, assets_details)} onClick={() => { assets_details?.is_valid && setActiveTab(TAB_KEY.ASSETS_DETAILS) }}>
-                                Assets Details
+                                Details
                             </button>
                             {/* <button className={tabClass(TAB_KEY.CREDENTIALS, credentials)} onClick={() => { credentials?.is_valid && setActiveTab(TAB_KEY.CREDENTIALS) }}>
                                 Credentials

@@ -15,10 +15,12 @@ import { FormProvider, useForm } from "react-hook-form";
 import { ASSETS_INPUTS } from "../cyber/Inventory/Assets/AddAssets";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { useInventoryStore } from "@/store";
+import Spinner from "../common/Spinner";
 
 export default function SignInForm() {
 
-  const { setLoader } = useInventoryStore();
+  // const { setLoader } = useInventoryStore();
+  const [is_loading, setLoader] = useState(false);
 
   const router = useRouter();
 
@@ -93,7 +95,10 @@ export default function SignInForm() {
     }
   };
 
-  return (
+  return (<>
+
+    {is_loading && <Spinner isActive={is_loading} />}
+    
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
 
       {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -214,5 +219,6 @@ export default function SignInForm() {
         </div>
       </div>
     </div>
+  </>
   );
 }

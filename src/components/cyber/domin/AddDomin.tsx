@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { addDomainDetails } from "@/lib/server/ServerApiCall";
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
+import { useInventoryStore } from "@/store";
 
 type Product = {
     name: string;
@@ -35,28 +36,46 @@ export const DOMIN_INPUTS = {
 export default function AddDomin() {
     const router = useRouter();
 
+    const { setLoader } = useInventoryStore();
+
     const methods = useForm({ mode: "onBlur" });
 
     const onSubmit = async (data: any) => {
+        setLoader(true);
 
-        const response = await fetch("/api/domain/add", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ domain: data[DOMIN_INPUTS.DOMIN_URL.name] }),
-        });
+        try {
+            const response = await fetch("/api/domain/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    domain: data[DOMIN_INPUTS.DOMIN_URL.name]
+                }),
+            });
 
-        const res: any = await response.json();
+            // Optional: check HTTP status first
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+            }
 
-        if (res?.code == CODES?.SUCCESS) {
-            TOAST_SUCCESS("Domain add suceessfully")
-            router.push(`/domain`);
-        } else {
-            TOAST_ERROR("Something went wrong")
+            const res: any = await response.json();
 
+            if (res?.code === CODES?.SUCCESS) {
+                TOAST_SUCCESS("Domain added successfully");
+                router.push(`/domain`);
+            } else {
+                TOAST_ERROR(res?.message || "Something went wrong");
+            }
+
+        } catch (error: any) {
+            console.error("Add domain error:", error);
+            TOAST_ERROR(error?.message || "Request failed");
+        } finally {
+            setLoader(false);
         }
     };
+
 
     return (<>
         <FormProvider {...methods}>

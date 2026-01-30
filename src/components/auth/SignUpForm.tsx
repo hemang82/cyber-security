@@ -14,10 +14,11 @@ import { useRouter } from "next/navigation";
 import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import Image from "next/image";
 import { useInventoryStore } from "@/store";
+import Spinner from "../common/Spinner";
 
 export default function SignUpForm() {
 
-  const { setLoader } = useInventoryStore();
+  const [is_loading, setLoader] = useState(false);
 
   const methods = useForm({ mode: "onBlur" });
   const router = useRouter();
@@ -60,7 +61,9 @@ export default function SignUpForm() {
   };
 
 
-  return (
+  return (<>
+    {is_loading && <Spinner isActive={is_loading} />}
+
     <div className="flex flex-col flex-1  w-full overflow-y-auto no-scrollbar">
 
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto ">
@@ -196,20 +199,20 @@ export default function SignUpForm() {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center justify-between"> */}
+                    {/* <div className="flex items-center gap-3">
                       <Checkbox checked={isChecked} onChange={setIsChecked} />
                       <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
                         Keep me logged in
                       </span>
-                    </div>
+                    </div> */}
                     {/* <Link
                       href="/reset-password"
                       className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                     >
                       Forgot password?
                     </Link> */}
-                  </div>
+                  {/* </div> */}
 
                   <div>
                     <Button type={'submit'} className="w-full" size="sm" >
@@ -227,7 +230,7 @@ export default function SignUpForm() {
                 Already have an account?
                 <Link
                   href="/signin"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400 ms-1"
                 >
                   Sign In
                 </Link>
@@ -237,5 +240,8 @@ export default function SignUpForm() {
         </div>
       </div>
     </div>
+
+  </>
+
   );
 }
