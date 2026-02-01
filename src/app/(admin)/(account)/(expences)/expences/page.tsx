@@ -1,7 +1,9 @@
+import ExpencesComponent from "@/components/account/expences/ExpencesComponent";
 import ComponentCard from "@/components/common/ComponentCard";
 import ComponentCardList from "@/components/common/ComponentCardList";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import BasicTableOne from "@/components/tables/BasicTableOne";
+import { listExpenceAPI, listPartyAPI } from "@/lib/apiManager/APICalling/AccountAPI";
 import { Metadata } from "next";
 import React from "react";
 
@@ -12,13 +14,16 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-export default function page() {
+export default async function page() {
+
+  const expenceList = await listExpenceAPI({})
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Expences" />
       <div className="space-y-6">
         <ComponentCardList title="Expences" buttonName={"Add Expences"} navigation={"/add-expences"}>
-          <BasicTableOne />
+          <ExpencesComponent expenceList={expenceList} />
         </ComponentCardList>
       </div>
     </div>

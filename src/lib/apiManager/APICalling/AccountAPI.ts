@@ -36,3 +36,37 @@ export async function listPartyAPI(request: any) {
         return [];
     }
 }
+
+export async function addExpenseAPI(request: any) {
+    return await AxiosClientApi.post(APIPaths.ADD_EXPENCE, request)
+}
+
+export async function editExpenseAPI(request: any) {
+    return await AxiosClientApi.post(APIPaths.EDIT_EXPENCE, request)
+}
+
+export async function listExpenceAPI(request: any) {
+
+    // console.log("listPartyAPI" , APIPaths.LIST_PARTY, { method: "POST", body: request } , true);
+    // return await fetcher(APIPaths.LIST_PARTY, { method: "POST", body: request } , true);
+    try {
+        const resList = await fetch(`http://localhost:4000${APIPaths.LIST_EXPENCE}`, {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request), // 👈 DIRECT PASS
+        });
+
+        const res = await resList.json();
+
+        if (res?.code === CODES?.SUCCESS) {
+            return res.data;
+        }
+        return [];
+    } catch (err: any) {
+        console.log(err.message);
+        return [];
+    }
+}

@@ -36,24 +36,14 @@ const navItems: NavItem[] = [
     path: "/"
   },
   {
-    icon: <BiPurchaseTag />,
-    name: "Inventory",
-    path: "/inventory",
-  },
-  {
-    icon: <RiHandbagLine />,
-    name: "Domain",
-    path: "/domain",
+    icon: <UserCircleIcon />,
+    name: "Parties",
+    path: "/parties",
   },
   {
     name: "Expences",
     icon: <IoWalletOutline />,
     path: "/expences"
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "Parties",
-    path: "/parties",
   },
   // {
   //   icon: <RiHandbagLine />,
