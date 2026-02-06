@@ -84,7 +84,7 @@ export default function SignInForm() {
 
       if (responseData.code == CODES?.SUCCESS) {
         router.replace("/");
-  window.location.reload();
+        window.location.reload();
       } else {
         TOAST_ERROR(responseData.message);
       }

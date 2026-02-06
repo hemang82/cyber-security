@@ -57,26 +57,18 @@ export async function GET(req: Request) {
     // const body = await req.json();
 
     // ✅ External API call (body direct forward)
+
     const response = await fetch("http://cyberapi.tracewavetransparency.com/api/scan/history",
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        // body: JSON.stringify({}), // 👈 DIRECT PASS
         cache: "no-store",
       }
     );
 
-    console.log('response', response);
-
-    if (!response.ok) {
-      throw new Error("External API failed");
-    }
-
     const data = await response.json();
-
-    console.log('data', data);
 
     return NextResponse.json({
       code: CODES?.SUCCESS,
@@ -86,8 +78,6 @@ export async function GET(req: Request) {
     });
 
   } catch (error) {
-
-    console.log('error', error);
 
     return NextResponse.json(
       {

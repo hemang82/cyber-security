@@ -36,7 +36,7 @@ export default function DynamicTable<T>({ columns, data, className }: DynamicTab
                                     <TableCell
                                         key={index}
                                         isHeader
-                                        className={`px-5 py-3 text-start text-sm text-[#344054] font-medium text-gray-600 dark:text-gray-600 ${col.className ?? ""}`}
+                                        className={`px-5 py-3 text-start text-base text-[#344054] font-medium text-gray-600 dark:text-gray-600 ${col.className ?? ""}`}
                                     >
                                         {col.title}
                                     </TableCell>
@@ -71,7 +71,7 @@ export default function DynamicTable<T>({ columns, data, className }: DynamicTab
                                                         row[col.key as keyof T] !== "" ? (
                                                         row[col.key as keyof T] as React.ReactNode
                                                     ) : (
-                                                        <span className="text-gray-400 text-sm">N/A</span>
+                                                        <span className="text-gray-400 text-base">N/A</span>
                                                     )}
 
                                             </TableCell>
