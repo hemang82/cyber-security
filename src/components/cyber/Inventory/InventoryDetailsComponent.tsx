@@ -391,13 +391,11 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     {
                         !isDownload &&
                         <div className="flex gap-3">
-                            <button
-                                onClick={handlePdfDownload}
-                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600"
-                            >
+                            <button onClick={handlePdfDownload} className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600" >
                                 <HiDownload size={20} />
                                 Download PDF
                             </button>
+
                             {/* <button
                                 onClick={handleDownload}
                                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600"
@@ -405,6 +403,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 <HiDownload size={20} />
                                 Download PNG
                             </button> */}
+
                         </div>
                     }
                 </div>
