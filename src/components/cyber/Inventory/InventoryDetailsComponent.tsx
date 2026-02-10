@@ -164,6 +164,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
             {/* Header Section */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
                 {/* Left Info */}
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
 
@@ -185,6 +186,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         {safeText(scanDate)}
                     </span>
                 </p>
+
             </div>
 
             {/* Right Section */}
@@ -211,9 +213,9 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Badge color="error">{safeText(data?.findings?.length) || 0} {safeText(data?.risk_level)}</Badge>
-                        <Badge color="gray">{safeText(data?.findings?.length)/2 || 0} High</Badge>
-                        <Badge color="gray">{safeText(data?.findings?.length)/4 || 0} Medium</Badge>
-                        <Badge color="gray">{safeText(data?.findings?.length)/6 || 0} Low</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length) / 2 || 0} High</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length) / 4 || 0} Medium</Badge>
+                        <Badge color="gray">{safeText(data?.findings?.length) / 6 || 0} Low</Badge>
                     </div>
                 </div>
 
