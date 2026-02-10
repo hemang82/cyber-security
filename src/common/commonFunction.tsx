@@ -48,11 +48,12 @@ export const logoutRedirection = () => {
 //     return decryptedData;
 // }
 
- export  const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
+export const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
 
 // --------------------------------------------------------- Date Manage Function ---------------------------------------------------------------------------
 
 export const formatDate = (dateString: string, formatPattern: string) => {
+    if (!dateString) return "-";
     return moment.utc(dateString).local().format(formatPattern);
 };
 

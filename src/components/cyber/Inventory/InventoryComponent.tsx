@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { ASSETS_INPUTS } from "./Assets/AddAssets";
 import { assets } from "./Assets/AssetsTypes";
 import { useInventoryStore } from "@/store";
-import { severityColor } from "./InventoryDetailsComponent";
+import { CyberColorClass, severityColor } from "./InventoryDetailsComponent";
 import { GoEye } from "react-icons/go";
 
 export default function InventoryComponent({ InventoryData }: any) {
@@ -80,7 +80,7 @@ export default function InventoryComponent({ InventoryData }: any) {
         // </Badge>
 
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${severityColor(row?.risk_level || "Info")}`} >
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${CyberColorClass[row?.risk_color as keyof typeof CyberColorClass]} `} >
           {safeText(row?.risk_level) || "Info"}
         </span>
       ),
@@ -100,7 +100,7 @@ export default function InventoryComponent({ InventoryData }: any) {
           // router.push(`/Inventory-details`); 
         }}>
           {/* {row.action || "view"} */}
-          <GoEye size={20}/>
+          <GoEye size={20} />
 
         </button>
       ),

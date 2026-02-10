@@ -50,7 +50,7 @@ export default function DynamicTable<T>({ columns, data, className }: DynamicTab
                                 <TableRow>
                                     <TableCell
                                         // colSpan={columns?.length || 0}
-                                        className="py-6 text-center text-gray-500"
+                                        className="py-6 text-center text-gray-800"
                                     >
                                         No data found
                                     </TableCell>
@@ -59,7 +59,7 @@ export default function DynamicTable<T>({ columns, data, className }: DynamicTab
                                 data.map((row, rowIndex) => (
                                     <TableRow key={rowIndex}>
                                         {columns.map((col, colIndex) => (
-                                            <TableCell key={colIndex} className="px-5 py-3 text-start text-theme-sm text-gray-500 dark:text-gray-400" >
+                                            <TableCell key={colIndex} className="px-5 py-3 text-start text-theme-sm text-gray-800 dark:text-gray-400" >
                                                 {/* {col.render
                                                     ? col.render(row)
                                                     : (row[col.key as keyof T] as React.ReactNode)} */}

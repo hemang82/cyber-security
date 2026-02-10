@@ -18,8 +18,11 @@ export default async function Page() {
     <div>
       <PageBreadcrumb pageTitle="Inventory" />
       <div className="space-y-6">
-        <ComponentCard title="Inventory" buttonName={"Add Inventory"} navigation={"/add-inventory"} excel={false}>
-          <InventoryComponent InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
+        <ComponentCard title="Inventory" 
+        buttonName={"Add Inventory "}
+         navigation={"/add-inventory"} excel={false}>
+          <InventoryComponent
+           InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
         </ComponentCard>
       </div>
     </div>
