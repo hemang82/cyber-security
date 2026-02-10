@@ -238,6 +238,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
             canvas.height = pageHeightInImagePixels;
 
             while (position < imgHeight) {
+
                 if (position > 0) {
                     pdf.addPage();
                 }
@@ -246,6 +247,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                 const sliceHeight = Math.min(pageHeightInImagePixels, imgHeight - position);
 
                 if (ctx) {
+
                     // Update canvas height to match strictly the slice height (avoids blank space on last page)
                     canvas.height = sliceHeight;
 
