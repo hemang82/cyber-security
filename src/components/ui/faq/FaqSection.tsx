@@ -1,8 +1,9 @@
 "use client";
 
 import { safeText } from "@/common/commonFunction";
-import { Card, severityColor } from "@/components/cyber/Inventory/InventoryDetailsComponent";
+import { Badge, Card, severityColor } from "@/components/cyber/Inventory/InventoryDetailsComponent";
 import { useState } from "react";
+import { GoEye } from "react-icons/go";
 import { RiArrowDownSLine } from "react-icons/ri";
 
 // export function RoutesScanned({ data }: any) {
@@ -333,14 +334,14 @@ export function VurnabilitiesFindings({ data }: any) {
     );
 }
 
-export default function OwaspReport({ data, download }: any) {
+export default function OwaspReport({ data, download, openModal }: any) {
+
     const [open, setOpen] = useState<number | null>(null);
 
     const entries = Object.entries(data || {});
 
     return (
-        <section >
-
+        <section className="mt-4">
             <Card title="Top 10 Security Risks">
                 {/* <div className="container mx-auto px-4"> */}
                 {/* Heading */}
@@ -364,10 +365,7 @@ export default function OwaspReport({ data, download }: any) {
                         return (
                             <div key={i} className="border rounded-xl bg-white shadow-sm overflow-hidden" >
                                 <button
-                                    onClick={() =>
-                                        !download &&
-                                        setOpen(open === i ? null : i)
-                                    }
+                                    onClick={() => !download && setOpen(open === i ? null : i)}
                                     className="w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100"
                                 >
                                     <h2 className="font-medium text-gray-800">
@@ -378,16 +376,13 @@ export default function OwaspReport({ data, download }: any) {
                                         <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
                                             ✅ Passed
                                         </span>
-                                    ) : (
-                                        <span
-                                            className={`transition-transform duration-300 ${download || open === i
-                                                ? "rotate-180"
-                                                : ""
-                                                }`}
-                                        >
-                                            <RiArrowDownSLine size={25} />
-                                        </span>
-                                    )}
+                                    ) : (<>
+                                        <div className="flex items-center gap-4">
+                                            <span className={`transition-transform duration-300 ${download || open === i ? "rotate-180" : ""}`} >
+                                                <RiArrowDownSLine size={25} />
+                                            </span>
+                                        </div>
+                                    </>)}
                                 </button>
 
                                 {/* CONTENT */}
@@ -398,16 +393,8 @@ export default function OwaspReport({ data, download }: any) {
                                                 value.map(
                                                     (vul: any, idx: number) => {
                                                         // Crypto special
-                                                        if (
-                                                            vul?.[
-                                                            "Cryptographic-WASC-13"
-                                                            ]
-                                                        ) {
-                                                            const crypto =
-                                                                vul[
-                                                                "Cryptographic-WASC-13"
-                                                                ];
-
+                                                        if (vul?.["Cryptographic-WASC-13"]) {
+                                                            const crypto = vul["Cryptographic-WASC-13"];
                                                             return (
                                                                 <div key={idx} className="border rounded-lg p-4 bg-blue-50" >
 
@@ -427,12 +414,28 @@ export default function OwaspReport({ data, download }: any) {
                                                         return (
                                                             <div key={idx} className="border rounded-lg p-4 space-y-2 hover:shadow-md" >
                                                                 <div className="flex justify-between">
+
                                                                     <h3 className="font-medium  text-blue-600"> {safeText(vul?.type)} </h3>
-                                                                    <span className={`px-2 py-1 text-sm rounded-full ${severityColor(vul?.severity) || "bg-gray-100 text-gray-600"}`} >
-                                                                        {safeText(
-                                                                            vul?.severity
-                                                                        )}
-                                                                    </span>
+                                                                    <div className="flex items-center gap-4">
+                                                                        {!download && <div className="flex items-center gap-2">
+                                                                            <p className="text-base text-blue-600">Solution : </p>
+                                                                            <button className="shadow-theme-xs inline-flex h-6 w-6 items-center justify-center rounded-lg border border-blue-300 text-blue-500 hover:bg-blue-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" onClick={() => { openModal(vul) }}>
+                                                                                <GoEye size={12} />
+                                                                                {/* <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 21 20" fill="none">
+                                                                                    <path d="M2.96487 10.7925C2.73306 10.2899 2.73306 9.71023 2.96487 9.20764C4.28084 6.35442 7.15966 4.375 10.4993 4.375C13.8389 4.375 16.7178 6.35442 18.0337 9.20765C18.2655 9.71024 18.2655 10.2899 18.0337 10.7925C16.7178 13.6458 13.8389 15.6252 10.4993 15.6252C7.15966 15.6252 4.28084 13.6458 2.96487 10.7925Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                    <path d="M13.5202 10C13.5202 11.6684 12.1677 13.0208 10.4993 13.0208C8.83099 13.0208 7.47852 11.6684 7.47852 10C7.47852 8.33164 8.83099 6.97917 10.4993 6.97917C12.1677 6.97917 13.5202 8.33164 13.5202 10Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                </svg> */}
+                                                                            </button>
+                                                                        </div>}
+                                                                        <span className={`px-2 py-1 text-sm rounded-full ${severityColor(vul?.severity) || "bg-gray-100 text-gray-600"}`} >
+                                                                            {safeText(
+                                                                                vul?.severity
+                                                                            )}
+                                                                        </span>
+
+                                                                        {/* <Badge color={vul?.severity}>{vul?.severity || "Unknown Risk"}</Badge> */}
+
+                                                                    </div>
                                                                 </div>
 
                                                                 {/* {vul?.owasp && (
@@ -443,22 +446,36 @@ export default function OwaspReport({ data, download }: any) {
                                                                     </p>
                                                                 )} */}
 
-                                                                <p className="text-base text-gray-500 ">
+                                                                {/* <p className="text-base text-gray-500 ">
                                                                     {safeText(
                                                                         vul?.detail
                                                                     )}
-                                                                </p>
+                                                                </p> */}
 
-                                                                {vul?.evidence && (
+                                                                {vul?.detail && (<>
                                                                     <p className="text-base bg-gray-100 p-2 text-gray-800 rounded break-all">
-                                                                        <strong>
+                                                                        {/* <strong>
                                                                             Evidence:
-                                                                        </strong>{" "}
+                                                                        </strong>{" "} */}
                                                                         {safeText(
-                                                                            vul?.evidence
+                                                                            vul?.detail
                                                                         )}
+
+
                                                                     </p>
-                                                                )}
+                                                                    {
+                                                                        download && (
+                                                                            <p className="text-base bg-gray-100 p-2 text-gray-800 rounded break-all">
+                                                                                <strong>
+                                                                                    Solution:
+                                                                                </strong>{" "}
+                                                                                {safeText(
+                                                                                    vul?.solution
+                                                                                )}
+                                                                            </p>
+                                                                        )
+                                                                    }
+                                                                </>)}
                                                             </div>
                                                         );
                                                     }
@@ -474,3 +491,4 @@ export default function OwaspReport({ data, download }: any) {
         </section>
     );
 }
+

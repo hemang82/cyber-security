@@ -60,8 +60,8 @@ export async function POST(req: Request) {
       }
     );
 
-    console.log('response',body);
-    
+    console.log('response', body);
+
     // if (!response.ok) {
     //   throw new Error("External API failed");
     // }
@@ -97,7 +97,7 @@ export async function POST(req: Request) {
   } catch (error) {
 
     console.error("Domain Add API Error:", error);
-    
+
     return NextResponse.json({
       code: CODES?.ERROR,
       success: false,

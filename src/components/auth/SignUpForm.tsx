@@ -15,8 +15,11 @@ import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import Image from "next/image";
 import { useInventoryStore } from "@/store";
 import Spinner from "../common/Spinner";
+import { useAuthStore } from "@/store/authStore";
 
 export default function SignUpForm() {
+  const setTemLogin = useAuthStore((s) => s.setTemLogin);
+  const temLogin = useAuthStore((state) => state.temLogin);
 
   const [is_loading, setLoader] = useState(false);
 
@@ -38,23 +41,27 @@ export default function SignUpForm() {
         company_name: data[ASSETS_INPUTS.COMPANY_NAME.name],
       };
 
-      const res = await fetch("/api/signup", {
+      const res = await fetch("/api/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(req),
+        body: JSON.stringify({ email: data[ASSETS_INPUTS.EMAIL.name] }),
       });
 
       const responseData = await res.json();
 
       if (responseData.code === CODES?.SUCCESS) {
         TOAST_SUCCESS(responseData.message);
-        router.replace("/signin"); // ✅ redirect after success
+        setTemLogin(req)
+        router.replace("/verify");
       } else {
         TOAST_ERROR(responseData.message);
       }
+
     } catch (error: any) {
+
       console.error("Signup error:", error);
       TOAST_ERROR("Something went wrong. Please try again.");
+
     } finally {
       setLoader(false); // ✅ always stop loader
     }
@@ -200,13 +207,13 @@ export default function SignUpForm() {
                   </div>
 
                   {/* <div className="flex items-center justify-between"> */}
-                    {/* <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center gap-3">
                       <Checkbox checked={isChecked} onChange={setIsChecked} />
                       <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
                         Keep me logged in
                       </span>
                     </div> */}
-                    {/* <Link
+                  {/* <Link
                       href="/reset-password"
                       className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                     >
@@ -235,7 +242,7 @@ export default function SignUpForm() {
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
 

@@ -105,7 +105,7 @@ export const EcommerceMetrics = () => {
       </div>
 
       {/* <!-- Metric Item Start --> */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      {/* <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <ImLink className="text-gray-800 dark:text-white/90" />
         </div>
@@ -119,12 +119,12 @@ export const EcommerceMetrics = () => {
             </h4>
           </div>
 
-          {/* <Badge color="error">
+          <Badge color="error">
             <ArrowDownIcon className="text-error-500" />
             9.05%
-          </Badge> */}
+          </Badge> 
         </div>
-      </div>
+      </div> */}
 
     </div>
   </>);

@@ -16,11 +16,13 @@ import { ASSETS_INPUTS } from "../cyber/Inventory/Assets/AddAssets";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { useInventoryStore } from "@/store";
 import Spinner from "../common/Spinner";
+import { useAuthStore } from "@/store/authStore";
 
 export default function SignInForm() {
 
   // const { setLoader } = useInventoryStore();
   const [is_loading, setLoader] = useState(false);
+
 
   const router = useRouter();
 
@@ -31,46 +33,10 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-
-    e.preventDefault(); // 🔥 REQUIRED — stops page reload
-    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS?.LOGIN_KEY_COOKIE, JSON.stringify(true));
-    router.push("/");
-  };
-
-  // React/Next.js Component ma
-  // async function handleLogin(email, password) {
-  //   const response = await fetch('/api/login', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ email, password })
-  //   });
-
-  //   const data = await response.json();
-
-  //   if (data.success) {
-  //     // Login successful
-  //     console.log("User:", data.data.user);
-  //     console.log("Token:", data.data.token);
-  //   } else {
-  //     // Login failed
-  //     console.error("Error:", data.message);
-  //   }
-  // }
-
-  // const onSubmit = (data: any) => {
-  //   console.log("FORM DATA 👉", data);
-  //   // setAssetsDetails({
-  //   //   value: data,
-  //   //   is_valid: true,
-  //   // });
-  //   localStorage.setItem(CONSTENT?.LOGIN_KEY, JSON.stringify(true));
-  //   router.push("/");
-  // };
-
   const onSubmit = async (data: any) => {
     setLoader(true);
     try {
+
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

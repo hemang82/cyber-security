@@ -9,6 +9,13 @@ import { useEffect, useRef, useState } from "react";
 import { RiInformation2Line } from "react-icons/ri";
 import { HiDownload } from "react-icons/hi";
 import { toPng } from "html-to-image";
+import { Modal } from "@/components/ui/modal";
+import { useModal } from "@/hooks/useModal";
+import { PerformanceChart } from "@/components/charts/circular/PerformanceChart";
+import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
+import { ScriptAnalysisChart } from "@/components/charts/circular/ScriptAnalysisChart";
+import { GoEye } from "react-icons/go";
+
 
 export const Card = ({ title, tooltip, children }: any) => (
     <div className="h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -64,6 +71,7 @@ export enum CyberColor {
     ORANGE = "Orange",
     RED = "Red",
     DARK_RED = "DarkRed",
+    YELLOW = "Yellow",
 }
 
 export const CyberColorClass: Record<CyberColor, string> = {
@@ -76,12 +84,14 @@ export const CyberColorClass: Record<CyberColor, string> = {
     [CyberColor.RED]: "bg-red-100 text-red-700 border-red-300",
 
     [CyberColor.DARK_RED]: "bg-red-200 text-red-900 border-red-700",
+
+    [CyberColor.YELLOW]: "bg-yellow-100 text-yellow-700 border-yellow-300",
 };
 
 /* ---------- UI Helpers ---------- */
-const Badge = ({ color, children }: any) => {
+export const Badge = ({ color, children, classname }: any) => {
     return (
-        <span className={`rounded-md px-2 py-1 text-base font-medium ${CyberColorClass[color as keyof typeof CyberColorClass]}`}>
+        <span className={`${classname} border border-gray-500 rounded-md px-2 py-1 text-base font-medium capitalize ${CyberColorClass[color as keyof typeof CyberColorClass]} `}>
             {children}
         </span>
     );
@@ -90,6 +100,11 @@ const Badge = ({ color, children }: any) => {
 export default function InventoryDetailsComponent({ InventoryData }: any) {
 
     const { setLoader, resetInventory } = useInventoryStore();
+
+    console.log('InventoryDataInventoryData', InventoryData);
+
+
+    const { isOpen, openModal, closeModal, modalData } = useModal();
 
     const [data, setData] = useState<any>(null);
     const [scanDate, setScanDate] = useState<string>("");
@@ -327,6 +342,39 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                 </span>
             ),
         },
+        {
+            key: "solution",
+            title: "Solution",
+            render: (row: any) => {
+                return (<>
+                    {/* <span
+                        className={`rounded-full px-2 py-0.5 text-base font-medium ${row?.solution
+                            ? "cursor-pointer hover:opacity-80 " +
+                            severityColor(row?.severity || "Info")
+                            : "text-gray-400"
+                            }`}
+                        onClick={() => {
+                            if (row?.solution) {
+                                console.log("Clicked Row 👉", row); // 👈 click સમયે પણ log
+                                openModal(row);
+                            }
+                        }}
+                    >
+                        {row?.solution ? "View" : "N/A"}
+                    </span> */}
+
+                    <button className="shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-300 text-blue-500 hover:bg-blue-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" onClick={() => {
+                        if (row?.solution) {
+                            console.log("Clicked Row 👉", row); // 👈 click સમયે પણ log
+                            openModal(row);
+                        }
+                    }}>
+                        <GoEye size={16} />
+                    </button>
+                </>);
+            },
+        }
+
     ];
 
     const column4 = [
@@ -358,6 +406,8 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
     const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
+    console.log('modalData', modalData);
+
     return (<>
         <div className="p-3">
             <div id="pdf-section-1">
@@ -379,12 +429,12 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </div>
 
                         {/* Scan Date */}
-                        <p className="text-base sm:text-base text-gray-800 dark:text-gray-500">
+                        {/* <p className="text-base sm:text-base text-gray-800 dark:text-gray-500">
                             Scan Date:{" "}
                             <span className="font-medium">
                                 {safeText(scanDate)}
                             </span>
-                        </p>
+                        </p> */}
                     </div>
 
                     {/* Right Section */}
@@ -393,9 +443,8 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         <div className="flex gap-3">
                             <button onClick={handlePdfDownload} className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600" >
                                 <HiDownload size={20} />
-                                Download PDF
+                                Download Report
                             </button>
-
                             {/* <button
                                 onClick={handleDownload}
                                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600"
@@ -403,7 +452,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 <HiDownload size={20} />
                                 Download PNG
                             </button> */}
-
                         </div>
                     }
                 </div>
@@ -416,27 +464,31 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         <p>The security score is calculated based on the total number of vulnerabilities, their severity level, and compliance with security best practices.
                             High-risk issues significantly reduce the overall score.</p>
                     </>}>
-                        <div className="flex flex-col items-center gap-4 sm:flex-row my-3">
-                            <div className={`flex h-24 w-24 items-center justify-center rounded-full border-[2px] text-lg font-medium ${CyberColorClass[data?.risk_color as keyof typeof CyberColorClass]}`} > {data?.findings?.length || 0} </div>
-                            <div className="flex flex-col ">
-                                <div className="flex flex-wrap gap-2">
-                                    <Badge color={data?.risk_color}>
-                                        {Math.floor((data?.findings?.length || 0) / 2)} High {" "}
-                                    </Badge>
 
-                                    <Badge color={data?.risk_color}>
-                                        {Math.floor((data?.findings?.length || 0) / 4)} Medium
-                                    </Badge>
 
-                                    <Badge color={data?.risk_color}>
-                                        {Math.floor((data?.findings?.length || 0) / 6)}  Low
-                                    </Badge>
-                                </div>
-                                <div className="mt-4 rounded-lg bg-red-50 p-3 text-base text-red-700 ">
-                                    ⚠ Vulnerabilities Not Fixed : <b>{safeText(data?.findings?.length) || 0} / {data?.findings?.length || 0}</b>
+                        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row my-3">
+                            <div className="flex flex-col items-center gap-4 sm:flex-row">
+                                <div className={`flex h-24 w-24 items-center justify-center rounded-full border-[4px] border-brand-800 text-lg font-medium text-brand-800 `} > {safeText(data?.output_score) || 0} </div>
+                                <div className="flex flex-col ">
+                                    <div className="flex flex-wrap gap-2">
+
+                                        {data?.finding_counts?.map((item: any, index: number) => (
+                                            <Badge key={index} color={item?.color}>
+                                                {item?.count} {item?.severity}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                    <div className="mt-4 rounded-lg bg-red-50 p-3 text-base text-red-700 ">
+                                        ⚠ Vulnerabilities Not Fixed : <b>{safeText(data?.output_score) || 0}</b>
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* <div className="flex-1 flex justify-end">
+                                <VulnerabilityChart data={data?.finding_counts || []} />
+                            </div> */}
                         </div>
+
 
                         <div className="my-3">
                             <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200 ">What Does High Risk Mean?</h3>
@@ -467,7 +519,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 </span>
                             </li>
 
-                            <li className="flex items-start gap-5 py-2.5">
+                            <li className="flex items-start  gap-5 py-2.5">
                                 <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
                                     Risk Level
                                 </span>
@@ -497,7 +549,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
                             <li className="flex items-start gap-5 py-2.5">
                                 <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                    Created at
+                                    Scan Date
                                 </span>
                                 <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
                                     {safeText(scanDate)}
@@ -636,81 +688,91 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     {/* Performance */}
                     <div>
                         <Card title="Performance" >
-                            <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        Load Time
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {safeText(data?.performance?.load_time_ms)} ms
-                                    </span>
-                                </li>
+                                <ul className="divide-y divide-gray-100 dark:divide-gray-800 w-full">
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        Page Size
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {safeText(data?.performance?.page_size_kb) || "-"}
-                                    </span>
-                                </li>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            Load Time
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {safeText(data?.performance?.load_time_ms)} ms
+                                        </span>
+                                    </li>
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        Status
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {safeText(data?.performance?.status) || "-"}
-                                    </span>
-                                </li>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            Page Size
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {safeText(data?.performance?.page_size_kb) || "-"}
+                                        </span>
+                                    </li>
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        Inline script count
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {safeText(data?.performance?.script_analysis?.inline_script_count) || "-"}
-                                    </span>
-                                </li>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            Status
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {safeText(data?.performance?.status) || "-"}
+                                        </span>
+                                    </li>
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        External Script Count
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {safeText(data?.performance?.script_analysis?.external_script_count) || "-"}
-                                    </span>
-                                </li>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            Inline script count
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {safeText(data?.performance?.script_analysis?.inline_script_count) || "-"}
+                                        </span>
+                                    </li>
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        Sitemap
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {safeText(data?.seo_check?.sitemap_xml) || "0"}
-                                    </span>
-                                </li>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            External Script Count
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {safeText(data?.performance?.script_analysis?.external_script_count) || "-"}
+                                        </span>
+                                    </li>
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        Robot TXT File
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {safeText(data?.seo_check?.robots_txt) || "0"}
-                                    </span>
-                                </li>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            Sitemap
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {safeText(data?.seo_check?.sitemap_xml) || "0"}
+                                        </span>
+                                    </li>
 
-                                <li className="flex items-start gap-5 py-2.5">
-                                    <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                        Website BlackList
-                                    </span>
-                                    <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                        {data?.summary?.blacklisted ? "Blacklisted Webiste" : "Not Blacklist"}
-                                    </span>
-                                </li>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            Robot TXT File
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {safeText(data?.seo_check?.robots_txt) || "0"}
+                                        </span>
+                                    </li>
 
-                            </ul>
+                                    <li className="flex items-start gap-5 py-2.5">
+                                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                            Website BlackList
+                                        </span>
+                                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                            {data?.summary?.blacklisted ? "Blacklisted Webiste" : "Not Blacklist"}
+                                        </span>
+                                    </li>
+
+                                </ul>
+
+                                <PerformanceChart
+                                    loadTime={Number(data?.performance?.load_time_ms || 0)}
+                                    pageSize={Number(data?.performance?.page_size_kb || 0)}
+                                    inlineCount={Number(data?.performance?.script_analysis?.inline_script_count || 0)}
+                                    externalCount={Number(data?.performance?.script_analysis?.external_script_count || 0)}
+                                />
+                            </div>
                         </Card>
                     </div>
 
@@ -726,6 +788,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 key: key.replaceAll("-", " "),
                                 status: value?.status ?? "N/A",
                                 severity: value?.severity ?? "Info",
+                                solution: value?.solution ?? null
                             })
                             ) || []} className={"min-w-[400px]"} />
 
@@ -821,9 +884,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
             </div>
 
             <div id="pdf-section-4">
-                <OwaspReport data={data?.compliance?.owasp_top_10 ? data?.compliance?.owasp_top_10 : {}} download={isDownload} />
-            </div>
-
+                <OwaspReport data={data?.compliance?.owasp_top_10 ? data?.compliance?.owasp_top_10 : {}} download={isDownload} openModal={openModal} /> </div>
             {/* <VurnabilitiesFindings data={data?.findings?.length > 0 ? data?.findings : []} /> */}
 
             {/* {data?.route_scans?.length > 0 && <DynamicTable columns={columns} data={data?.route_scans?.length > 0 ? data?.route_scans : []} className={"min-w-[500px]"} />} */}
@@ -831,5 +892,83 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
             {/* {data?.findings?.length > 0 && <DynamicTable columns={columns2} data={data?.findings?.length > 0 ? data?.findings : []} className={"min-w-[600px]"} />} */}
         </div>
 
+        <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[800px] m-4">
+            <div className="relative w-full max-w-[800px] overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
+
+                {/* HEADER */}
+                <div className="mb-6">
+                    <h4 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                        🔐 Vulnerability Solution Guide
+                    </h4>
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        Below are the detected security vulnerabilities along with recommended fixes.
+                    </p>
+                </div>
+
+                {/* SCROLL AREA */}
+                <div className="max-h-[500px] overflow-y-auto pr-2 space-y-6">
+
+                    {/* Vulnerability Card */}
+                    <div className={`rounded-xl border p-5 ${severityColor(modalData?.severity)} bg-opacity-10 border-opacity-30`}>
+                        <div className="flex justify-between items-center">
+                            <h5 className="text-lg font-semibold">
+                                {modalData?.type || "Vulnerability Details"}
+                            </h5>
+                            <Badge color={modalData?.severity}>{modalData?.severity || "Unknown Risk"}</Badge>
+                        </div>
+
+                        <p className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+                            {modalData?.detail || modalData?.key || "No details available."}
+                        </p>
+
+                        {/* Impact */}
+                        {modalData?.impact && (
+                            <div className="mt-4">
+                                <h6 className="font-medium text-gray-800 dark:text-white/90">
+                                    ⚠️ Impact
+                                </h6>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    {modalData?.impact}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Solution */}
+                        <div className="mt-4">
+                            <h6 className="font-medium text-gray-800 dark:text-white/90">
+                                ✅ Recommended Solution
+                            </h6>
+                            {/* Check if solution is an array or string */}
+                            {Array.isArray(modalData?.solution) ? (
+                                <ul className="mt-2 list-disc pl-5 text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                                    {modalData?.solution.map((sol: any, index: number) => (
+                                        <li key={index}>{sol}</li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                    {modalData?.solution || "No specific solution provided."}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Code Example */}
+                        {modalData?.codeExample && (
+                            <div className="mt-4 rounded-lg bg-gray-900 p-4 text-xs text-green-400 overflow-x-auto">
+                                <pre>{modalData?.codeExample}</pre>
+                            </div>
+                        )}
+
+                        {/* Evidence */}
+                        {modalData?.evidence && (
+                            <div className="mt-4 rounded-lg bg-gray-100 p-4 text-xs text-gray-700 overflow-x-auto dark:bg-gray-800 dark:text-gray-300">
+                                <strong>Evidence:</strong> {modalData?.evidence}
+                            </div>
+                        )}
+                    </div>
+
+                </div>
+            </div>
+        </Modal>
     </>);
 }

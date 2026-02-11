@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../../ui/table";
-import Badge from "../../ui/badge/Badge";
 import Image from "next/image";
 import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
@@ -12,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { ASSETS_INPUTS } from "./Assets/AddAssets";
 import { assets } from "./Assets/AssetsTypes";
 import { useInventoryStore } from "@/store";
-import { CyberColorClass, severityColor } from "./InventoryDetailsComponent";
+import { Badge, CyberColorClass, severityColor } from "./InventoryDetailsComponent";
 import { GoEye } from "react-icons/go";
 
 export default function InventoryComponent({ InventoryData }: any) {
@@ -37,7 +36,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {row?.scan_context}
+            {"Website"}
           </span>
         </div>
       ),
@@ -50,27 +49,33 @@ export default function InventoryComponent({ InventoryData }: any) {
       </>),
     },
     {
-      key: "vulnerabilities", title: "Vulnerabilities", render: (row: any) => (
-        <div className="flex flex-wrap gap-2">
-          {
-            // Array.isArray(["1", "2", "8", "5", "15"]) &&
-            // ["1", "2", "8", "5", "15"] > 0 ? (
-            ["1", "2", "8", "5", "15"].map((item: string, index: number) => (
-              <Badge
-                key={index}
-                size="sm"
-                color={Number(item) < 5 ? "error" : Number(item) < 10 ? "warning" : "success"}
-              >
-                {item}
+      key: "vulnerabilities",
+      title: "Vulnerabilities",
+      render: (row: any) => {
+        console.log("Row Data 👉", row); // 👈 row structure અહીં દેખાશે
+
+        const vulnerabilities = row?.full_response?.finding_counts;
+
+        return (
+          <div className="flex flex-wrap gap-2">
+            {vulnerabilities?.map((item: any, index: number) => (
+              <Badge key={index} color={item?.color} classname="!text-xs ">
+                {item?.count}
               </Badge>
-            ))
-            // ) 
-            // : (
-            //   <span className="text-xs text-gray-400">—</span>
-            // )
-          }
-        </div>
-      ),
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      key: "security_score", title: "Security Score",
+      render: (row: any) => (<>
+        {/* // <Badge size="sm" color={row.risk_level && severityColor(row.risk_level) || '12'}>
+        //   {row.risk_level || "Warning"}
+        // </Badge> */}
+
+        {safeText(row?.full_response?.output_score) || "Info"}
+      </>),
     },
     {
       key: "serverity", title: "Serverity",
@@ -94,15 +99,16 @@ export default function InventoryComponent({ InventoryData }: any) {
     {
       key: "action", title: "Action",
       render: (row: any) => (
-        <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400" onClick={() => {
+        <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" onClick={() => {
           router.push(`/Inventory-view?id=${encodeURIComponent(row?.id)}`);
           setLoader(true)
           // router.push(`/Inventory-details`); 
         }}>
           {/* {row.action || "view"} */}
-          <GoEye size={20} />
+          <GoEye size={18} />
 
         </button>
+
       ),
     },
   ];

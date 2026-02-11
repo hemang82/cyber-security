@@ -12,10 +12,11 @@ export interface AuthType {
 
 interface AuthState {
     authData: AuthType | null;
-
+    temLogin: any | null;
     // actions
     setUserAuth: (data: AuthType) => void;
     clearUserAuth: () => void;
+    setTemLogin: (data: any) => void;
 }
 
 /* =======================
@@ -24,7 +25,8 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
     authData: null,
+    temLogin: null,
     setUserAuth: (data) => set({ authData: data }),
     clearUserAuth: () => set({ authData: null, }),
-
+    setTemLogin: (data) => set({ temLogin: data }),
 }));
