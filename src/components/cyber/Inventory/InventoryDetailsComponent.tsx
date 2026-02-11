@@ -13,7 +13,6 @@ import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { PerformanceChart } from "@/components/charts/circular/PerformanceChart";
 import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
-import { ScriptAnalysisChart } from "@/components/charts/circular/ScriptAnalysisChart";
 import { GoEye } from "react-icons/go";
 
 
@@ -209,78 +208,98 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
             for (let i = 0; i < elements.length; i++) {
                 const element = elements[i] as HTMLElement;
-                if (!element) continue;
+                const sectionId = sectionIds[i];
+
+                if (!element) {
+                    console.warn(`Section not found: ${sectionId}`);
+                    continue;
+                }
+
+                console.log(`Processing PDF section: ${sectionId}`);
 
                 // Yield to main thread to prevent UI freeze
                 await new Promise(resolve => setTimeout(resolve, 100));
 
-                if (i > 0) {
-                    pdf.addPage();
-                }
-
-                const width = element.scrollWidth;
-                const height = element.scrollHeight;
-
-                // Use JPEG which is much faster to encode than PNG
-                // pixelRatio 2 is good balance of quality/speed
-                const dataUrl = await toJpeg(element, {
-                    // quality: 0.95,
-                    cacheBust: true,
-                    backgroundColor: "#ffffff",
-                    pixelRatio: 2,
-                    width,
-                    height,
-                    canvasWidth: width * 2,
-                    canvasHeight: height * 2,
-                    style: {
-                        transform: "scale(1)",
-                        transformOrigin: "top left",
-                        width: `${width}px`,
-                        height: `${height}px`,
-                        backgroundColor: "#ffffff",
-                    },
-                    filter: (node) => {
-                        if (node && node.classList) {
-                            return !node.classList.contains("no-capture");
-                        }
-                        return true;
-                    },
-                });
-
-                const img = new Image();
-                img.src = dataUrl;
-                await new Promise((resolve) => { img.onload = resolve; });
-
-                const imgWidth = img.width;
-                const imgHeight = img.height;
-
-                // Ratio to fit image width to content width (inside margins)
-                const ratio = contentWidth / imgWidth;
-
-                // Height of one page's content area in terms of source image pixels
-                const pageHeightInImagePixels = contentHeight / ratio;
-
-                let position = 0;
-
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-
-                // Canvas width matches source image width
-                canvas.width = imgWidth;
-
-                while (position < imgHeight) {
-                    // Yield to main thread during heavy processing loop
-                    if (position > 0) await new Promise(resolve => setTimeout(resolve, 0));
-
-                    // If we need to split a single section across multiple pages
-                    if (position > 0) {
+                try {
+                    if (i > 0) {
                         pdf.addPage();
                     }
 
-                    // Height of the current slice
-                    const sliceHeight = Math.min(pageHeightInImagePixels, imgHeight - position);
+                    const width = element.scrollWidth;
+                    const height = element.scrollHeight;
 
-                    if (ctx) {
+                    if (height === 0 || width === 0) {
+                        console.warn(`Skipping empty section: ${sectionId}`);
+                        continue;
+                    }
+
+                    // Use JPEG which is much faster to encode than PNG
+                    // Reduce pixelRatio to 1 to prevent canvas size limits on large sections
+                    console.log(`Section ${sectionId} dimensions: ${width}x${height}`);
+
+                    const dataUrl = await toJpeg(element, {
+                        // quality: 0.95,
+                        cacheBust: true,
+                        backgroundColor: "#ffffff",
+                        pixelRatio: 1, // Reduced from 2 to avoid large canvas issues
+                        width,
+                        height,
+                        canvasWidth: width,
+                        canvasHeight: height,
+                        style: {
+                            transform: "scale(1)",
+                            transformOrigin: "top left",
+                            width: `${width}px`,
+                            height: `${height}px`,
+                            backgroundColor: "#ffffff",
+                            color: "#000000", // Force black text
+                        },
+                        filter: (node) => {
+                            if (node && node.classList) {
+                                return !node.classList.contains("no-capture");
+                            }
+                            return true;
+                        },
+                    });
+
+                    const img = new Image();
+                    img.src = dataUrl;
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = (e) => reject(new Error(`Image load failed for section ${sectionId}`));
+                    });
+
+                    const imgWidth = img.width;
+                    const imgHeight = img.height;
+
+                    // Ratio to fit image width to content width (inside margins)
+                    const ratio = contentWidth / imgWidth;
+
+                    // Height of one page's content area in terms of source image pixels
+                    const pageHeightInImagePixels = contentHeight / ratio;
+
+                    let position = 0;
+
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    if (!ctx) throw new Error("Canvas context is null");
+
+                    // Canvas width matches source image width
+                    canvas.width = imgWidth;
+
+                    while (position < imgHeight) {
+                        // Yield to main thread during heavy processing loop
+                        if (position > 0) await new Promise(resolve => setTimeout(resolve, 0));
+
+                        // If we need to split a single section across multiple pages
+                        if (position > 0) {
+                            pdf.addPage();
+                        }
+
+                        // Height of the current slice
+                        const sliceHeight = Math.min(pageHeightInImagePixels, imgHeight - position);
+
                         // Update canvas height to match strictly the slice height (avoids blank space on last page)
                         canvas.height = sliceHeight;
 
@@ -303,15 +322,20 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         // Use JPEG compression in PDF
                         // Add image at margin coordinates
                         pdf.addImage(pageDataUrl, "JPEG", pdfMargin, pdfMargin, contentWidth, destHeight, undefined, 'FAST');
-                    }
 
-                    position += pageHeightInImagePixels;
+                        position += pageHeightInImagePixels;
+                    }
+                } catch (sectionErr) {
+                    console.error(`Error processing section ${sectionId}:`, sectionErr);
+                    // Continue to next section instead of breaking completely? 
+                    // Or rethrow to stop? Let's log and continue for now to output partial PDF if possible.
                 }
             }
 
             pdf.save(`${safeText(data?.target)}-Report.pdf`);
         } catch (err) {
-            console.error("PDF generation failed:", err);
+            console.error("PDF generation critical failure:", err);
+            alert("Failed to generate PDF. Please check console for details.");
         } finally {
             setIsDownload(false);
             setLoader(false);
@@ -409,6 +433,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
     console.log('modalData', modalData);
 
     return (<>
+
         <div className="p-3">
             <div id="pdf-section-1">
                 <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-6 py-5 my-3 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
@@ -456,7 +481,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     }
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-1 mt-4">
 
                     {/* Vulnerabilities */}
                     <Card title="Vulnerabilities" tooltip={<>
@@ -497,7 +522,9 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </div>
 
                     </Card>
+                </div>
 
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
                     {/* Scan Details */}
                     <Card title="Scan Details" >
                         <ul className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -676,14 +703,12 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                     {safeText(data?.network_info?.whois?.raw_partial)}
                                 </pre>
                             </li>
-
                         </ul>
-
                     </Card>
                 </div>
             </div>
 
-            <div id="pdf-section-2">
+            <div id="pdf-section-2" className="bg-white w-full">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-1 mt-4">
                     {/* Performance */}
                     <div>
@@ -766,100 +791,101 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
                                 </ul>
 
-                                <PerformanceChart
-                                    loadTime={Number(data?.performance?.load_time_ms || 0)}
-                                    pageSize={Number(data?.performance?.page_size_kb || 0)}
-                                    inlineCount={Number(data?.performance?.script_analysis?.inline_script_count || 0)}
-                                    externalCount={Number(data?.performance?.script_analysis?.external_script_count || 0)}
-                                />
+
                             </div>
                         </Card>
                     </div>
 
-                    {/* Website Security Headers */}
-                    <div>
-                        <Card title=" Website Security Headers" tooltip={<>
-                            <h1 className="mb-1">Why Security Headers Matter</h1>  &nbsp;
-                            <p>Security headers protect the website from common attacks such as cross-site scripting, clickjacking, and data injection.
-                                Missing or misconfigured headers weaken browser-level protection.</p>
-                        </>}>
 
-                            <DynamicTable columns={column3} data={Object.entries(data?.website_security?.security_headers ?? {}).map(([key, value]: any) => ({
-                                key: key.replaceAll("-", " "),
-                                status: value?.status ?? "N/A",
-                                severity: value?.severity ?? "Info",
-                                solution: value?.solution ?? null
-                            })
-                            ) || []} className={"min-w-[400px]"} />
+                    {/* Compliance Overview */}
 
-                        </Card>
-                    </div>
 
-                    {/* Network Information */}
-                    <Card title="Network Information" tooltip={<>
-                        <h1 className="mb-1">Attack Surface Overview</h1>  &nbsp;
-                        <p>The attack surface represents all publicly accessible entry points that attackers can target.
-                            Reducing exposed services and endpoints minimizes the risk of exploitation.</p>
+                </div>
+
+                {/* Website Security Headers */}
+                <div>
+                    <Card title=" Website Security Headers" tooltip={<>
+                        <h1 className="mb-1">Why Security Headers Matter</h1>  &nbsp;
+                        <p>Security headers protect the website from common attacks such as cross-site scripting, clickjacking, and data injection.
+                            Missing or misconfigured headers weaken browser-level protection.</p>
                     </>}>
 
-                        {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+                        <DynamicTable columns={column3} data={Object.entries(data?.website_security?.security_headers ?? {}).map(([key, value]: any) => ({
+                            key: key.replaceAll("-", " "),
+                            status: value?.status ?? "N/A",
+                            severity: value?.severity ?? "Info",
+                            solution: value?.solution ?? null
+                        })
+                        ) || []} className={"min-w-[400px]"} />
+
+                    </Card>
+                </div>
+
+                {/* Network Information */}
+                <Card title="Network Information" tooltip={<>
+                    <h1 className="mb-1">Attack Surface Overview</h1>  &nbsp;
+                    <p>The attack surface represents all publicly accessible entry points that attackers can target.
+                        Reducing exposed services and endpoints minimizes the risk of exploitation.</p>
+                </>}>
+
+                    {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
                     Network Information
                 </h2> */}
 
-                        {/* <div className="my-3">
+                    {/* <div className="my-3">
                     <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200 ">Attack Surface Overview</h3>
                     <p className="text-gray-500 text-base mt-2">The attack surface represents all publicly accessible entry points that attackers can target.
                         Reducing exposed services and endpoints minimizes the risk of exploitation.</p>
                 </div> */}
 
-                        <ul className="divide-y divide-gray-100 dark:divide-gray-800 mb-4 border-b pb-4">
+                    <ul className="divide-y divide-gray-100 dark:divide-gray-800 mb-4 border-b pb-4">
 
-                            <li className="flex items-start gap-5 py-2.5">
-                                <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                    Host
-                                </span>
-                                <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
-                                    {safeText(data?.network_info?.host) || "N/A"}
-                                </span>
-                            </li>
+                        <li className="flex items-start gap-5 py-2.5">
+                            <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                Host
+                            </span>
+                            <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
+                                {safeText(data?.network_info?.host) || "N/A"}
+                            </span>
+                        </li>
 
-                            <li className="flex items-start gap-5 py-2.5">
-                                <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                    IP Address
-                                </span>
-                                <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                    {safeJoin(data?.network_info?.dns_records?.A)}
-                                </span>
-                            </li>
+                        <li className="flex items-start gap-5 py-2.5">
+                            <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                IP Address
+                            </span>
+                            <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                {safeJoin(data?.network_info?.dns_records?.A)}
+                            </span>
+                        </li>
 
-                            <li className="flex items-start gap-5 py-2.5">
-                                <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                    Technologies
-                                </span>
-                                <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                    {safeJoin(data?.website_security?.technologies)}
-                                </span>
-                            </li>
+                        <li className="flex items-start gap-5 py-2.5">
+                            <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                Technologies
+                            </span>
+                            <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                {safeJoin(data?.website_security?.technologies)}
+                            </span>
+                        </li>
 
-                            <li className="flex items-start gap-5 py-2.5">
+                        <li className="flex items-start gap-5 py-2.5">
 
-                                <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
-                                    Open Ports
-                                </span>
+                            <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                Open Ports
+                            </span>
 
-                                <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
-                                    {
-                                        data?.network_info?.open_ports?.length > 0 ? (data?.network_info?.open_ports ?? []).map(
-                                            (portItem: any) =>
-                                                `${safeText(portItem?.port) ?? "N/A"} (${safeText(
-                                                    portItem?.status
-                                                ) ?? "Unknown"})`
-                                        ).join("   ,   ") : "N/A"}
-                                </span>
+                            <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                {
+                                    data?.network_info?.open_ports?.length > 0 ? (data?.network_info?.open_ports ?? []).map(
+                                        (portItem: any) =>
+                                            `${safeText(portItem?.port) ?? "N/A"} (${safeText(
+                                                portItem?.status
+                                            ) ?? "Unknown"})`
+                                    ).join("   ,   ") : "N/A"}
+                            </span>
 
-                            </li>
+                        </li>
 
-                            {/* <li className="flex items-start gap-5 py-2.5">
+                        {/* <li className="flex items-start gap-5 py-2.5">
                         <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
                             Technologies
                         </span>
@@ -868,15 +894,14 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </span>
                     </li> */}
 
-                        </ul>
+                    </ul>
 
-                        <div className="pt-4">
-                            {data?.network_info?.findings?.length > 0 && <DynamicTable columns={column4} data={data?.network_info?.findings?.length > 0 ? data?.network_info?.findings : []} className={"min-w-[600px] "} />}
-                        </div>
+                    <div className="pt-4">
+                        {data?.network_info?.findings?.length > 0 && <DynamicTable columns={column4} data={data?.network_info?.findings?.length > 0 ? data?.network_info?.findings : []} className={"min-w-[600px] "} />}
+                    </div>
 
-                    </Card>
+                </Card>
 
-                </div>
             </div>
 
             <div id="pdf-section-3">
@@ -884,13 +909,55 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
             </div>
 
             <div id="pdf-section-4">
-                <OwaspReport data={data?.compliance?.owasp_top_10 ? data?.compliance?.owasp_top_10 : {}} download={isDownload} openModal={openModal} /> </div>
-            {/* <VurnabilitiesFindings data={data?.findings?.length > 0 ? data?.findings : []} /> */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <Card title="Compliance Overview" tooltip="Basic compliance checks based on scan results.">
+                        <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+                            <li className="flex items-center justify-between py-3">
+                                <span className="text-gray-600 dark:text-gray-400">SSL/TLS Encryption</span>
+                                <span className={`px-2 py-1 rounded text-sm font-medium ${data?.website_security?.ssl_certificate?.valid ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                                    {data?.website_security?.ssl_certificate?.valid ? "Secure (HTTPS)" : "Insecure"}
+                                </span>
+                            </li>
+                            <li className="flex items-center justify-between py-3">
+                                <span className="text-gray-600 dark:text-gray-400">Cookie Consent</span>
+                                <span className="px-2 py-1 rounded text-sm font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                    Check Required
+                                </span>
+                            </li>
+                            <li className="flex items-center justify-between py-3">
+                                <span className="text-gray-600 dark:text-gray-400">OWASP Top 10</span>
+                                <span className="px-2 py-1 rounded text-sm font-medium bg-blue-100 text-blue-700">
+                                    Scanned
+                                </span>
+                            </li>
+                            <li className="flex items-center justify-between py-3">
+                                <span className="text-gray-600 dark:text-gray-400">GDPR Basic Check</span>
+                                <span className="px-2 py-1 rounded text-sm font-medium bg-yellow-100 text-yellow-700">
+                                    Review Needed
+                                </span>
+                            </li>
+                        </ul>
+                    </Card>
 
-            {/* {data?.route_scans?.length > 0 && <DynamicTable columns={columns} data={data?.route_scans?.length > 0 ? data?.route_scans : []} className={"min-w-[500px]"} />} */}
+                    {/* Quick Actions / Recommendations Static */}
+                    <Card title="Recommendations" tooltip="Suggested actions based on findings.">
+                        <ul className="list-disc pl-5 space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Review and fix <b>{data?.finding_counts?.find((f: any) => f.severity === 'High')?.count || 0} High Severity</b> vulnerabilities immediately.</li>
+                            <li>Ensure separate <b>Global/Local</b> script usage is optimized (Current ratio: {data?.performance?.script_analysis?.inline_script_count || 0} / {data?.performance?.script_analysis?.external_script_count || 0}).</li>
+                            <li>Verify <b>Security Headers</b> implementation (`X-Frame-Options`, `Content-Security-Policy`).</li>
+                        </ul>
+                    </Card>
+                </div>
+                <OwaspReport data={data?.compliance?.owasp_top_10 ? data?.compliance?.owasp_top_10 : {}} download={isDownload} openModal={openModal} />
+            </div>
 
-            {/* {data?.findings?.length > 0 && <DynamicTable columns={columns2} data={data?.findings?.length > 0 ? data?.findings : []} className={"min-w-[600px]"} />} */}
         </div>
+
+        {/* <VurnabilitiesFindings data={data?.findings?.length > 0 ? data?.findings : []} /> */}
+
+        {/* {data?.route_scans?.length > 0 && <DynamicTable columns={columns} data={data?.route_scans?.length > 0 ? data?.route_scans : []} className={"min-w-[500px]"} />} */}
+
+        {/* {data?.findings?.length > 0 && <DynamicTable columns={columns2} data={data?.findings?.length > 0 ? data?.findings : []} className={"min-w-[600px]"} />} */}
 
         <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[800px] m-4">
             <div className="relative w-full max-w-[800px] overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
@@ -970,5 +1037,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                 </div>
             </div>
         </Modal>
+
     </>);
 }
