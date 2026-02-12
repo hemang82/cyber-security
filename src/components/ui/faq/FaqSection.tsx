@@ -230,10 +230,10 @@ export function RoutesScanned({ data, download }: any) {
                                                             {/* Evidence */}
                                                             <div className="bg-gray-100 p-2 rounded text-base text-gray-800 break-all">
                                                                 <strong>
-                                                                    Evidence :
+                                                                    Solution :
                                                                 </strong>{" "}
                                                                 {" "}{safeText(
-                                                                    vul?.evidence
+                                                                    vul?.solution
                                                                 )}
                                                             </div>
                                                         </div>

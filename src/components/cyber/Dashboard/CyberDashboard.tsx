@@ -84,7 +84,6 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
     const sslInfo = latestAsset?.full_response?.website_security?.ssl_certificate;
     const registrarInfo = latestAsset?.full_response?.domain_information?.whois;
 
-
     // --- Columns for Dynamic Table ---
     const columns = [
         {
