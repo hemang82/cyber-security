@@ -4,6 +4,7 @@ import React from "react";
 import { ApexOptions } from "apexcharts";
 import ChartTab from "../common/ChartTab";
 import dynamic from "next/dynamic";
+import { CyberDashboardProps } from "../cyber/Dashboard/CyberDashboard";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false, });
 
 type VulnerabilityItem = {
@@ -24,7 +25,7 @@ const STATUS_COLORS = {
 };
 
 
-export default function StatisticsChart() {
+export default function StatisticsChart({ inventory = [] }: CyberDashboardProps) {
 
   // const options: ApexOptions = {
   //   legend: {
@@ -143,7 +144,7 @@ export default function StatisticsChart() {
     { label: "Info", count: 153, percent: 4.4, color: STATUS_COLORS.INFO },
   ];
 
-  const series = [0, 3, 0, 0]; // In Progress, Completed, Failed, Scheduled
+  const series = [0, 4, 0, 0]; // In Progress, Completed, Failed, Scheduled
 
   const options: ApexOptions = {
     chart: {

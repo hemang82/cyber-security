@@ -13,7 +13,7 @@ import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 // import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 
 
-interface CyberDashboardProps {
+export interface CyberDashboardProps {
     inventory: any[];
 }
 
@@ -375,7 +375,6 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
 
             </div>
 
-            <StatisticsChart />
 
             {/* Security Coverage Section (What We Check) */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -396,6 +395,8 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                     ))}
                 </div>
             </div>
+
+            <StatisticsChart inventory={inventory} />
 
         </div>
     );
