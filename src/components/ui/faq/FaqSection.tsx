@@ -4,7 +4,7 @@ import { safeText } from "@/common/commonFunction";
 import { Badge, Card, severityColor } from "@/components/cyber/Inventory/InventoryDetailsComponent";
 import { useState } from "react";
 import { GoEye } from "react-icons/go";
-import { RiArrowDownSLine } from "react-icons/ri";
+import { RiArrowDownSLine, RiBugLine, RiRouteLine, RiAlertLine } from "react-icons/ri";
 
 // export function RoutesScanned({ data }: any) {
 
@@ -145,8 +145,8 @@ export function RoutesScanned({ data, download }: any) {
 
     return (
         // <section className="rounded-xl shadow-xs bg-white py-8 md:py-10 border border-gray-200 my-3">
-        <section className="my-3">
-            <Card title="Routes Scanned">
+        <section className="">
+            <Card title={<div className="flex items-center gap-2"><RiRouteLine /> Routes Scanned</div>}>
                 {/* <div className="container mx-auto px-4"> */}
 
                 {/* Heading */}
@@ -170,39 +170,27 @@ export function RoutesScanned({ data, download }: any) {
                         const isOpen = download || openIndex === i;
 
                         return (
-                            <div
-                                key={i}
-                                className="rounded-xl border border-gray-200"
-                            >
+                            <div key={i} className="rounded-xl border border-gray-200" >
                                 <button
-                                    onClick={() => {
-                                        if (vulCount > 0) toggle(i);
-                                    }}
-                                    disabled={
-                                        vulCount === 0 || download
-                                    }
+                                    onClick={() => { if (vulCount > 0) toggle(i) }}
+                                    disabled={vulCount === 0 || download}
                                     className={`flex w-full justify-between px-6 py-5 text-left text-gray-800  font-medium ${vulCount === 0
                                         ? "opacity-50 cursor-not-allowed"
                                         : "cursor-pointer"
                                         }`}
                                 >
-                                    {safeText(item?.url)}
+                                    <span className="break-all pr-2 text-sm sm:text-base">
+                                        {safeText(item?.url)}
+                                    </span>
 
-                                    <div className="flex gap-10 items-center">
+                                    <div className="flex gap-2 sm:gap-10 items-center shrink-0">
                                         <span className="text-gray-500 text-base sm:block hidden">
                                             Vulnerabilities: {vulCount}
                                         </span>
 
                                         {vulCount > 0 && (
-                                            <span
-                                                className={`transition-transform duration-300 ${isOpen
-                                                    ? "rotate-180"
-                                                    : ""
-                                                    }`}
-                                            >
-                                                <RiArrowDownSLine
-                                                    size={25}
-                                                />
+                                            <span className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} >
+                                                <RiArrowDownSLine size={25} />
                                             </span>
                                         )}
                                     </div>
@@ -278,11 +266,11 @@ export function VurnabilitiesFindings({ data }: any) {
             <div className="container mx-auto px-4">
                 {/* Heading */}
                 <div className="mx-auto mb-6  ">
-                    <h2 className="mb-4 text-3xl font-semibold">
-                        Vurnabilities Findings
+                    <h2 className="mb-4 text-3xl font-semibold flex items-center justify-center gap-2">
+                        <RiBugLine /> Vulnerability Findings
                     </h2>
                     <p className="mx-auto text-gray-500 text-base">
-                        We analyzed your application routes for security risks. Any vulnerabilities found are listed below with their severity, affected areas, and suggested fixes to help keep your application secure.
+                        Detailed breakdown of identified security weaknesses. We categorize findings by severity and provide evidence to help you prioritize remediation.
                     </p>
                 </div>
 
@@ -342,7 +330,7 @@ export default function OwaspReport({ data, download, openModal }: any) {
 
     return (
         <section className="mt-4">
-            <Card title="Top 10 Security Risks">
+            <Card title={<div className="flex items-center gap-2"><RiAlertLine /> Top 10 Security Risks</div>}>
                 {/* <div className="container mx-auto px-4"> */}
                 {/* Heading */}
                 <div className="mx-auto mb-6">
@@ -351,10 +339,7 @@ export default function OwaspReport({ data, download, openModal }: any) {
                     </h2> */}
 
                     <p className="mx-auto text-gray-500 text-base">
-                        We scanned your routes for security issues. Detected
-                        vulnerabilities are shown below along with their severity,
-                        affected endpoints, and recommended fixes to help you secure
-                        your application.
+                        The OWASP Top 10 represents the most critical security risks to web applications. Compliance ensures protection against common attack vectors like Injection and Broken Access Control.
                     </p>
                 </div>
 
@@ -366,9 +351,9 @@ export default function OwaspReport({ data, download, openModal }: any) {
                             <div key={i} className="border rounded-xl bg-white shadow-sm overflow-hidden" >
                                 <button
                                     onClick={() => !download && setOpen(open === i ? null : i)}
-                                    className="w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100"
+                                    className="w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 gap-4"
                                 >
-                                    <h2 className="font-medium text-gray-800">
+                                    <h2 className="font-medium text-gray-800 text-left text-sm sm:text-base">
                                         {safeText(category)}
                                     </h2>
 
