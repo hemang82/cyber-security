@@ -13,33 +13,66 @@ import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { PerformanceChart } from "@/components/charts/circular/PerformanceChart";
 import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
+
 import { GoEye } from "react-icons/go";
+import CountUp from "react-countup";
 
 
-export const Card = ({ title, tooltip, children }: any) => (
-    <div className="h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 my-4">
+export const Card = ({ title, tooltip, children }: any) => {
+    const [showTooltip, setShowTooltip] = useState(false);
+    const tooltipRef = useRef<HTMLDivElement>(null);
 
-        <div className="mb-4 flex items-center gap-2 ">
+    // Close tooltip when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
+                setShowTooltip(false);
+            }
+        };
 
-            <h3 className="text-2xl font-semibold text-brand-800 dark:text-white/90">
-                {title}
-            </h3>
+        if (showTooltip) {
+            document.addEventListener("mousedown", handleClickOutside);
+            document.addEventListener("touchstart", handleClickOutside); // Handle touch events
+        }
 
-            {tooltip && (
-                <div className="group relative cursor-pointer">
-                    <span className="text-lg text-brand-800"><RiInformation2Line size={20} /></span>
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("touchstart", handleClickOutside);
+        };
+    }, [showTooltip]);
 
-                    <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-70 -translate-x-1/2 rounded-md bg-gray-100 px-3 py-2 text-base text-dark opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                        {tooltip}
+    return (
+        <div className="h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 my-4 overflow-hidden">
+            <div className="mb-4 flex items-center gap-2 ">
+                <h3 className="text-2xl font-semibold text-brand-800 dark:text-white/90 truncate">
+                    {title}
+                </h3>
+
+                {tooltip && (
+                    <div className="relative cursor-pointer" ref={tooltipRef}>
+                        <span
+                            className="text-lg text-brand-800 flex items-center"
+                            onClick={() => setShowTooltip((prev) => !prev)}
+                            onMouseEnter={() => setShowTooltip(true)}
+                        >
+                            <RiInformation2Line size={20} />
+                        </span>
+
+                        {showTooltip && (
+                            <div className="absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-md bg-gray-100 p-3 text-sm text-gray-800 shadow-xl border border-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700">
+                                {tooltip}
+                            </div>
+                        )}
                     </div>
-                </div>
-            )}
+                )}
+            </div>
+            <hr className="w-full border-gray-200 dark:border-gray-800 mb-3" />
+            <div className="w-full overflow-x-auto">
+                {children}
+            </div>
         </div>
-        <hr className="w-full border-gray-200 dark:border-gray-800 mb-3" />
-
-        {children}
-    </div>
-);
+    );
+};
 
 const severityColorMap: Record<string, string> = {
     critical: "bg-red-100 text-red-700",
@@ -94,6 +127,16 @@ export const Badge = ({ color, children, classname }: any) => {
             {children}
         </span>
     );
+};
+
+export const getGrade = (score: number) => {
+    if (!score && score !== 0) return { grade: '?', color: 'text-gray-400', bg: 'bg-gray-100' };
+    if (score >= 90) return { grade: 'A+', color: 'text-green-600', bg: 'bg-green-100' };
+    if (score >= 80) return { grade: 'A', color: 'text-green-600', bg: 'bg-green-100' };
+    if (score >= 70) return { grade: 'B', color: 'text-blue-600', bg: 'bg-blue-100' };
+    if (score >= 60) return { grade: 'C', color: 'text-yellow-600', bg: 'bg-yellow-100' };
+    if (score >= 50) return { grade: 'D', color: 'text-orange-600', bg: 'bg-orange-100' };
+    return { grade: 'F', color: 'text-red-600', bg: 'bg-red-100' };
 };
 
 export default function InventoryDetailsComponent({ InventoryData }: any) {
@@ -484,7 +527,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-1 mb-4">
-
                     {/* Vulnerabilities */}
                     <Card title={<div className="flex items-center gap-2"><RiPieChartLine /> Vulnerabilities</div>} tooltip={<>
                         <h1 className="mb-1 ">How Security Score Is Calculated ?</h1>  &nbsp;
@@ -492,30 +534,46 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                             High-risk issues significantly reduce the overall score.</p>
                     </>}>
 
+                        <div className="flex flex-col xl:flex-row items-center justify-between gap-8">
+                            {/* Score & Grade Section */}
+                            <div className="flex flex-col items-center gap-6 sm:flex-row">
+                                <div className="relative flex items-center justify-center">
+                                    {/* Animated Score Circle */}
+                                    <div className={`flex h-30 w-30 items-center justify-center rounded-full border-[6px] ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'} bg-white dark:bg-gray-800 shadow-sm`}>
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-4xl font-extrabold text-gray-800 dark:text-white">
+                                                <CountUp end={Number(safeText(data?.security_score)) || 0} duration={2.5} />
+                                            </span>
+                                            <span className="text-xs uppercase text-gray-500 font-bold tracking-wide mt-1">Score</span>
+                                        </div>
+                                    </div>
 
-                        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row my-3">
-                            <div className="flex flex-col items-center gap-4 sm:flex-row">
-                                <div className={`flex h-24 w-24 items-center justify-center rounded-full border-[4px] border-brand-800 text-lg font-medium text-brand-800 `} > {safeText(data?.output_score) || 0} </div>
-                                <div className="flex flex-col ">
-                                    <div className="flex flex-wrap gap-2">
+                                    {/* Grade Badge (Absolute positioned or flexed next to it) */}
+                                    {/* <div className={`absolute -right-2 -top-2 flex h-12 w-12 items-center justify-center rounded-full shadow-lg border-2 border-white ${getGrade(Number(data?.security_score)).bg} ${getGrade(Number(data?.security_score)).color}`}>
+                                        <span className="text-xl font-black">{getGrade(Number(data?.security_score)).grade}</span>
+                                    </div> */}
+                                </div>
 
+                                <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                                    <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Vulnerability Breakdown</h4>
+                                    <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                                         {data?.finding_counts?.map((item: any, index: number) => (
                                             <Badge key={index} color={item?.color}>
                                                 {item?.count} {item?.severity}
                                             </Badge>
                                         ))}
                                     </div>
-                                    <div className="mt-4 rounded-lg bg-red-50 p-3 text-base text-red-700 ">
+                                    {/* <div className="mt-4 rounded-lg bg-red-50 p-3 text-base text-red-700 ">
                                         ⚠ Vulnerabilities Not Fixed : <b>{safeText(data?.output_score) || 0}</b>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
 
-                            {/* <div className="flex-1 flex justify-end">
+                            {/* Chart Section */}
+                            <div className="flex-1 w-full max-w-sm min-h-[250px] flex items-center justify-center">
                                 <VulnerabilityChart data={data?.finding_counts || []} />
-                            </div> */}
+                            </div>
                         </div>
-
 
                         <div className="my-3">
                             <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200 ">What Does High Risk Mean?</h3>
