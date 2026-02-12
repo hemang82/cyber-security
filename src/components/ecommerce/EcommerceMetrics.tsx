@@ -42,17 +42,16 @@ export const EcommerceMetrics = () => {
 
   return (<>
 
-    <div className="grid rounded-2xl  border-gray-200  sm:grid-cols-2 xl:grid-cols-4 dark:border-gray-800 dark:bg-gray-900 gap-4">
+    {/* <div className="grid rounded-2xl  border-gray-200  sm:grid-cols-2 xl:grid-cols-4 dark:border-gray-800 dark:bg-gray-900 gap-4">
       {[
-        // { title: "Total Vulnerabilities", value: "10", icon: <FaRegLightbulb className="text-brand-500 size-5 dark:text-white/90" /> },
-        // { title: "Scan", value: "10", icon: <LuFileSearch className="text-brand-500 size-5 dark:text-white/90" /> },
+        { title: "Total Vulnerabilities", value: "10", icon: <FaRegLightbulb className="text-brand-500 size-5 dark:text-white/90" /> },
+        { title: "Scan", value: "10", icon: <LuFileSearch className="text-brand-500 size-5 dark:text-white/90" /> },
         { title: "Inventory", value: "12", icon: <FaUserFriends className="text-brand-500 size-5 dark:text-white/90" /> },
         { title: "Domin", value: "10", icon: <ImLink className="text-brand-500 size-5 dark:text-white/90" /> },
       ].map((item, index) => (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6" key={index}>
 
           <div className="mt-2 flex items-center gap-4 mb-3">
-            {/* ⭐ Small Icon */}
             <div className="flex items-center justify-center w-10 h-10 bg-brand-100 rounded-xl dark:bg-gray-800 ">
               {item.icon}
             </div>
@@ -68,15 +67,15 @@ export const EcommerceMetrics = () => {
 
         </div>
       ))}
-    </div>
+    </div> */}
 
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
       {/* Header */}
-      <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center border-b pb-3">
+      {/* <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center border-b pb-3">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
           Metrics
         </h3>
-      </div>
+      </div> */}
 
       {/* Stats */}
       <div className="grid rounded-2xl border border-gray-200 bg-white sm:grid-cols-2 xl:grid-cols-6 dark:border-gray-800 dark:bg-gray-900 mb-3">

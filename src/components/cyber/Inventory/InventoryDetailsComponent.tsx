@@ -75,15 +75,17 @@ export const Card = ({ title, tooltip, children }: any) => {
 };
 
 const severityColorMap: Record<string, string> = {
-    critical: "bg-red-100 text-red-700",
-    high: "bg-orange-100 text-orange-700",
-    medium: "bg-yellow-100 text-yellow-700",
-    warning: "bg-yellow-50 text-yellow-600",
-    low: "bg-success-100 text-success-700",
-    info: "bg-blue-50 text-blue-500",
-    ["critical risk"]: "bg-yellow-100 text-yellow-700",
-    ["safe"]: "bg-success-100 text-success-700",
-    ["high risk"]: "bg-orange-100 text-orange-700"
+    critical: "bg-red-100 text-red-800 border-red-200",
+    high: "bg-red-50 text-red-600 border-red-100",
+    medium: "bg-orange-50 text-orange-600 border-orange-100",
+    warning: "bg-orange-50 text-orange-600 border-orange-100",
+    low: "bg-yellow-50 text-yellow-600 border-yellow-100",
+    info: "bg-blue-50 text-blue-600 border-blue-100",
+    ["critical risk"]: "bg-red-100 text-red-800 border-red-200",
+    ["safe"]: "bg-green-50 text-green-600 border-green-100",
+    ["high risk"]: "bg-red-50 text-red-600 border-red-100",
+    ["medium risk"]: "bg-orange-50 text-orange-600 border-orange-100",
+    ["low risk"]: "bg-yellow-50 text-yellow-600 border-yellow-100"
 };
 
 export const severityColor = (severity: any) => {
@@ -107,17 +109,17 @@ export enum CyberColor {
 }
 
 export const CyberColorClass: Record<CyberColor, string> = {
-    [CyberColor.GREEN]: "bg-green-100 text-green-700 border-green-300",
+    [CyberColor.GREEN]: "bg-green-50 text-green-700 border-green-200",
 
-    [CyberColor.BLUE]: "bg-blue-100 text-blue-700 border-blue-500",
+    [CyberColor.BLUE]: "bg-blue-50 text-blue-700 border-blue-200",
 
-    [CyberColor.ORANGE]: "bg-orange-100 text-orange-700 border-orange-300",
+    [CyberColor.ORANGE]: "bg-orange-50 text-orange-700 border-orange-200",
 
-    [CyberColor.RED]: "bg-red-100 text-red-700 border-red-300",
+    [CyberColor.RED]: "bg-red-50 text-red-700 border-red-200",
 
-    [CyberColor.DARK_RED]: "bg-red-200 text-red-900 border-red-700",
+    [CyberColor.DARK_RED]: "bg-red-100 text-red-900 border-red-300",
 
-    [CyberColor.YELLOW]: "bg-yellow-100 text-yellow-700 border-yellow-300",
+    [CyberColor.YELLOW]: "bg-yellow-50 text-yellow-700 border-yellow-200",
 };
 
 /* ---------- UI Helpers ---------- */
