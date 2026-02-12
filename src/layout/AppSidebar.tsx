@@ -262,7 +262,7 @@ const AppSidebar: React.FC = () => {
     });
 
     return result;
-  }, [pathname, isActive]);
+  }, [isActive]);
 
   useEffect(() => {
     setOpenSubmenu(matchedSubmenu);

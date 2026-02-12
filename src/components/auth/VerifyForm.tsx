@@ -59,7 +59,7 @@ export default function VerifyForm() {
         if (!temLogin && !isVerifiedRef.current) {
             router.push("/signup");
         }
-    }, [temLogin]);
+    }, [temLogin, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

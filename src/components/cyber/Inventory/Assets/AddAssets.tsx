@@ -104,7 +104,7 @@ export default function AddAssets({ resDomainList }: any) {
         methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
         methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
 
-    }, [methods]);
+    }, [methods, assets_details, resDomainList]);
 
     const selectList = useMemo(() => {
         return resDomainList?.map((item: any) => ({
@@ -146,7 +146,7 @@ export default function AddAssets({ resDomainList }: any) {
 
                             {/* Web URL */}
                             <div>
-                                
+
                                 <Label>Website URL <span className="text-gray-500">(Note : Domain verified after selection)</span> </Label>
 
                                 {/* <Input

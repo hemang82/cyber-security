@@ -31,14 +31,13 @@ const Select: React.FC<SelectProps> = ({
 
   const methods = useFormContext();
 
+  // Manage the selected value
+  const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
 
   // 🛡️ VERY IMPORTANT SAFETY CHECK
   if (!methods) return null;
 
   const { register, formState: { errors }, } = methods;
-
-  // Manage the selected value
-  const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;

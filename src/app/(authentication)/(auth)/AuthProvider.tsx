@@ -37,7 +37,7 @@ export default function AuthProvider({
     };
 
     fetchUser();
-  }, []); // ✅ correct dependency array
+  }, [clearUserAuth, setUser]); // ✅ correct dependency array
 
   return <>{children}</>;
 }

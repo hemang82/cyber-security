@@ -667,7 +667,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </>}>
 
                             <p className="mb-4 text-gray-500 text-base">
-                                Publicly available registration and server details. Understanding your domain's footprint is essential for identifying potential attack surfaces.
+                                Publicly available registration and server details. Understanding your domain&apos;s footprint is essential for identifying potential attack surfaces.
                             </p>
 
                             {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">

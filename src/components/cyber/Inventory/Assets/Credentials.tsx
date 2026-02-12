@@ -31,7 +31,7 @@ export default function Credentials() {
     useEffect(() => {
         console.log("credentials store data 👉", credentials);
         methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, credentials?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
-    }, [methods]);
+    }, [methods, credentials]);
 
     return (<>
         <FormProvider {...methods}>

@@ -61,7 +61,7 @@ export default function PreviewPage({ resDomainList }: any) {
     useEffect(() => {
         console.log("credentials store data 👉", finel_validate_data);
         methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, finel_validate_data?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
-    }, [methods]);
+    }, [methods, finel_validate_data]);
 
     return (<>
         <FormProvider {...methods}>
