@@ -71,11 +71,11 @@ export const EcommerceMetrics = () => {
 
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
       {/* Header */}
-      {/* <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center border-b pb-3">
+      <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center border-b pb-3">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
           Metrics
         </h3>
-      </div> */}
+      </div>
 
       {/* Stats */}
       <div className="grid rounded-2xl border border-gray-200 bg-white sm:grid-cols-2 xl:grid-cols-6 dark:border-gray-800 dark:bg-gray-900 mb-3">

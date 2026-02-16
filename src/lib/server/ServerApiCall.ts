@@ -15,13 +15,13 @@ type InventoryResponse = {
     data?: any
 };
 
-export async function getInventory() {
+export async function getInventoryList() {
     try {
         const headerList = await headers();
         console.log("TEMP_URL", `${TEMP_URL}/api/inventory/list`);
 
         const resList = await fetch(`${TEMP_URL}/api/inventory/list`, {
-            method: "GET",
+            method: "POST",
             cache: "no-store",
             headers: {
                 cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
@@ -37,6 +37,31 @@ export async function getInventory() {
 
         return [];
 
+    } catch (err: any) {
+        console.log(err.message);
+        return [];
+    }
+}
+
+export async function getScanList() {
+    try {
+        const headerList = await headers();
+
+        const resList = await fetch(`${TEMP_URL}/api/inventory/scanlist`, {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+                cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+            },
+        });
+        const res = await resList.json();
+
+        console.log("getInventory res", res);
+
+        if (res?.code === CODES?.SUCCESS) {
+            return res.data;
+        }
+        return [];
     } catch (err: any) {
         console.log(err.message);
         return [];
@@ -92,7 +117,7 @@ export async function getInventoryView(data: Record<string, any>) {
     try {
 
         const res: InventoryResponse = await fetcher("/api/inventoryView", { method: "POST", body: data });
-        
+
         if (res?.code == CODES?.SUCCESS) {
             return res?.data;
         } else {

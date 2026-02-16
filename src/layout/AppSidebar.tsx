@@ -41,6 +41,11 @@ const navItems: NavItem[] = [
     path: "/inventory",
   },
   {
+    icon: <BiPurchaseTag />,
+    name: "Scan",
+    path: "/scan",
+  },
+  {
     icon: <RiHandbagLine />,
     name: "Domain",
     path: "/domain",

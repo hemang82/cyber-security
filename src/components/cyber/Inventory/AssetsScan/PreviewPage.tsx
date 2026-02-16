@@ -16,10 +16,8 @@ import { assets } from "./AssetsTypes";
 
 export default function PreviewPage({ resDomainList }: any) {
 
-    console.log('resDomainList', resDomainList);
-
     const router = useRouter();
-    const { assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData, setLoader, resetInventory } = useInventoryStore();
+    const { assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData, setLoader } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
@@ -42,15 +40,14 @@ export default function PreviewPage({ resDomainList }: any) {
                 assets_details,
                 credentials,
                 owners,
-                website_url: resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain : "N/A",
                 finel_validate_data,
             }),
         });
+
         const res = await inventoryData.json()
 
         if (res.code == CODES?.SUCCESS) {
             TOAST_SUCCESS(res?.message)
-            resetInventory()
             // return
             // setLoader(true)
             router.push(`/inventory`);

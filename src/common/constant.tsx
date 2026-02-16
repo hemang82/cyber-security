@@ -1,4 +1,4 @@
-export const PRODUCTION = true;
+export const PRODUCTION = false;
 
 const CONSTENT = {
 
@@ -26,7 +26,7 @@ export const AWS_ACCESS_KEY_ID = process.env.REACT_APP_AWS_ACCESS_KEY_ID;
 export const AWS_SECRET_ACCESS_KEY = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY;
 export const AWS_S3_REGION_NAME = process.env.REACT_APP_AWS_S3_REGION_NAME;
 
-export const TEMP_URL = PRODUCTION ? "https://cyber-security-seven-sigma.vercel.app" : "http://localhost:3001";
+export const TEMP_URL = PRODUCTION ? "https://cyber-security-seven-sigma.vercel.app" : "http://localhost:3000";
 
 // # ----------------------------- API Codes --------------------------------------
 

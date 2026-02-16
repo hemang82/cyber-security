@@ -1,9 +1,8 @@
-import React from "react";
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import InventoryDetailsComponent from "@/components/cyber/Inventory/InventoryDetailsComponent";
+import { getInventoryDetails } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
-import AddInventory from "@/components/cyber/Inventory/AddInventory";
-import { listDomain } from "@/lib/server/ServerApiCall";
 
 export const metadata: Metadata = {
     title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
@@ -12,17 +11,16 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-export default async function page() {
+export default async function InventoryDetails({ searchParams, }: { searchParams: Promise<{ url?: string }> }) {
+    const params = await searchParams;
 
-    const resDomainList = await listDomain();
+    const InventoryData = await getInventoryDetails({ url:  params.url })
 
     return (
         <div>
-            <PageBreadcrumb pageTitle="Add Inventory" />
+            <PageBreadcrumb pageTitle="Inventory Details" />
             <div className="space-y-6">
-                <ComponentCard  >
-                    <AddInventory resDomainList={resDomainList} />
-                </ComponentCard>
+                <InventoryDetailsComponent InventoryData={InventoryData} />
             </div>
         </div>
     );

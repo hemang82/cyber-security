@@ -1,7 +1,8 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import InventoryComponent from "@/components/cyber/Inventory/InventoryComponent";
-import { getInventoryList, getScanList } from "@/lib/server/ServerApiCall";
+import ScanComponent from "@/components/cyber/Inventory/ScanComponent";
+import { getScanList } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,16 +13,16 @@ export const metadata: Metadata = {
 
 export default async function Page() {
 
-  const InventoryData = await getInventoryList();
+  const InventoryData = await getScanList();
 
   return (
     <div>
-      <PageBreadcrumb pageTitle="Inventory" />
+      <PageBreadcrumb pageTitle="Scan History" />
       <div className="space-y-6">
-        <ComponentCard title="Inventory"
-          buttonName={"Add Asset "}
-          navigation={"/add-inventory"} excel={false}>
-          <InventoryComponent
+        <ComponentCard title="Scan History"
+          buttonName={"Add Assets"}
+          navigation={"/add-asset"} excel={false}>
+          <ScanComponent
             InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
         </ComponentCard>
       </div>

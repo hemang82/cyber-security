@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/alt-text */
+
 "use client";
 import React from 'react';
 import {
@@ -456,7 +456,7 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     <Text style={{ fontSize: 9, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 5 }}> Why this matters?</Text>
                     <Text style={{ fontSize: 9, color: '#444' }}>
                         Publicly available WHOIS and DNS information can enable attackers to conduct social engineering,
-                        identify hosting providers, and map out the organization's infrastructure.
+                        identify hosting providers, and map out the organization&apos;s infrastructure.
                         Ensuring privacy protection and correct DNS records (like SPF/DMARC) relies on this data.
                     </Text>
                 </View>
@@ -704,8 +704,8 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     <View style={{ backgroundColor: '#fff3cd', padding: 10, borderRadius: 5, marginBottom: 15 }}>
                         <Text style={{ fontSize: 9, fontWeight: 'bold', color: '#856404', marginBottom: 5 }}>⚠️ Remediation Guidance</Text>
                         <Text style={{ fontSize: 9, color: '#444' }}>
-                            Prioritize patching Critical and High severity issues first. For each finding, review the "Impact" to understand
-                            the business risk, and follow the "Recommendation" to apply the fix. Validate the fix by re-scanning.
+                            Prioritize patching Critical and High severity issues first. For each finding, review the &quot;Impact&quot; to understand
+                            the business risk, and follow the &quot;Recommendation&quot; to apply the fix. Validate the fix by re-scanning.
                         </Text>
                     </View>
                     <Footer />
@@ -783,7 +783,7 @@ export const PDFDocument = ({ data }: { data: any }) => {
 
                 <View style={styles.card}>
                     <Text style={styles.h3}>Priority 1: Critical Fixes (Immediate)</Text>
-                    <Text style={styles.text}>• Patch all vulnerabilities labeled 'Critical' or 'High'.</Text>
+                    <Text style={styles.text}>• Patch all vulnerabilities labeled &apos;Critical&apos; or &apos;High&apos;.</Text>
                     <Text style={styles.text}>• Address SQL Injection and XSS flaws if present.</Text>
                     <Text style={styles.text}>• Ensure SSL/TLS is strictly enforced.</Text>
                 </View>

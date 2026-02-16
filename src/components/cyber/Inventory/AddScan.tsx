@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState } from "react";
-import AddAssets, { ASSETS_INPUTS } from "./Assets/AddAssets";
 import AssetsType from "./Assets/AssetsTypes";
 import Credentials from "./Assets/Credentials";
 import Owners from "./Assets/Owners";
 import PreviewPage from "./Assets/PreviewPage";
 import { useInventoryStore } from "@/store";
 import { TAB_KEY } from "@/common/commonVariable";
+import AddAssets from "./AssetsScan/AddAssets";
 
 /* Reusable content component */
 export function TabContent({ title, children }: {
@@ -27,13 +27,14 @@ export function TabContent({ title, children }: {
     );
 }
 
-export default function AddInventory({ resDomainList }: any) {
+export default function AddScan({ resDomainList }: any) {
 
     const { active_tab, setActiveTab, assets_type, assets_details, credentials, owners, finel_validate_data } = useInventoryStore();
 
     type TabKey = TAB_KEY.ASSETS_TYPE | TAB_KEY.ASSETS_DETAILS | TAB_KEY.CREDENTIALS | TAB_KEY.OWNERS | TAB_KEY.PREVIEW;
 
     const tabClass = (tab: TabKey, data: any) => `${data?.is_valid && "text-green-900 border-green-900"} inline-flex items-center border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200
+
     ${active_tab === tab ? "text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"}`;
 
     return (
@@ -52,9 +53,9 @@ export default function AddInventory({ resDomainList }: any) {
                             {/* <button className={tabClass(TAB_KEY.CREDENTIALS, credentials)} onClick={() => { credentials?.is_valid && setActiveTab(TAB_KEY.CREDENTIALS) }}>
                                 Credentials
                             </button> */}
-                            <button className={tabClass(TAB_KEY.OWNERS, owners)} onClick={() => { owners?.is_valid && setActiveTab(TAB_KEY.OWNERS) }}>
+                            {/* <button className={tabClass(TAB_KEY.OWNERS, owners)} onClick={() => { owners?.is_valid && setActiveTab(TAB_KEY.OWNERS) }}>
                                 Owners
-                            </button>
+                            </button> */}
                             <button className={tabClass(TAB_KEY.PREVIEW, finel_validate_data)} onClick={() => { finel_validate_data?.is_valid && setActiveTab(TAB_KEY.PREVIEW) }}>
                                 Preview
                             </button>
@@ -76,9 +77,9 @@ export default function AddInventory({ resDomainList }: any) {
                             <Credentials />
                         )} */}
 
-                        {active_tab === TAB_KEY.OWNERS && (
+                        {/* {active_tab === TAB_KEY.OWNERS && (
                             <Owners />
-                        )}
+                        )} */}
 
                         {active_tab === TAB_KEY.PREVIEW && (
                             // <TabContent title="Preview">

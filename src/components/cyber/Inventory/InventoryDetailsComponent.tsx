@@ -169,6 +169,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
         setData(InventoryData)
         setLoader(false)
         resetInventory()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

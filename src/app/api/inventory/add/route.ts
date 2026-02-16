@@ -44,11 +44,37 @@ export async function POST(req: Request) {
             sameSite: "lax",
         });
 
+        const response = await fetch("http://cyberapi.tracewavetransparency.com/api/assets/",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "name": newItem?.assets_details?.value?.assets_name,
+                    "type": newItem?.assets_type?.value,
+                    "url": newItem?.website_url,
+                    "description": newItem?.assets_details?.value?.description,
+                    "tags": newItem?.assets_details?.value?.tags,
+                    "contact_name": newItem?.assets_details?.value?.name,
+                    "contact_email": newItem?.assets_details?.value?.email,
+                    "contact_phone": newItem?.assets_details?.value?.phone_number
+                }),
+                cache: "no-store",
+            }
+        );
+
+        // if (!response.ok) {
+        //     throw new Error("External API failed");
+        // }
+
+        const data = await response.json();
+
         return NextResponse.json({
             code: CODES?.SUCCESS,
             success: true,
-            message: "Inventory added successfully",
-            data: inventory,
+            message: data?.message,
+            data: data?.data,
         });
 
     } catch (error) {

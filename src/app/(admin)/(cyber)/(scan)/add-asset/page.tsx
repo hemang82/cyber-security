@@ -3,7 +3,8 @@ import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { Metadata } from "next";
 import AddInventory from "@/components/cyber/Inventory/AddInventory";
-import { listDomain } from "@/lib/server/ServerApiCall";
+import { getInventoryList, listDomain } from "@/lib/server/ServerApiCall";
+import AddScan from "@/components/cyber/Inventory/AddScan";
 
 export const metadata: Metadata = {
     title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
@@ -14,14 +15,14 @@ export const metadata: Metadata = {
 
 export default async function page() {
 
-    const resDomainList = await listDomain();
+    const resDomainList = await getInventoryList();
 
     return (
         <div>
-            <PageBreadcrumb pageTitle="Add Inventory" />
+            <PageBreadcrumb pageTitle="Add Scan" />
             <div className="space-y-6">
                 <ComponentCard  >
-                    <AddInventory resDomainList={resDomainList} />
+                    <AddScan resDomainList={resDomainList} />
                 </ComponentCard>
             </div>
         </div>

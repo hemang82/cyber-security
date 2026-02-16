@@ -7,11 +7,11 @@ export const metadata: Metadata = {
   description: "CyberSafe Dashboard for real-time cyber security monitoring, vulnerability assessment, threat detection, and system protection management.",
 };
 
-import { getInventory } from "@/lib/server/ServerApiCall";
+import { getScanList } from "@/lib/server/ServerApiCall";
 import CyberDashboard from "@/components/cyber/Dashboard/CyberDashboard";
 
 export default async function page() {
-  const InventoryData = await getInventory();
+  const InventoryData = await getScanList();
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-4">

@@ -11,6 +11,7 @@ import { useInventoryStore } from "@/store";
 import { watch } from "fs";
 import Select from "@/components/form/Select";
 import Badge from "@/components/ui/badge/Badge";
+import { useRouter } from "next/navigation";
 
 type Product = {
     name: string;
@@ -69,7 +70,8 @@ export const ASSETS_INPUTS = {
 
 export default function AddAssets({ resDomainList }: any) {
 
-    const { assets_details, setAssetsDetails, setActiveTab } = useInventoryStore();
+    const { assets_details, setAssetsDetails, setActiveTab, setLoader } = useInventoryStore();
+    const router = useRouter();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
@@ -82,42 +84,60 @@ export default function AddAssets({ resDomainList }: any) {
         { name: "iPad Pro 3rd Gen", price: 900, quantity: 1, discount: 0 },
     ]);
 
+    const [selectedOption, setSelectedOption] = useState<any>({});
+
     const subtotal = products.reduce((sum, p) => {
         const discountAmount = (p.price * p.discount) / 100;
         return sum + (p.price - discountAmount) * p.quantity;
     }, 0);
 
     const onSubmit = (data: any) => {
+
         console.log("FORM DATA 👉", data);
+
         setAssetsDetails({
             value: data,
             is_valid: true,
         });
-        setActiveTab(TAB_KEY.OWNERS);
+
+        console.log('selectedOption', selectedOption);
+
+        setLoader(true)
+        // @ts-ignore
+        router.push(selectedOption?.website_url ? `/asset-details?url=${encodeURIComponent(selectedOption?.website_url || 'N/A')}&inventory_id=${data?.inventory_id}` : '');
     };
 
     useEffect(() => {
         methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
         methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.id : 0 || '');
-        methods.setValue(ASSETS_INPUTS.DESCRIPTION.name, assets_details?.value?.[ASSETS_INPUTS.DESCRIPTION.name] || '');
-        methods.setValue(ASSETS_INPUTS.NAME.name, assets_details?.value?.[ASSETS_INPUTS.NAME.name] || '');
-        methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
-        methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
+        // methods.setValue(ASSETS_INPUTS.DESCRIPTION.name, assets_details?.value?.[ASSETS_INPUTS.DESCRIPTION.name] || '');
+        // methods.setValue(ASSETS_INPUTS.NAME.name, assets_details?.value?.[ASSETS_INPUTS.NAME.name] || '');
+        // methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
+        // methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
 
     }, [methods, assets_details, resDomainList]);
 
+    // const selectList = useMemo(() => {
+    //     return resDomainList?.map((item: any) => ({
+    //         value: item.id,
+    //         label: item.name,
+    //         // <>
+    //         //     <p>{item.domain}
+    //         //     {/* <Badge size="sm"  variant="light" color="success">
+    //         //         {item.status || "Pending"}
+    //         //     </Badge> */}
+    //         // </>
+    //     })) || [];
+    // }, [resDomainList]);
+
     const selectList = useMemo(() => {
-        return resDomainList?.map((item: any) => ({
+        return (resDomainList?.filter((item: any) => item.type === 'web_app').map((item: any) => ({
             value: item.id,
-            label: item.domain,
-            status: item.status
-            // <>
-            //     <p>{item.domain}
-            //     {/* <Badge size="sm"  variant="light" color="success">
-            //         {item.status || "Pending"}
-            //     </Badge> */}
-            // </>
-        })) || [];
+            inventory_id: item.id,
+            website_url: item.url,
+            label: item.name,
+        })) || []
+        );
     }, [resDomainList]);
 
     return (<>
@@ -125,35 +145,16 @@ export default function AddAssets({ resDomainList }: any) {
             <form className=" " onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="p-2 sm:p-4 dark:border-gray-800 bg-white  ">
                     {/* <form className="space-y-6"> */}
-                    <TabContent title="Add Assets">
+                    <TabContent title="Add Scan">
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                            {/* Assets Name */}
+
+                            {/*Assets Name */}
                             <div>
                                 <Label>Assets Name</Label>
-                                <Input
-                                    type={INPUT_TYPE.TEXT}
-                                    placeholder={ASSETS_INPUTS.ASSETS_NAME.placeholder}
-                                    name={ASSETS_INPUTS.ASSETS_NAME.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.ASSETS_NAME.validation,
-                                        pattern: {
-                                            value: INPUT_PATTERN.NAME.pattern,
-                                            message: INPUT_PATTERN.NAME.message,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                            {/* Web URL */}
-                            <div>
-
-                                <Label>Website URL <span className="text-gray-500">(Note : Domain verified after selection)</span> </Label>
-
-
-                                <Controller
+                                {/* <Controller
                                     control={methods.control}
-                                    name={ASSETS_INPUTS?.WEBSITE_URL.name}
-                                    rules={{ required: ASSETS_INPUTS.WEBSITE_URL.validation }}
+                                    name={ASSETS_INPUTS?.ASSETS_NAME.name}
+                                    rules={{ required: ASSETS_INPUTS.ASSETS_NAME.validation }}
                                     render={({ field }) => (
                                         <Select
                                             {...field}
@@ -162,8 +163,62 @@ export default function AddAssets({ resDomainList }: any) {
                                             //     { value: "admin", label: "Admin" },
                                             // ]}
                                             placeholder="Select Option"
+                                            onChange={(value) => {
+                                                console.log("value", value);
+                                                methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, value);
+                                                methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, inventory_id);
+
+                                            }}
                                         />
                                     )}
+                                /> */}
+                                <Controller
+                                    control={methods.control}
+                                    name={ASSETS_INPUTS.ASSETS_NAME.name}
+                                    rules={{ required: ASSETS_INPUTS.ASSETS_NAME.validation }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={selectList}
+                                            placeholder="Select Option"
+                                            value={field.value}
+                                            onChange={(value: any) => {
+                                                console.log('selected value', value);
+                                                const selectedOption = selectList.find((opt: any) => opt.value == value);
+                                                console.log('selected option', selectedOption);
+                                                // 1️⃣ MUST: update Controller field
+                                                field.onChange(value);
+                                                setSelectedOption(selectedOption)
+                                                // 2️⃣ Set WEBSITE_URL based on selected option label
+                                                if (selectedOption) {
+                                                    methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, selectedOption.website_url);
+                                                    // 3️⃣ Set inventory_id from option
+                                                    methods.setValue(
+                                                        'inventory_id',
+                                                        selectedOption.inventory_id
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </div>
+
+                            {/* Assets Name */}
+                            <div>
+                                <Label>Website URL</Label>
+                                <Input
+                                    type={INPUT_TYPE.TEXT}
+                                    disabled={true}
+                                    placeholder={ASSETS_INPUTS.WEBSITE_URL.placeholder}
+                                    name={ASSETS_INPUTS.WEBSITE_URL.name}
+                                    rules={{
+                                        required: ASSETS_INPUTS.WEBSITE_URL.validation,
+                                        // pattern: {
+                                        //     value: INPUT_PATTERN.URL.pattern,
+                                        //     message: INPUT_PATTERN.NAME.message,
+                                        // },
+                                    }}
                                 />
                             </div>
 
@@ -185,65 +240,6 @@ export default function AddAssets({ resDomainList }: any) {
                     </TabContent>
                     {/* </form> */}
                 </div >
-
-                <div className="border-gray-200 p-2 sm:p-4 bg-white  ">
-                    <TabContent title="Contact Details">
-                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-                            {/* Name */}
-                            <div>
-                                <Label>Name</Label>
-                                <Input
-                                    type={INPUT_TYPE.TEXT}
-                                    placeholder={ASSETS_INPUTS.NAME.placeholder}
-                                    name={ASSETS_INPUTS.NAME.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.NAME.validation,
-                                        pattern: {
-                                            value: INPUT_PATTERN.NAME.pattern,
-                                            message: INPUT_PATTERN.NAME.message,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                            {/* Email */}
-                            <div>
-                                <Label>Email</Label>
-                                <Input
-                                    placeholder={ASSETS_INPUTS.EMAIL.placeholder}
-                                    type={INPUT_TYPE.TEXT}
-                                    name={ASSETS_INPUTS.EMAIL.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.EMAIL.validation,
-                                        pattern: {
-                                            value: INPUT_PATTERN.EMAIL.pattern,
-                                            message: INPUT_PATTERN.EMAIL.message,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                            {/* Phone Number */}
-                            <div>
-                                <Label>Phone Number</Label>
-                                <Input
-                                    placeholder={ASSETS_INPUTS.PHONE_NUMBER.placeholder}
-                                    type={INPUT_TYPE.TEXT}
-                                    name={ASSETS_INPUTS.PHONE_NUMBER.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.PHONE_NUMBER.validation,
-                                        pattern: {
-                                            value: INPUT_PATTERN.MOBILE.pattern,
-                                            message: INPUT_PATTERN.MOBILE.message,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                        </div>
-                    </TabContent>
-                </div>
 
                 <div className="flex justify-center m-4">
                     <button type="submit" className="bg-blue-600 hover:bg-blue-800 text-white rounded px-6 py-2" >
