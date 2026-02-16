@@ -16,6 +16,8 @@ import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityCh
 
 import { GoEye } from "react-icons/go";
 import CountUp from "react-countup";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDocument } from "./CyberSecurityPDF";
 
 
 export const Card = ({ title, tooltip, children }: any) => {
@@ -141,9 +143,17 @@ export const getGrade = (score: number) => {
     return { grade: 'F', color: 'text-red-600', bg: 'bg-red-100' };
 };
 
+export const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
+
+
 export default function InventoryDetailsComponent({ InventoryData }: any) {
 
     const { setLoader, resetInventory } = useInventoryStore();
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     console.log('InventoryDataInventoryData', InventoryData);
 
@@ -219,173 +229,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
         }
     };
 
-    const handlePdfDownload = async () => {
-        setLoader(true);
-        setIsDownload(true);
-        // Wait for the expansion animation (300ms) + buffer
-        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const sectionIds = ['pdf-section-1', 'pdf-section-2', 'pdf-section-3', 'pdf-section-4'];
-        const elements = sectionIds.map(id => document.getElementById(id));
-
-        if (elements.some(el => !el)) {
-            console.error("Some sections not found");
-            setIsDownload(false);
-            setLoader(false);
-            return;
-        }
-
-        try {
-            const { toJpeg } = await import("html-to-image");
-            const jsPDF = (await import("jspdf")).default;
-            // Standard A4 dimensions in points
-            const pdfWidth = 595.28;
-            const pdfHeight = 841.89;
-            const pdfMargin = 20; // 20pt padding on all 4 sides
-            const contentWidth = pdfWidth - (2 * pdfMargin);
-            const contentHeight = pdfHeight - (2 * pdfMargin);
-
-            const pdf = new jsPDF({
-                orientation: "portrait",
-                unit: "pt",
-                format: "a4",
-            });
-
-            for (let i = 0; i < elements.length; i++) {
-                const element = elements[i] as HTMLElement;
-                const sectionId = sectionIds[i];
-
-                if (!element) {
-                    console.warn(`Section not found: ${sectionId}`);
-                    continue;
-                }
-
-                console.log(`Processing PDF section: ${sectionId}`);
-
-                // Yield to main thread to prevent UI freeze
-                await new Promise(resolve => setTimeout(resolve, 100));
-
-                try {
-                    if (i > 0) {
-                        pdf.addPage();
-                    }
-
-                    const width = element.scrollWidth;
-                    const height = element.scrollHeight;
-
-                    if (height === 0 || width === 0) {
-                        console.warn(`Skipping empty section: ${sectionId}`);
-                        continue;
-                    }
-
-                    // Use JPEG which is much faster to encode than PNG
-                    // Reduce pixelRatio to 1 to prevent canvas size limits on large sections
-                    console.log(`Section ${sectionId} dimensions: ${width}x${height}`);
-
-                    const dataUrl = await toJpeg(element, {
-                        // quality: 0.95,
-                        cacheBust: true,
-                        backgroundColor: "#ffffff",
-                        pixelRatio: 1, // Reduced from 2 to avoid large canvas issues
-                        width,
-                        height,
-                        canvasWidth: width,
-                        canvasHeight: height,
-                        style: {
-                            transform: "scale(1)",
-                            transformOrigin: "top left",
-                            width: `${width}px`,
-                            height: `${height}px`,
-                            backgroundColor: "#ffffff",
-                            color: "#000000", // Force black text
-                        },
-                        filter: (node) => {
-                            if (node && node.classList) {
-                                return !node.classList.contains("no-capture");
-                            }
-                            return true;
-                        },
-                    });
-
-                    const img = new Image();
-                    img.src = dataUrl;
-                    await new Promise((resolve, reject) => {
-                        img.onload = resolve;
-                        img.onerror = (e) => reject(new Error(`Image load failed for section ${sectionId}`));
-                    });
-
-                    const imgWidth = img.width;
-                    const imgHeight = img.height;
-
-                    // Ratio to fit image width to content width (inside margins)
-                    const ratio = contentWidth / imgWidth;
-
-                    // Height of one page's content area in terms of source image pixels
-                    const pageHeightInImagePixels = contentHeight / ratio;
-
-                    let position = 0;
-
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-
-                    if (!ctx) throw new Error("Canvas context is null");
-
-                    // Canvas width matches source image width
-                    canvas.width = imgWidth;
-
-                    while (position < imgHeight) {
-                        // Yield to main thread during heavy processing loop
-                        if (position > 0) await new Promise(resolve => setTimeout(resolve, 0));
-
-                        // If we need to split a single section across multiple pages
-                        if (position > 0) {
-                            pdf.addPage();
-                        }
-
-                        // Height of the current slice
-                        const sliceHeight = Math.min(pageHeightInImagePixels, imgHeight - position);
-
-                        // Update canvas height to match strictly the slice height (avoids blank space on last page)
-                        canvas.height = sliceHeight;
-
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.fillStyle = "#ffffff";
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                        // Draw slice from source image
-                        ctx.drawImage(
-                            img,
-                            0, position, imgWidth, sliceHeight,
-                            0, 0, imgWidth, sliceHeight
-                        );
-
-                        const pageDataUrl = canvas.toDataURL('image/jpeg', 0.95);
-
-                        // Destination height on PDF document
-                        const destHeight = sliceHeight * ratio;
-
-                        // Use JPEG compression in PDF
-                        // Add image at margin coordinates
-                        pdf.addImage(pageDataUrl, "JPEG", pdfMargin, pdfMargin, contentWidth, destHeight, undefined, 'FAST');
-
-                        position += pageHeightInImagePixels;
-                    }
-                } catch (sectionErr) {
-                    console.error(`Error processing section ${sectionId}:`, sectionErr);
-                    // Continue to next section instead of breaking completely? 
-                    // Or rethrow to stop? Let's log and continue for now to output partial PDF if possible.
-                }
-            }
-
-            pdf.save(`${safeText(data?.target)}-Report.pdf`);
-        } catch (err) {
-            console.error("PDF generation critical failure:", err);
-            alert("Failed to generate PDF. Please check console for details.");
-        } finally {
-            setIsDownload(false);
-            setLoader(false);
-        }
-    };
 
     const column3 = [
         {
@@ -474,7 +318,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
         },
     ];
 
-    const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
     return (<>
 
@@ -508,15 +351,31 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                             </span>
                         </p> */}
                     </div>
-
-                    {/* Right Section */}
                     {
                         !isDownload &&
                         <div className="flex gap-3">
-                            <button onClick={handlePdfDownload} className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600" >
+                            {isClient ? <PDFDownloadLink
+                                document={<PDFDocument data={data} />}
+                                fileName={`${safeText(data?.target)}-Report.pdf`}
+                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600 cursor-pointer"
+                            >
+                                {/* @ts-ignore */}
+                                {({ loading }) => (
+                                    <>
+                                        <HiDownload size={20} />
+                                        {loading ? 'Generating...' : 'Download Report'}
+                                    </>
+                                )}
+                            </PDFDownloadLink>
+                                : <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition opacity-50 cursor-not-allowed">
+                                    <HiDownload size={20} />
+                                    Loading...
+                                </button>
+                            }
+                            {/* <button onClick={handlePdfDownload} className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600" >
                                 <HiDownload size={20} />
                                 Download Report
-                            </button>
+                            </button> */}
                             {/* <button
                                 onClick={handleDownload}
                                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-base font-medium text-white shadow-theme-xs transition hover:bg-brand-600"
@@ -955,7 +814,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </li>
 
                         <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-
                             <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
                                 Open Ports
                             </span>
@@ -1038,6 +896,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </Card>
                     </div>
                 </div>
+
                 <OwaspReport data={data?.compliance?.owasp_top_10 ? data?.compliance?.owasp_top_10 : {}} download={isDownload} openModal={openModal} />
             </div>
 

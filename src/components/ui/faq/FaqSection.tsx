@@ -200,7 +200,6 @@ export function RoutesScanned({ data, download }: any) {
                                 <div className={`grid transition-all duration-300 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`} >
                                     <div className="overflow-hidden">
                                         <hr />
-
                                         <div className="rounded-xl bg-gray-50 p-4">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {(item?.vulnerabilities || []).map(

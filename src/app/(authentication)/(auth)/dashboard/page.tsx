@@ -14,7 +14,7 @@ export default function dashboard() {
       </div> */}
 
     <div className="col-span-12">
-      <StatisticsChart />
+      <StatisticsChart inventory={[]} />
     </div>
 
     {/* <div className="col-span-12 xl:col-span-5">
