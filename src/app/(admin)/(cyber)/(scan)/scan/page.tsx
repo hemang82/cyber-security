@@ -20,10 +20,9 @@ export default async function Page() {
       <PageBreadcrumb pageTitle="Scan History" />
       <div className="space-y-6">
         <ComponentCard title="Scan History"
-          buttonName={"Add Assets"}
+          buttonName={"Scan Assets"}
           navigation={"/add-asset"} excel={false}>
-          <ScanComponent
-            InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
+          <ScanComponent InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
         </ComponentCard>
       </div>
     </div>

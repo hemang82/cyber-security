@@ -11,11 +11,12 @@ import { useRouter } from "next/navigation";
 import { useInventoryStore } from "@/store";
 import { Badge, CyberColorClass, severityColor } from "./InventoryDetailsComponent";
 import { GoEye } from "react-icons/go";
+import { assets } from "./Assets/AssetsTypes";
 
 export default function ScanComponent({ InventoryData }: any) {
   const router = useRouter();
 
-  const { setLoader } = useInventoryStore();
+  const { setLoader, resetInventory } = useInventoryStore();
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
@@ -34,7 +35,7 @@ export default function ScanComponent({ InventoryData }: any) {
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {"Website"}
+            {assets.find((item) => item?.key === row?.type)?.title || "Website"}
           </span>
         </div>
       ),
@@ -66,7 +67,7 @@ export default function ScanComponent({ InventoryData }: any) {
       },
     },
     {
-      key: "security_score", title: "Security Score",
+      key: "output_score", title: "Security Score",
       render: (row: any) => (<>
         {/* // <Badge size="sm" color={row.risk_level && severityColor(row.risk_level) || '12'}>
         //   {row.risk_level || "Warning"}
@@ -110,6 +111,10 @@ export default function ScanComponent({ InventoryData }: any) {
       ),
     },
   ];
+
+  useEffect(() => {
+    resetInventory()
+  }, [])
 
   return (
     <>

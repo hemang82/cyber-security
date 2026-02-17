@@ -15,21 +15,21 @@ export const assets = [
         title: "Web App",
         key: 'web_app',
         description: "Scan browser-based application hosted online",
-        is_show : true
+        is_show: true
     },
     {
         image: <LuFileCode2 className={iconClass} />,
         title: "API",
         key: 'api',
         description: "Scan browser-based application hosted online",
-        is_show : false
+        is_show: false
     },
     {
         image: <IoCloudOutline className={iconClass} />,
         title: "Cloud",
         key: 'cloud',
         description: "Scan browser-based application hosted online",
-        is_show : false
+        is_show: false
     }
 ]
 export default function AssetsType() {
@@ -55,7 +55,7 @@ export default function AssetsType() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {
                 assets?.map((assets, index) => {
-                    return <div className={`rounded-2xl border border-gray-200  p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-5  ${assets.is_show ? 'hover:cursor-pointer hover:shadow-lg hover:border-brand-500 bg-white' : ' hover:shadow-lg hover:border-gray-100 bg-gray-100' } ${assets_type?.value == assets.key ? '!border-brand-500 shadow-lg' : ''}`} key={index} onClick={() => {assets.is_show && handleAssetSelect(assets)}}>
+                    return <div className={`rounded-2xl border border-gray-200  p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-5  ${assets.is_show ? 'hover:cursor-pointer hover:shadow-lg hover:border-brand-500 bg-white' : ' hover:shadow-lg hover:border-gray-100 bg-gray-100'} ${assets_type?.value == assets.key ? '!border-brand-500 shadow-lg' : ''}`} key={index} onClick={() => { assets.is_show && handleAssetSelect(assets) }}>
 
                         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
                             {assets.image}

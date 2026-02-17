@@ -17,7 +17,7 @@ import { GoEye } from "react-icons/go";
 export default function InventoryComponent({ InventoryData }: any) {
   const router = useRouter();
 
-  const { setLoader } = useInventoryStore();
+  const { setLoader, resetInventory } = useInventoryStore();
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
@@ -43,7 +43,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {row?.type || "-"}
+            {assets.find((item) => item?.key === row?.type)?.title || "-"}
           </span>
         </div>
       ),
@@ -52,21 +52,21 @@ export default function InventoryComponent({ InventoryData }: any) {
       key: "url",
       title: "Website URL",
       render: (row: any) => (<>
-        {row?.url || "-"}
+        {row?.url || "N/A"}
       </>),
     },
     {
       key: "scan_count",
       title: "Scan Count",
       render: (row: any) => (<>
-        {row?.scan_count || "-"}
+        {row?.scan_count || "0"}
       </>),
     },
     {
       key: "finding_count",
       title: "Finding Count",
       render: (row: any) => (<>
-        {row?.finding_count || "-"}
+        {row?.finding_count || "0"}
       </>),
     },
     // {
@@ -131,6 +131,10 @@ export default function InventoryComponent({ InventoryData }: any) {
     //   ),
     // },
   ];
+
+  useEffect(() => {
+    resetInventory()
+  }, [])
 
   return (
     <>

@@ -56,9 +56,9 @@ export default function AddScan({ resDomainList }: any) {
                             {/* <button className={tabClass(TAB_KEY.OWNERS, owners)} onClick={() => { owners?.is_valid && setActiveTab(TAB_KEY.OWNERS) }}>
                                 Owners
                             </button> */}
-                            <button className={tabClass(TAB_KEY.PREVIEW, finel_validate_data)} onClick={() => { finel_validate_data?.is_valid && setActiveTab(TAB_KEY.PREVIEW) }}>
+                            {/* <button className={tabClass(TAB_KEY.PREVIEW, finel_validate_data)} onClick={() => { finel_validate_data?.is_valid && setActiveTab(TAB_KEY.PREVIEW) }}>
                                 Preview
-                            </button>
+                            </button> */}
                         </nav>
                     </div>
 
@@ -81,11 +81,12 @@ export default function AddScan({ resDomainList }: any) {
                             <Owners />
                         )} */}
 
-                        {active_tab === TAB_KEY.PREVIEW && (
+                        {/* {active_tab === TAB_KEY.PREVIEW && (
                             // <TabContent title="Preview">
                             <PreviewPage resDomainList={resDomainList} />
                             // </TabContent>
-                        )}
+                        )} */}
+
                     </div>
                 </div>
             </div>

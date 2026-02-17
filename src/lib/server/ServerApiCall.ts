@@ -97,6 +97,34 @@ export async function listDomain() {
     }
 }
 
+export async function listVulnerability() {
+    try {
+        const headerList = await headers();
+        console.log(`tempp ${TEMP_URL}/api/vulnerability/list`);
+        const resList = await fetch(`${TEMP_URL}/api/vulnerability/list`, {
+            method: "POST",
+            cache: "no-store",
+            // headers: {
+            //     cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+            // },
+        });
+
+        const res = await resList.json();
+
+        if (res?.code === CODES?.SUCCESS) {
+            return res.data;
+        } else {
+            TOAST_ERROR("Something went wrong .")
+        }
+
+        return [];
+
+    } catch (err: any) {
+        console.log("listVulnerability error", err.message);
+        return [];
+    }
+}
+
 export async function getInventoryDetails(data: Record<string, any>) {
     try {
 

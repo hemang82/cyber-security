@@ -21,6 +21,7 @@ import { LuLink } from "react-icons/lu";
 import { FaRegLightbulb } from "react-icons/fa6";
 import { PiBank } from "react-icons/pi";
 import { IoWalletOutline } from "react-icons/io5";
+import { TbInfoTriangleFilled, TbZoomScan } from "react-icons/tb";
 
 type NavItem = {
   name: string;
@@ -31,25 +32,31 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <GridIcon size={25} />,
     name: "Dashboard",
     path: "/"
   },
   {
-    icon: <BiPurchaseTag />,
+    icon: <RiHandbagLine size={25} />,
+    name: "Domain",
+    path: "/domain",
+  },
+  {
+    icon: <BiPurchaseTag size={25} />,
     name: "Inventory",
     path: "/inventory",
   },
   {
-    icon: <BiPurchaseTag />,
+    icon: <TbZoomScan size={25} />,
     name: "Scan",
     path: "/scan",
   },
   {
-    icon: <RiHandbagLine />,
-    name: "Domain",
-    path: "/domain",
+    icon: <TbInfoTriangleFilled size={25} />,
+    name: "Vulnerability",
+    path: "/vulnerability",
   },
+
   // {
   //   icon: <RiHandbagLine />,
   //   name: "Sales",
