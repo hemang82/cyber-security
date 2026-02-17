@@ -22,7 +22,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
-      
+
       {/* Per Page Selector */}
       <div className="flex items-center gap-2">
         <span className="text-sm text-gray-500">Rows per page:</span>
@@ -31,7 +31,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onChange={(e) => onChange(1, Number(e.target.value))}
           className="h-9 rounded-md border border-gray-300 bg-white px-2 text-sm dark:border-gray-700 dark:bg-gray-800"
         >
-          {[5, 10, 20, 50].map((size) => (
+          {[5, 10, 15, 20, 50].map((size) => (
             <option key={size} value={size}>
               {size}
             </option>
@@ -56,11 +56,10 @@ const Pagination: React.FC<PaginationProps> = ({
             <button
               key={page}
               onClick={() => onChange(page, perPage)}
-              className={`h-10 w-10 rounded-lg text-sm font-medium ${
-                currentPage === page
+              className={`h-10 w-10 rounded-lg text-sm font-medium ${currentPage === page
                   ? "bg-brand-500 text-white"
                   : "hover:bg-gray-100 dark:hover:bg-gray-800"
-              }`}
+                }`}
             >
               {page}
             </button>

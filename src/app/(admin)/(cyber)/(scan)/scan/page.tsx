@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
 
-  const InventoryData = await getScanList();
+  const ScanHistory = await getScanList();
 
   return (
     <div>
@@ -22,7 +22,7 @@ export default async function Page() {
         <ComponentCard title="Scan History"
           buttonName={"Scan Assets"}
           navigation={"/add-asset"} excel={false}>
-          <ScanComponent InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
+          <ScanComponent ScanHistory={ScanHistory?.length > 0 ? ScanHistory : []} />
         </ComponentCard>
       </div>
     </div>

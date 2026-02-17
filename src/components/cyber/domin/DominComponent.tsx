@@ -17,87 +17,77 @@ import { IoMdRefresh } from "react-icons/io";
 // };
 
 export default function DominComponent({ resDomainList }: any) {
+    // State for domains list, initialized from props
     const [domains, setDomains] = useState(resDomainList);
 
+    // Router hook (currently unused but kept if needed for navigation)
     const router = useRouter();
+
+    // State to track which domain is currently refreshing to show spinner
     const [refreshingId, setRefreshingId] = useState<number | null>(null);
 
-    interface Order {
-        // vulnerabilities: {
-        //     values: string[];
-        // }
-        domin: string;
-        txt_record: string;
-        status?: string
-    }
-
-    const data: Order[] = [
-        {
-            domin: "https://ipo-trend.com/",
-            txt_record: "asfghjkl1234567890qwertyuiop",
-            status: "verified"
-        },
-        {
-            domin: "Domin",
-            txt_record: "asfghjkl1234567890qwertyuior",
-            status: "pending"
-        }
-    ];
-
+    // Status badge styling map
     const statusClasses: any = {
         pending: "bg-yellow-100 text-yellow-700",
         verified: "bg-green-100 text-green-700",
         cancelled: "bg-red-100 text-red-700",
     };
 
+    // Pagination state
+    const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(15);
+
+    // --- Pagination Logic ---
+    // Calculate start index for the current page
+    const startIndex = (page - 1) * perPage;
+
+    // Sequential ID = (Page Index * Items Per Page) + Current Index + 1
+    const currentData = domains?.slice(startIndex, startIndex + perPage).map((item: any, index: number) => ({
+        ...item,
+        displayId: startIndex + index + 1
+    })) || [];
+
+
+    // --- Table Columns Definition ---
     const columns = [
         {
-            key: "id",
+            key: "displayId",
             title: "Id",
-          
+            className: "min-w-[70px]",
         },
         {
             key: "domain",
             title: "Domain",
-            // render: (row: Order) => (
-            //   <div className="flex items-center gap-3">
-            //     <Image
-            //       src={row.user.image}
-            //       width={40}
-            //       height={40}
-            //       alt={row.user.name}
-            //       className="rounded-full"
-            //     />
-            //     <div>
-            //       <div className="font-medium text-gray-800 dark:text-white/90">
-            //         {row.user.name}
-            //       </div>
-            //       <div className="text-xs text-gray-500">{row.user.role}</div>
-            //     </div>
-            //   </div>
-            // ),
+            className: "min-w-[200px]",
+            render: (row: any) => (
+                // Truncate domain if too long
+                <span title={row?.domain} className="block w-full max-w-[200px] truncate">
+                    {row?.domain || "-"}
+                </span>
+            ),
         },
         {
             key: "txt_value",
             title: "TXT record",
-            // render: (row: any) => (
-            //     // <div className="">
-            //     //     <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            //             {row.txt_record}
-            //     //     </span>
-            //     // </div>
-            // ),
+            className: "min-w-[300px]",
+            render: (row: any) => (
+                // Truncate TXT record if too long
+                <span title={row?.txt_value} className="block w-full max-w-[300px] truncate">
+                    {row?.txt_value || "-"}
+                </span>
+            ),
         },
         {
             key: "status",
             title: "Status",
+            className: "min-w-[150px]",
             render: (row: any) => {
-                const isPending = row.status?.toLowerCase() == "verified";
+                const isVerified = row.status?.toLowerCase() == "verified";
                 const isRefreshing = refreshingId === row.id;
 
                 return (
                     <div className="flex items-center gap-3">
-                        {/* Status badge */}
+                        {/* Status badge with conditional styling */}
                         <span
                             className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium capitalize
             ${statusClasses[row.status?.toLowerCase()] || "bg-gray-100 text-gray-700"}
@@ -106,19 +96,19 @@ export default function DominComponent({ resDomainList }: any) {
                             {row.status}
                         </span>
 
-                        {/* Refresh button */}
+                        {/* Refresh button: Disabled if verified or currently refreshing */}
                         <button
                             type="button"
-                            disabled={isPending || isRefreshing}
+                            disabled={isVerified || isRefreshing}
                             title={
-                                isPending
-                                    ? "Status update in progress"
+                                isVerified
+                                    ? "Status verified"
                                     : "Refresh status"
                             }
                             onClick={() => handleRefresh(row)}
                             className={`
             p-1 rounded-full transition
-            ${isPending
+            ${isVerified
                                     ? "cursor-not-allowed text-gray-300"
                                     : "cursor-pointer text-gray-500 hover:text-blue-600 hover:bg-blue-50"}
           `}
@@ -134,18 +124,19 @@ export default function DominComponent({ resDomainList }: any) {
         },
         {
             key: "created_at", title: "Created",
+            className: "min-w-[150px]",
             render: (row: any) => (
                 <span>{formatDate(row.created_at, DATE_FORMAT?.FULL_DAY_MONTH_YEAR)}</span>
             ),
         },
     ];
 
-    const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(50);
-
+    // --- Refresh Status Handler ---
+    // Calls API to refresh domain status and updates local state
     const handleRefresh = async (row: any) => {
         try {
 
+            // Prevent multiple clicks
             if (refreshingId === row.id) return;
 
             setRefreshingId(row.id);
@@ -161,6 +152,7 @@ export default function DominComponent({ resDomainList }: any) {
             const res: any = await response.json();
 
             if (res?.code == CODES?.SUCCESS) {
+                // Update the specific domain's status in the local state
                 setDomains((prev: any[]) =>
                     prev.map(item =>
                         item.id === row.id
@@ -175,25 +167,37 @@ export default function DominComponent({ resDomainList }: any) {
         } catch (error: any) {
             TOAST_ERROR(error.message || "Something went wrong");
         } finally {
+            // Reset refreshing state
             setRefreshingId(null);
         }
     };
 
+    // Sync state if props change
     useEffect(() => {
         setDomains(resDomainList);
     }, [resDomainList]);
 
-    return (<>
-        <DynamicTable columns={columns} data={domains} />
-        {/* PAGINATION */}
-        <Pagination
-            currentPage={page}
-            perPage={perPage}
-            totalCount={resDomainList.length}
-            onChange={(newPage, newPerPage) => {
-                setPage(newPage);
-                setPerPage(newPerPage);
-            }}
-        />
-    </>);
+    return (
+        <>
+            <DynamicTable columns={columns} data={currentData} className="min-w-[1000px]" />
+
+            {/* Pagination Info & Controls */}
+            <div className="mt-4 flex flex-col items-center justify-between gap-4 md:flex-row">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Showing {domains?.length > 0 ? startIndex + 1 : 0} to{" "}
+                    {Math.min(startIndex + perPage, domains?.length || 0)} of {domains?.length || 0} entries
+                </div>
+
+                <Pagination
+                    currentPage={page}
+                    perPage={perPage}
+                    totalCount={domains?.length || 0}
+                    onChange={(newPage, newPerPage) => {
+                        setPage(newPage);
+                        setPerPage(newPerPage);
+                    }}
+                />
+            </div>
+        </>
+    );
 }

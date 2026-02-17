@@ -15,6 +15,7 @@ import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 
 export interface CyberDashboardProps {
     inventory: any[];
+    riskCounts: any;
 }
 
 const COLORS = {
@@ -212,9 +213,9 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                             <span className="text-sm text-gray-400">/ 100</span>
                         </div>
 
-                        <span className={`text-lg font-bold px-2 py-0.5 rounded ${avgGrade.bg} ${avgGrade.color} border border-current opacity-90`}>
+                        {/* <span className={`text-lg font-bold px-2 py-0.5 rounded ${avgGrade.bg} ${avgGrade.color} border border-current opacity-90`}>
                             {avgGrade.grade}
-                        </span>
+                        </span> */}
                     </div>
                 </div>
 
@@ -371,13 +372,12 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                         />
                     </div>
                 </div>
-
             </div>
 
+            <StatisticsChart inventory={inventory} riskCounts={riskCounts} />
 
             {/* Security Coverage Section (What We Check) */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-
                 {/* <EcommerceMetrics /> */}
                 <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-6 text-center">
                     Comprehensive Security Coverage
@@ -394,9 +394,6 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                     ))}
                 </div>
             </div>
-
-            <StatisticsChart inventory={inventory} />
-
         </div>
     );
 }

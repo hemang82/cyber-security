@@ -21,6 +21,7 @@ import { PDFDocument } from "./CyberSecurityPDF";
 
 
 export const Card = ({ title, tooltip, children }: any) => {
+
     const [showTooltip, setShowTooltip] = useState(false);
     const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -61,7 +62,7 @@ export const Card = ({ title, tooltip, children }: any) => {
                         </span>
 
                         {showTooltip && (
-                            <div className="absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-md bg-gray-100 p-3 text-sm text-gray-800 shadow-xl border border-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700">
+                            <div className="absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-md bg-gray-100 p-3 text-sm text-gray-900 shadow-xl border border-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700">
                                 {tooltip}
                             </div>
                         )}
@@ -140,7 +141,7 @@ export const getGrade = (score: number) => {
     if (score >= 70) return { grade: 'B', color: 'text-blue-600', bg: 'bg-blue-100' };
     if (score >= 60) return { grade: 'C', color: 'text-yellow-600', bg: 'bg-yellow-100' };
     if (score >= 50) return { grade: 'D', color: 'text-orange-600', bg: 'bg-orange-100' };
-    return { grade: 'F', color: 'text-red-600', bg: 'bg-red-100' };
+    return { grade: '', color: 'text-red-600', bg: 'bg-red-100' };
 };
 
 export const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
@@ -154,9 +155,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
     useEffect(() => {
         setIsClient(true);
     }, []);
-
-    console.log('InventoryDataInventoryData', InventoryData);
-
 
     const { isOpen, openModal, closeModal, modalData } = useModal();
 
@@ -229,8 +227,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
             setIsDownload(false);
         }
     };
-
-
 
     const column3 = [
         {
@@ -319,7 +315,6 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
         },
     ];
 
-
     return (<>
 
         <div className="p-3">
@@ -329,7 +324,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         {/* Left Info */}
                         <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-400">
                                 <RiGlobalLine size={18} className="text-brand-600 dark:text-brand-400" />
                                 <span className="text-xs font-bold uppercase tracking-wider">Target Asset</span>
                             </div>
@@ -345,7 +340,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </div>
 
                         {/* Scan Date */}
-                        {/* <p className="text-base sm:text-base text-gray-800 dark:text-gray-500">
+                        {/* <p className="text-base sm:text-base text-gray-900 dark:text-gray-700">
                             Scan Date:{" "}
                             <span className="font-medium">
                                 {safeText(scanDate)}
@@ -403,10 +398,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                     {/* Animated Score Circle */}
                                     <div className={`flex h-30 w-30 items-center justify-center rounded-full border-[6px] ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'} bg-white dark:bg-gray-800 shadow-sm`}>
                                         <div className="flex flex-col items-center">
-                                            <span className="text-4xl font-extrabold text-gray-800 dark:text-white">
+                                            <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
                                                 <CountUp end={Number(safeText(data?.security_score)) || 0} duration={2.5} />
                                             </span>
-                                            <span className="text-xs uppercase text-gray-500 font-bold tracking-wide mt-1">Score</span>
+                                            <span className="text-xs uppercase text-gray-700 font-bold tracking-wide mt-1">Score</span>
                                         </div>
                                     </div>
 
@@ -438,8 +433,8 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </div>
 
                         <div className="my-3">
-                            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200 ">What Does High Risk Mean?</h3>
-                            <p className="text-gray-500 text-base mt-2">High-risk vulnerabilities can allow attackers to gain unauthorized access, steal sensitive data, or completely compromise the website.
+                            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-200 ">What Does High Risk Mean?</h3>
+                            <p className="text-gray-700 text-base mt-2">High-risk vulnerabilities can allow attackers to gain unauthorized access, steal sensitive data, or completely compromise the website.
                                 These issues should be fixed on priority to reduce business, legal, and reputation risk.</p>
                         </div>
 
@@ -450,65 +445,65 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     {/* Scan Details */}
                     <div className="mb-4">
 
-                        <Card title={<div className="flex items-center gap-2"><RiFileList3Line /> Scan Details</div>} tooltip={<>
+                        <Card title={<div className="flex items-center gap-2"><RiFileList3Line />Scan Details</div>} tooltip={<>
                             <h1 className="mb-1">Scan Overview</h1> &nbsp;
                             <p>Overview of the target asset, including its risk classification and automated scan metadata.</p>
                         </>}>
-                            <p className="mb-4 text-gray-500 text-base">
+                            <p className="mb-4 text-gray-700 text-base">
                                 Key metadata about the security scan, including the target asset, risk scoring, and scan classification.
                             </p>
                             <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Asset Name
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 break-all">
                                         {safeText(data?.scan_context)}
                                     </span>
                                 </li>
 
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Asset Type
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {"Web Site"}
                                     </span>
                                 </li>
 
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Risk Level
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {safeText(data?.summary?.risk_level)}
                                     </span>
                                 </li>
 
 
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Security Score
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {safeText(data?.summary?.score)}
                                     </span>
                                 </li>
 
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Scan Method
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         Automated
                                     </span>
                                 </li>
 
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Scan Date
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {safeText(scanDate)}
                                     </span>
                                 </li>
@@ -526,11 +521,11 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 Misconfigured DNS or server settings may increase security risks.</p>
                         </>}>
 
-                            <p className="mb-4 text-gray-500 text-base">
+                            <p className="mb-4 text-gray-700 text-base">
                                 Publicly available registration and server details. Understanding your domain&apos;s footprint is essential for identifying potential attack surfaces.
                             </p>
 
-                            {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+                            {/* <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-white/90">
                     Domain Information
                 </h2> */}
 
@@ -538,40 +533,40 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
                                 {/* Registrar */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Registrar
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 break-all">
                                         {safeText(data?.network_info?.whois?.registrar)}
                                     </span>
                                 </li>
 
                                 {/* Expiry */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Expiry
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {safeText(formatDate(data?.network_info?.whois?.expiry, DATE_FORMAT?.FULL_DAY_MONTH_YEAR))}
                                     </span>
                                 </li>
 
                                 {/* Server */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Server
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {safeText(data?.website_security?.technologies?.[0])}
                                     </span>
                                 </li>
 
                                 {/* SSL */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         SSL Certificate
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {data?.website_security?.ssl_certificate?.valid
                                             ? `${data.website_security.ssl_certificate.days_remaining} Days Valid`
                                             : "Not Found"}
@@ -580,20 +575,20 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
                                 {/* A Record */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         A Record
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 break-all">
                                         {safeJoin(data?.network_info?.dns_records?.A)}
                                     </span>
                                 </li>
 
                                 {/* MX Records */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         MX Records
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 break-all">
                                         {
                                             data?.network_info?.dns_records?.MX?.length > 0 &&
                                                 Array.isArray(data?.network_info?.dns_records?.MX)
@@ -603,43 +598,43 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
                                 {/* TXT Records */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         TXT Records
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all whitespace-pre-line">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 break-all whitespace-pre-line">
                                         {safeJoin(data?.network_info?.dns_records?.TXT)}
                                     </span>
                                 </li>
 
                                 {/* Name Servers */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Name Server
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 break-all">
                                         {safeJoin(data?.network_info?.dns_records?.NS)}
                                     </span>
                                 </li>
 
                                 {/* DNSSEC */}
                                 <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         DNSSEC
                                     </span>
-                                    <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                    <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                         {safeText(data?.network_info?.dns_records?.dnssec)}
                                     </span>
                                 </li>
 
                                 {/* Whois */}
-                                <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                    <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                {/* <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
+                                    <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                         Whois
                                     </span>
-                                    <pre className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 whitespace-pre-wrap font-sans">
+                                    <pre className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 whitespace-pre-wrap font-sans">
                                         {safeText(data?.network_info?.whois?.raw_partial)}
                                     </pre>
-                                </li>
+                                </li> */}
                             </ul>
                         </Card>
                     </div>
@@ -652,7 +647,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     {/* Performance */}
                     <div className="mb-4">
                         <Card title={<div className="flex items-center gap-2"><RiSpeedUpLine /> Performance</div>} tooltip="Performance metrics that impact user experience and availability.">
-                            <p className="mb-4 text-gray-500 text-base">
+                            <p className="mb-4 text-gray-700 text-base">
                                 Optimizing load time and page size is crucial for availability. Slow responses can affect user experience.
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
@@ -660,73 +655,73 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 <ul className="divide-y divide-gray-100 dark:divide-gray-800 w-full">
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             Load Time
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {safeText(data?.performance?.load_time_ms)} ms
                                         </span>
                                     </li>
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             Page Size
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {safeText(data?.performance?.page_size_kb) || "-"}
                                         </span>
                                     </li>
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             Status
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {safeText(data?.performance?.status) || "-"}
                                         </span>
                                     </li>
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             Inline script count
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {safeText(data?.performance?.script_analysis?.inline_script_count) || "-"}
                                         </span>
                                     </li>
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             External Script Count
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {safeText(data?.performance?.script_analysis?.external_script_count) || "-"}
                                         </span>
                                     </li>
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             Sitemap
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {safeText(data?.seo_check?.sitemap_xml) || "0"}
                                         </span>
                                     </li>
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             Robot TXT File
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {safeText(data?.seo_check?.robots_txt) || "0"}
                                         </span>
                                     </li>
 
                                     <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                                        <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                             Website BlackList
                                         </span>
-                                        <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                                        <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                             {data?.summary?.blacklisted ? "Blacklisted Webiste" : "Not Blacklist"}
                                         </span>
                                     </li>
@@ -747,7 +742,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         Missing or misconfigured headers weaken browser-level protection.</p>
                 </>}>
 
-                    <p className="mb-4 text-gray-500 text-base">
+                    <p className="mb-4 text-gray-700 text-base">
                         HTTP response headers that instruct the browser to enable security features. Proper configuration can prevent Cross-Site Scripting (XSS) and other attacks.
                     </p>
 
@@ -771,55 +766,55 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         Reducing exposed services and endpoints minimizes the risk of exploitation.</p>
                 </>}>
 
-                    <p className="mb-4 text-gray-500 text-base">
+                    <p className="mb-4 text-gray-700 text-base">
                         Information about the hosting infrastructure. Unnecessary exposed ports or unveiled server technologies can aid attackers in reconnaissance.
                     </p>
 
-                    {/* <h2 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90">
+                    {/* <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-white/90">
                     Network Information
                 </h2> */}
 
                     {/* <div className="my-3">
-                    <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200 ">Attack Surface Overview</h3>
-                    <p className="text-gray-500 text-base mt-2">The attack surface represents all publicly accessible entry points that attackers can target.
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-gray-200 ">Attack Surface Overview</h3>
+                    <p className="text-gray-700 text-base mt-2">The attack surface represents all publicly accessible entry points that attackers can target.
                         Reducing exposed services and endpoints minimizes the risk of exploitation.</p>
                 </div> */}
 
                     <ul className="divide-y divide-gray-100 dark:divide-gray-800 mb-4 border-b pb-4">
 
                         <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                            <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                            <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                 Host
                             </span>
-                            <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500 break-all">
+                            <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700 break-all">
                                 {safeText(data?.network_info?.host) || "N/A"}
                             </span>
                         </li>
 
                         <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                            <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                            <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                 IP Address
                             </span>
-                            <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                            <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                 {safeJoin(data?.network_info?.dns_records?.A)}
                             </span>
                         </li>
 
                         <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                            <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                            <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                 Technologies
                             </span>
-                            <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                            <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                 {safeJoin(data?.website_security?.technologies)}
                             </span>
                         </li>
 
                         <li className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 py-2.5">
-                            <span className="w-full text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                            <span className="w-full text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                                 Open Ports
                             </span>
 
-                            <span className="w-full text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                            <span className="w-full text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                                 {
                                     data?.network_info?.open_ports?.length > 0 ? (data?.network_info?.open_ports ?? []).map(
                                         (portItem: any) =>
@@ -832,10 +827,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         </li>
 
                         {/* <li className="flex items-start gap-5 py-2.5">
-                        <span className="w-1/2 text-base text-gray-500 sm:w-1/3 dark:text-gray-500">
+                        <span className="w-1/2 text-base text-gray-700 sm:w-1/3 dark:text-gray-700">
                             Technologies
                         </span>
-                        <span className="w-1/2 text-base text-gray-800 sm:w-2/3 dark:text-gray-500">
+                        <span className="w-1/2 text-base text-gray-900 sm:w-2/3 dark:text-gray-700">
                             {data?.website_security?.technologies[1] || "N/A"}
                         </span>
                     </li> */}
@@ -860,25 +855,25 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         <Card title={<div className="flex items-center gap-2"><RiClipboardLine /> Compliance Overview</div>} tooltip="Basic compliance checks based on scan results.">
                             <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
-                                    <span className="text-gray-600 dark:text-gray-400">SSL/TLS Encryption</span>
+                                    <span className="text-gray-700 dark:text-gray-400">SSL/TLS Encryption</span>
                                     <span className={`px-2 py-1 rounded text-sm font-medium ${data?.website_security?.ssl_certificate?.valid ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                                         {data?.website_security?.ssl_certificate?.valid ? "Secure (HTTPS)" : "Insecure"}
                                     </span>
                                 </li>
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
-                                    <span className="text-gray-600 dark:text-gray-400">Cookie Consent</span>
-                                    <span className="px-2 py-1 rounded text-sm font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                    <span className="text-gray-700 dark:text-gray-400">Cookie Consent</span>
+                                    <span className="px-2 py-1 rounded text-sm font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
                                         Check Required
                                     </span>
                                 </li>
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
-                                    <span className="text-gray-600 dark:text-gray-400">OWASP Top 10</span>
+                                    <span className="text-gray-700 dark:text-gray-400">OWASP Top 10</span>
                                     <span className="px-2 py-1 rounded text-sm font-medium bg-blue-100 text-blue-700">
                                         Scanned
                                     </span>
                                 </li>
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
-                                    <span className="text-gray-600 dark:text-gray-400">GDPR Basic Check</span>
+                                    <span className="text-gray-700 dark:text-gray-400">GDPR Basic Check</span>
                                     <span className="px-2 py-1 rounded text-sm font-medium bg-yellow-100 text-yellow-700">
                                         Review Needed
                                     </span>
@@ -889,7 +884,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                     {/* Quick Actions / Recommendations Static */}
                     <div className="mb-4">
                         <Card title={<div className="flex items-center gap-2"><RiLightbulbLine /> Recommendations</div>} tooltip="Suggested actions based on findings.">
-                            <ul className="list-disc pl-5 space-y-2 text-gray-600 dark:text-gray-400">
+                            <ul className="list-disc pl-5 space-y-2 text-gray-700 dark:text-gray-400">
                                 <li>Review and fix <b>{data?.finding_counts?.find((f: any) => f.severity === 'High')?.count || 0} High Severity</b> vulnerabilities immediately.</li>
                                 <li>Ensure separate <b>Global/Local</b> script usage is optimized (Current ratio: {data?.performance?.script_analysis?.inline_script_count || 0} / {data?.performance?.script_analysis?.external_script_count || 0}).</li>
                                 <li>Verify <b>Security Headers</b> implementation (`X-Frame-Options`, `Content-Security-Policy`).</li>
@@ -914,10 +909,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
                 {/* HEADER */}
                 <div className="mb-6">
-                    <h4 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                    <h4 className="text-2xl font-semibold text-gray-900 dark:text-white/90">
                         🔐 Vulnerability Solution Guide
                     </h4>
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p className="mt-2 text-sm text-gray-700 dark:text-gray-400">
                         Below are the detected security vulnerabilities along with recommended fixes.
                     </p>
                 </div>
@@ -941,10 +936,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                         {/* Impact */}
                         {modalData?.impact && (
                             <div className="mt-4">
-                                <h6 className="font-medium text-gray-800 dark:text-white/90">
+                                <h6 className="font-medium text-gray-900 dark:text-white/90">
                                     ⚠️ Impact
                                 </h6>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                <p className="text-sm text-gray-700 dark:text-gray-400">
                                     {modalData?.impact}
                                 </p>
                             </div>
@@ -952,18 +947,18 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
 
                         {/* Solution */}
                         <div className="mt-4">
-                            <h6 className="font-medium text-gray-800 dark:text-white/90">
+                            <h6 className="font-medium text-gray-900 dark:text-white/90">
                                 ✅ Recommended Solution
                             </h6>
                             {/* Check if solution is an array or string */}
                             {Array.isArray(modalData?.solution) ? (
-                                <ul className="mt-2 list-disc pl-5 text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                                <ul className="mt-2 list-disc pl-5 text-sm text-gray-700 dark:text-gray-400 space-y-1">
                                     {modalData?.solution.map((sol: any, index: number) => (
                                         <li key={index}>{sol}</li>
                                     ))}
                                 </ul>
                             ) : (
-                                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                <p className="mt-2 text-sm text-gray-700 dark:text-gray-400">
                                     {modalData?.solution || "No specific solution provided."}
                                 </p>
                             )}
