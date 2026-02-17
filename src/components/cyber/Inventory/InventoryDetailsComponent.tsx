@@ -18,6 +18,7 @@ import { GoEye } from "react-icons/go";
 import CountUp from "react-countup";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PDFDocument } from "./CyberSecurityPDF";
+import Drawer from "@/components/ui/drawer/Drawer";
 
 
 export const Card = ({ title, tooltip, children }: any) => {
@@ -148,6 +149,8 @@ export const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && a
 
 
 export default function InventoryDetailsComponent({ InventoryData }: any) {
+
+    console.log("InventoryData", InventoryData);
 
     const { setLoader, resetInventory } = useInventoryStore();
     const [isClient, setIsClient] = useState(false);
@@ -315,8 +318,9 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
         },
     ];
 
-    return (<>
+    const [open, setOpen] = useState(true);
 
+    return (<>
         <div className="p-3">
             <div id="pdf-section-1">
                 <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-6 py-5  sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
@@ -328,6 +332,10 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 <RiGlobalLine size={18} className="text-brand-600 dark:text-brand-400" />
                                 <span className="text-xs font-bold uppercase tracking-wider">Target Asset</span>
                             </div>
+
+                            {/* <Drawer open={open} onClose={() => setOpen(false)}>
+                                <p>Drawer content  </p>
+                            </Drawer> */}
 
                             <div className="flex flex-wrap items-center gap-3">
                                 <span className="text-xl sm:text-2xl font-semibold text-gray-700 dark:text-white break-all">
@@ -359,7 +367,7 @@ export default function InventoryDetailsComponent({ InventoryData }: any) {
                                 {({ loading }) => (
                                     <>
                                         <HiDownload size={20} />
-                                        {loading ? 'Generating...' : 'Download Report'}
+                                        {'Download Report'}
                                     </>
                                 )}
                             </PDFDownloadLink>

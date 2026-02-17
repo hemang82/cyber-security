@@ -1,4 +1,5 @@
 import ComponentCard from "@/components/common/ComponentCard";
+import { Suspense } from "react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import InventoryComponent from "@/components/cyber/Inventory/InventoryComponent";
 import ScanComponent from "@/components/cyber/Inventory/ScanComponent";
@@ -22,7 +23,9 @@ export default async function Page() {
         <ComponentCard title="Scan History"
           buttonName={"Scan Assets"}
           navigation={"/add-asset"} excel={false}>
-          <ScanComponent ScanHistory={ScanHistory?.length > 0 ? ScanHistory : []} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <ScanComponent ScanHistory={ScanHistory?.length > 0 ? ScanHistory : []} />
+          </Suspense>
         </ComponentCard>
       </div>
     </div>
