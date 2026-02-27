@@ -8,90 +8,27 @@ import { TabContent } from "../AddInventory";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE, TAB_KEY } from "@/common/commonVariable";
 import { useInventoryStore } from "@/store";
-import { watch } from "fs";
 import Select from "@/components/form/Select";
 import Badge from "@/components/ui/badge/Badge";
 import { useRouter } from "next/navigation";
+import { ASSETS_KEYS } from "../Assets/AssetsTypes";
+import { ALL_PROVIDER_LIST, ASSETS_INPUTS, PROVIDER_KEY } from "../Assets/AddAssets";
+import { getCloudScanDetails, getWebsiteDetails } from "@/lib/clientApi";
+import { CODES } from "@/common/constant";
+import { TOAST_ERROR } from "@/common/commonFunction";
 
-type Product = {
-    name: string;
-    price: number;
-    quantity: number;
-    discount: number;
-};
 
-export const ASSETS_INPUTS = {
-    ASSETS_NAME: {
-        placeholder: "Enter assets name ",
-        name: "assets_name",
-        validation: "Enter assets name.",
-    },
-    WEBSITE_URL: {
-        placeholder: "Enter website URL",
-        name: "website_url",
-        validation: "Enter website URL.",
-    },
-    DESCRIPTION: {
-        placeholder: "Enter description",
-        name: "description",
-        validation: "Enter description.",
-    },
-    NAME: {
-        placeholder: "Enter name",
-        name: "name",
-        validation: "Enter name.",
-    },
-    COMPANY_NAME: {
-        placeholder: "Enter company name",
-        name: "company_name",
-        validation: "Enter company name.",
-    },
-    EMAIL: {
-        placeholder: "Enter email",
-        name: "email",
-        validation: "Enter email.",
-    },
-    PHONE_NUMBER: {
-        placeholder: "Enter phone number",
-        name: "phone_number",
-        validation: "Enter phone number.",
-    },
-    OWNER: {
-        placeholder: "Enter owner",
-        name: "owner",
-        validation: "Select owner.",
-    },
-    PASSWORD: {
-        placeholder: "Enter password",
-        name: "password",
-        validation: "Enter password.",
-    },
-}
+export default function AddAssets({ resInventoryList }: any) {
 
-export default function AddAssets({ resDomainList }: any) {
-
-    const { assets_details, setAssetsDetails, setActiveTab, setLoader } = useInventoryStore();
+    const { assets_type, assets_details, setAssetsDetails, setActiveTab, setLoader, resetInventory } = useInventoryStore();
     const router = useRouter();
 
-    const methods = useForm({
-        mode: "onBlur", // validation timing
-    });
-
-    const [products, setProducts] = useState<Product[]>([
-        { name: "Macbook Pro 13”", price: 1200, quantity: 1, discount: 0 },
-        { name: "Apple Watch Ultra", price: 300, quantity: 1, discount: 50 },
-        { name: "iPhone 15 Pro Max", price: 800, quantity: 2, discount: 0 },
-        { name: "iPad Pro 3rd Gen", price: 900, quantity: 1, discount: 0 },
-    ]);
+    const methods = useForm({ mode: "onBlur", });
+    const selectedProvider = methods.watch(ASSETS_INPUTS.PROVIDER.name);
 
     const [selectedOption, setSelectedOption] = useState<any>({});
 
-    const subtotal = products.reduce((sum, p) => {
-        const discountAmount = (p.price * p.discount) / 100;
-        return sum + (p.price - discountAmount) * p.quantity;
-    }, 0);
-
-    const onSubmit = (data: any) => {
+    const onSubmit = async (data: any) => {
 
         console.log("FORM DATA 👉", data);
 
@@ -100,45 +37,104 @@ export default function AddAssets({ resDomainList }: any) {
             is_valid: true,
         });
 
-        console.log('selectedOption', selectedOption);
+        setLoader(true);
 
-        setLoader(true)
-        // @ts-ignore
-        router.push(selectedOption?.website_url ? `/asset-details?url=${encodeURIComponent(selectedOption?.website_url || 'N/A')}&inventory_id=${data?.inventory_id}` : '');
+        try {
+
+            if (assets_type?.value === ASSETS_KEYS?.cloud) {
+
+                const provider = data[ASSETS_INPUTS.PROVIDER.name];
+                let credentials: any = {};
+
+                if (provider === PROVIDER_KEY.AWS) {
+                    credentials = {
+                        accessKeyId: data[ASSETS_INPUTS.ACCESS_KEY.name],
+                        secretAccessKey: data[ASSETS_INPUTS.SECRET_KEY.name],
+                        region: data[ASSETS_INPUTS.REGION.name]
+                    };
+                }
+                else if (provider === PROVIDER_KEY.AZURE) {
+                    credentials = {
+                        clientId: data[ASSETS_INPUTS.CLIENT_ID.name],
+                        clientSecret: data[ASSETS_INPUTS.CLIENT_SECRET.name],
+                        tenantId: data[ASSETS_INPUTS.TENANT_ID.name],
+                        subscriptionId: data[ASSETS_INPUTS.SUBSCRIPTION_ID.name]
+                    };
+                }
+                else if (provider === PROVIDER_KEY.GCP) {
+                    credentials = {
+                        projectId: data[ASSETS_INPUTS.PROJECT_ID.name],
+                        keyFilename: data[ASSETS_INPUTS.KEY_FILENAME.name]
+                    };
+                }
+
+                console.log('Cloud Payload 👉', {
+                    provider,
+                    assetId: data.inventory_id,
+                    credentials
+                });
+
+                const response = await getCloudScanDetails({
+                    provider,
+                    assetId: data.inventory_id,
+                    credentials
+                });
+
+                if (response?.code !== CODES?.SUCCESS) {
+                    throw new Error(response?.message || "Cloud scan failed");
+                }
+
+            } else {
+
+                const websiteUrl = data[ASSETS_INPUTS.WEBSITE_URL.name];
+
+                const response = await getWebsiteDetails({
+                    url: websiteUrl,
+                    assetId: data.inventory_id,
+                });
+
+                if (response?.code !== CODES?.SUCCESS) {
+                    throw new Error(response?.message || "Website scan failed");
+                }
+            }
+
+            // ✅ Common Success Flow
+            router.push(`/scan`);
+            resetInventory();
+
+        } catch (error: any) {
+
+            console.error("Submit Error 👉", error);
+            TOAST_ERROR(error?.message || "Something went wrong. Please try again later.");
+
+        } finally {
+
+            setLoader(false); // ✅ Always stop loader
+        }
     };
 
     useEffect(() => {
         methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
-        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.id : 0 || '');
-        // methods.setValue(ASSETS_INPUTS.DESCRIPTION.name, assets_details?.value?.[ASSETS_INPUTS.DESCRIPTION.name] || '');
-        // methods.setValue(ASSETS_INPUTS.NAME.name, assets_details?.value?.[ASSETS_INPUTS.NAME.name] || '');
-        // methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
-        // methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
 
-    }, [methods, assets_details, resDomainList]);
-
-    // const selectList = useMemo(() => {
-    //     return resDomainList?.map((item: any) => ({
-    //         value: item.id,
-    //         label: item.name,
-    //         // <>
-    //         //     <p>{item.domain}
-    //         //     {/* <Badge size="sm"  variant="light" color="success">
-    //         //         {item.status || "Pending"}
-    //         //     </Badge> */}
-    //         // </>
-    //     })) || [];
-    // }, [resDomainList]);
+        const urlValue = assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name];
+        const match = resInventoryList?.find((item: any) => item.id == urlValue || item.url == urlValue);
+        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, (match?.url || urlValue) || '');
+    }, [methods, assets_details, resInventoryList]);
 
     const selectList = useMemo(() => {
-        return (resDomainList?.filter((item: any) => item.type === 'web_app').map((item: any) => ({
-            value: item.id,
-            inventory_id: item.id,
-            website_url: item.url,
-            label: item.name,
-        })) || []
+        return (
+            resInventoryList
+                ?.filter((item: any) => item.type === assets_type?.value)
+                ?.map((item: any) => ({
+                    value: item.id,
+                    inventory_id: item.id,
+                    website_url: item.url,
+                    label: item.name,
+                    full_data: item   // 👈 Ahiya badho original object add kari didho
+                })) || []
         );
-    }, [resDomainList]);
+
+    }, [assets_type?.value, resInventoryList]);
 
     return (<>
         <FormProvider {...methods}>
@@ -150,28 +146,7 @@ export default function AddAssets({ resDomainList }: any) {
 
                             {/*Assets Name */}
                             <div>
-                                <Label>Assets Name</Label>
-                                {/* <Controller
-                                    control={methods.control}
-                                    name={ASSETS_INPUTS?.ASSETS_NAME.name}
-                                    rules={{ required: ASSETS_INPUTS.ASSETS_NAME.validation }}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={selectList}
-                                            // options={[
-                                            //     { value: "admin", label: "Admin" },
-                                            // ]}
-                                            placeholder="Select Option"
-                                            onChange={(value) => {
-                                                console.log("value", value);
-                                                methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, value);
-                                                methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, inventory_id);
-
-                                            }}
-                                        />
-                                    )}
-                                /> */}
+                                <Label>Assets Name <span className="text-error-500">*</span></Label>
                                 <Controller
                                     control={methods.control}
                                     name={ASSETS_INPUTS.ASSETS_NAME.name}
@@ -192,11 +167,29 @@ export default function AddAssets({ resDomainList }: any) {
                                                 // 2️⃣ Set WEBSITE_URL based on selected option label
                                                 if (selectedOption) {
                                                     methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, selectedOption.website_url);
-                                                    // 3️⃣ Set inventory_id from option
-                                                    methods.setValue(
-                                                        'inventory_id',
-                                                        selectedOption.inventory_id
-                                                    );
+                                                    methods.setValue('inventory_id', selectedOption.inventory_id);
+
+                                                    // Parse metadata if it's a string
+                                                    let metadata = selectedOption?.full_data?.metadata;
+
+                                                    const credentials = metadata?.credentials || {};
+                                                    const provider = credentials.provider || null;
+
+                                                    methods.setValue(ASSETS_INPUTS.PROVIDER.name, provider);
+
+                                                    if (provider === PROVIDER_KEY.AWS) {
+                                                        methods.setValue(ASSETS_INPUTS.ACCESS_KEY.name, credentials.access_key || credentials.accessKeyId);
+                                                        methods.setValue(ASSETS_INPUTS.SECRET_KEY.name, credentials.secret_key || credentials.secretAccessKey);
+                                                        methods.setValue(ASSETS_INPUTS.REGION.name, credentials.region);
+                                                    } else if (provider === PROVIDER_KEY.AZURE) {
+                                                        methods.setValue(ASSETS_INPUTS.CLIENT_ID.name, credentials.client_id);
+                                                        methods.setValue(ASSETS_INPUTS.CLIENT_SECRET.name, credentials.client_secret);
+                                                        methods.setValue(ASSETS_INPUTS.TENANT_ID.name, credentials.tenant_id);
+                                                        methods.setValue(ASSETS_INPUTS.SUBSCRIPTION_ID.name, credentials.subscription_id);
+                                                    } else if (provider === PROVIDER_KEY.GCP) {
+                                                        methods.setValue(ASSETS_INPUTS.PROJECT_ID.name, credentials.project_id);
+                                                        methods.setValue(ASSETS_INPUTS.KEY_FILENAME.name, credentials.key_filename);
+                                                    }
                                                 }
                                             }}
                                         />
@@ -204,23 +197,173 @@ export default function AddAssets({ resDomainList }: any) {
                                 />
                             </div>
 
-                            {/* Assets Name */}
-                            <div>
-                                <Label>Website URL</Label>
-                                <Input
-                                    type={INPUT_TYPE.TEXT}
-                                    disabled={true}
-                                    placeholder={ASSETS_INPUTS.WEBSITE_URL.placeholder}
-                                    name={ASSETS_INPUTS.WEBSITE_URL.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.WEBSITE_URL.validation,
-                                        // pattern: {
-                                        //     value: INPUT_PATTERN.URL.pattern,
-                                        //     message: INPUT_PATTERN.NAME.message,
-                                        // },
-                                    }}
-                                />
-                            </div>
+                            {
+                                (assets_type?.value === ASSETS_KEYS?.web) ? (
+                                    <div>
+                                        <Label>Website URL<span className="text-gray-500">(Note : Domain verified after selection)</span> </Label>
+                                        <Input
+                                            disabled={true}
+                                            placeholder={ASSETS_INPUTS.WEBSITE_URL.placeholder}
+                                            name={ASSETS_INPUTS.WEBSITE_URL.name}
+                                        />
+                                    </div>
+                                ) : assets_type?.value === ASSETS_KEYS?.cloud ? (
+                                    <>
+                                        {
+                                            methods.watch(ASSETS_INPUTS.ASSETS_NAME.name) && (
+                                                <div>
+                                                    <Label>Provider <span className="text-error-500">*</span> </Label>
+                                                    <Controller
+                                                        control={methods.control}
+                                                        name={ASSETS_INPUTS?.PROVIDER.name}
+                                                        rules={{ required: ASSETS_INPUTS.PROVIDER.validation }}
+                                                        render={({ field }) => (
+                                                            <Select
+                                                                {...field}
+                                                                disabled={true}
+                                                                options={ALL_PROVIDER_LIST}
+                                                                placeholder={ASSETS_INPUTS.PROVIDER.placeholder}
+                                                            />
+                                                        )}
+                                                    />
+                                                </div>
+                                            )
+                                        }
+
+                                        {/* AWS Specific Fields */}
+                                        {selectedProvider == PROVIDER_KEY.AWS && (
+                                            <>
+                                                <div>
+                                                    <Label>Access ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Access ID"
+                                                        name={ASSETS_INPUTS.ACCESS_KEY.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.ACCESS_KEY.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Secret Key <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Secret Key"
+                                                        disabled
+                                                        name={ASSETS_INPUTS.SECRET_KEY.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.SECRET_KEY.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Region <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Region"
+                                                        name={ASSETS_INPUTS.REGION.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.REGION.validation,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* Azure Specific Fields */}
+                                        {selectedProvider == PROVIDER_KEY.AZURE && (
+                                            <>
+                                                <div>
+                                                    <Label>Client ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Client ID"
+                                                        name={ASSETS_INPUTS.CLIENT_ID.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.CLIENT_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Client Secret <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Client Secret"
+                                                        name={ASSETS_INPUTS.CLIENT_SECRET.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.CLIENT_SECRET.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Tenant ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Tenant ID"
+                                                        name={ASSETS_INPUTS.TENANT_ID.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.TENANT_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Subscription ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Subscription ID"
+                                                        name={ASSETS_INPUTS.SUBSCRIPTION_ID.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.SUBSCRIPTION_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* GCP Specific Fields */}
+                                        {selectedProvider == PROVIDER_KEY.GCP && (
+                                            <>
+                                                <div>
+                                                    <Label>Project ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Project ID"
+                                                        name={ASSETS_INPUTS.PROJECT_ID.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.PROJECT_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Key Filename <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Key Filename"
+                                                        name={ASSETS_INPUTS.KEY_FILENAME.name}
+                                                        disabled
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.KEY_FILENAME.validation,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
+                                ) : null
+                            }
 
                             {/* Additional Info */}
                             {/* <div className="col-span-full">
@@ -247,7 +390,7 @@ export default function AddAssets({ resDomainList }: any) {
                     </button>
                 </div>
 
-            </form>
-        </FormProvider>
+            </form >
+        </FormProvider >
     </>)
 }

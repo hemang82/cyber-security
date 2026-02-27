@@ -1,7 +1,7 @@
 "use client";
 
 import { safeText } from "@/common/commonFunction";
-import { Badge, Card, severityColor } from "@/components/cyber/Inventory/InventoryDetailsComponent";
+import { Badge, Card, severityColor } from "@/components/cyber/Inventory/assetsDetails/WebsiteDetails";
 import { useState } from "react";
 import { GoEye } from "react-icons/go";
 import { RiArrowDownSLine, RiBugLine, RiRouteLine, RiAlertLine } from "react-icons/ri";
@@ -283,30 +283,33 @@ export function VurnabilitiesFindings({ data }: any) {
                                         {/* Header */}
                                         <div className="flex justify-between items-start">
                                             <h3 className="font-semibold text-lg text-gray-800">
-                                                {vul.type}
+                                                {safeText(vul.type)}
                                             </h3>
 
                                             <span className={`px-3 py-1  text-base rounded-full font-medium ${vul.severity === "High" ? "bg-red-100 text-red-600" : vul.severity === "Medium" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-600"}`} >
-                                                {vul.severity}
+                                                {safeText(vul.severity)}
                                             </span>
                                         </div>
 
                                         {/* OWASP (optional) */}
                                         {vul.owasp && (
-                                            <p className=" text-base text-purple-600 font-medium">
-                                                {vul.owasp}
+                                            <p className="text-sm font-medium text-brand-600 dark:text-brand-400">
+                                                {safeText(vul.owasp)}
                                             </p>
                                         )}
 
                                         {/* Detail */}
                                         <p className="text-gray-600  text-base leading-relaxed">
-                                            {vul.detail}
+                                            {safeText(vul.detail)}
                                         </p>
 
                                         {/* Evidence (optional) */}
                                         {vul.evidence && (
-                                            <div className="bg-gray-100 p-2 rounded  text-base text-gray-700 break-all">
-                                                <strong>Evidence:</strong> {vul.evidence}
+                                            <div className="mt-4 rounded-lg bg-gray-50 p-4 border border-gray-100 dark:bg-gray-800/50 dark:border-gray-800">
+                                                <p className="text-xs font-mono text-gray-500 break-all leading-relaxed">
+                                                    <span className="font-bold text-gray-700 dark:text-gray-300 mr-2 uppercase tracking-wider">Evidence:</span>
+                                                    {safeText(vul.evidence)}
+                                                </p>
                                             </div>
                                         )}
                                     </div>
@@ -348,13 +351,10 @@ export default function OwaspReport({ data, download, openModal }: any) {
 
                         return (
                             <div key={i} className="border rounded-xl bg-white shadow-sm overflow-hidden" >
-                                <button
-                                    onClick={() => !download && setOpen(open === i ? null : i)}
-                                    className="w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 gap-4"
-                                >
-                                    <h2 className="font-medium text-gray-800 text-left text-sm sm:text-base">
-                                        {safeText(category)}
-                                    </h2>
+
+                                <button onClick={() => !download && setOpen(open === i ? null : i)} className="w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 gap-4" > <h2 className="font-medium text-gray-800 text-left text-sm sm:text-base">
+                                    {safeText(category)}
+                                </h2>
 
                                     {isPassed ? (
                                         <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
@@ -416,9 +416,7 @@ export default function OwaspReport({ data, download, openModal }: any) {
                                                                                 vul?.severity
                                                                             )}
                                                                         </span>
-
                                                                         {/* <Badge color={vul?.severity}>{vul?.severity || "Unknown Risk"}</Badge> */}
-
                                                                     </div>
                                                                 </div>
 

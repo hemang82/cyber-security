@@ -5,8 +5,9 @@ import {
     Page, Text, View, Document, StyleSheet,
     PDFDownloadLink, Image, Font
 } from '@react-pdf/renderer';
-import { safeJoin } from './InventoryDetailsComponent';
+// import { safeJoin } from './InventoryDetailsComponent';
 import { safeText } from '@/common/commonFunction';
+import { safeJoin } from '../assetsDetails/WebsiteDetails';
 
 // Register a standard font if needed, otherwise use Helvetica
 // Font.register({ family: 'Roboto', src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf' });
@@ -46,11 +47,11 @@ const styles = StyleSheet.create({
         fontSize: 8
     },
     // Typography
-    h1: { fontSize: 24, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 20, marginTop: 10 },
-    h2: { fontSize: 18, fontWeight: 'bold', color: '#1a2a6c', marginTop: 20, marginBottom: 15, paddingBottom: 5 },
-    h3: { fontSize: 14, fontWeight: 'bold', color: '#2c3e50', marginTop: 15, marginBottom: 15 },
-    h4: { fontSize: 12, fontWeight: 'bold', color: '#444', marginTop: 10, marginBottom: 10 },
-    text: { fontSize: 10, marginBottom: 10, textAlign: 'justify', color: '#444' },
+    h1: { fontSize: 18, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 20, marginTop: 10 },
+    h2: { fontSize: 15, fontWeight: 'bold', color: '#1a2a6c', marginTop: 20, marginBottom: 15, paddingBottom: 5 },
+    h3: { fontSize: 12, fontWeight: 'bold', color: '#2c3e50', marginTop: 15, marginBottom: 15 },
+    h4: { fontSize: 10, fontWeight: 'bold', color: '#444', marginTop: 10, marginBottom: 10 },
+    text: { fontSize: 8.5, marginBottom: 10, textAlign: 'justify', color: '#444' },
     textSmall: { fontSize: 9, color: '#666' },
 
     // Components
@@ -70,12 +71,12 @@ const styles = StyleSheet.create({
     },
 
     // Tables
-    table: { width: '100%', borderStyle: 'solid', borderWidth: 1, borderColor: '#bfbfbf', marginVertical: 10 },
-    tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#bfbfbf', minHeight: 20, alignItems: 'center' },
-    tableHeaderRow: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#bfbfbf', backgroundColor: '#f1f1f1', minHeight: 20, alignItems: 'center' },
-    tableCol: { padding: 5, borderRightWidth: 1, borderColor: '#bfbfbf' },
-    tableCell: { fontSize: 9 },
-    tableCellBold: { fontSize: 9, fontWeight: 'bold' },
+    table: { width: '100%', borderStyle: 'solid', borderWidth: 1, borderColor: '#bfbfbf', marginVertical: 8 },
+    tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#bfbfbf', minHeight: 18, alignItems: 'center' },
+    tableHeaderRow: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#bfbfbf', backgroundColor: '#f1f1f1', minHeight: 18, alignItems: 'center' },
+    tableCol: { padding: 4, borderRightWidth: 1, borderColor: '#bfbfbf' },
+    tableCell: { fontSize: 8 },
+    tableCellBold: { fontSize: 8, fontWeight: 'bold' },
 
     // Special
     coverPage: {
@@ -188,7 +189,7 @@ const TableRow = ({ label, value }: { label: string, value: string | number }) =
             <Text style={styles.tableCellBold}>{label}</Text>
         </View>
         <View style={[styles.tableCol, { width: '65%', borderRightWidth: 0 }]}>
-            <Text style={styles.tableCell}>{value || 'N/A'}</Text>
+            <Text style={styles.tableCell}>{safeText(value)}</Text>
         </View>
     </View>
 );
@@ -225,10 +226,10 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     <Text style={styles.coverSubtitle}>Comprehensive Security Audit & Analysis</Text>
 
                     <View style={{ marginTop: 50, borderTop: '1px solid #bdc3c7', paddingTop: 20, width: 400, alignItems: 'center' }}>
-                        <Text style={styles.coverInfo}>TARGET ASSET: {data.target}</Text>
+                        <Text style={styles.coverInfo}>TARGET ASSET: {safeText(data.target)}</Text>
                         <Text style={styles.coverInfo}>SCAN DATE: {safeDate(data.scanned_at)}</Text>
-                        <Text style={styles.coverInfo}>RISK LEVEL: {data.risk_level}</Text>
-                        <Text style={styles.coverInfo}>SECURITY SCORE: {data.security_score}/100</Text>
+                        <Text style={styles.coverInfo}>RISK LEVEL: {safeText(data.risk_level)}</Text>
+                        <Text style={styles.coverInfo}>SECURITY SCORE: {safeText(data.security_score)}/100</Text>
                     </View>
                 </View>
                 <Text style={{ position: 'absolute', bottom: 50, fontSize: 10, color: '#bdc3c7' }}>CONFIDENTIAL - FOR INTERNAL USE ONLY</Text>
@@ -258,13 +259,13 @@ export const PDFDocument = ({ data }: { data: any }) => {
                 <Header />
                 <Text style={styles.h1}>1. Executive Summary</Text>
                 <Text style={styles.text}>
-                    This report provides a comprehensive analysis of the security posture of {data.target}.
+                    This report provides a comprehensive analysis of the security posture of {safeText(data.target)}.
                     The assessment was conducted using automated scanning tools designed to identify common vulnerabilities,
                     misconfigurations, and compliance issues.
                 </Text>
                 <Text style={styles.text}>
-                    The overall security score is {data.security_score}/100, which is classified as {data.risk_level}.
-                    A total of {data.finding_counts?.reduce((acc: number, curr: any) => acc + curr.count, 0) || 0} issues were identified across various severity levels.
+                    The overall security score is {safeText(data.security_score)}/100, which is classified as {safeText(data.risk_level)}.
+                    A total of {data.finding_counts?.reduce((acc: number, curr: any) => acc + (Number(curr.count) || 0), 0) || 0} issues were identified across various severity levels.
                 </Text>
 
                 {/* <View style={{ alignItems: 'center', marginVertical: 40 }}>
@@ -334,7 +335,7 @@ export const PDFDocument = ({ data }: { data: any }) => {
                                 lineHeight: 1,         // આ પ્રોપર્ટી સ્કોરને બરાબર મધ્યમાં રાખવામાં મદદ કરશે
                             }}
                         >
-                            {data.security_score}
+                            {safeText(data.security_score)}
                         </Text>
                     </View>
                     {/* Risk Level */}
@@ -353,7 +354,7 @@ export const PDFDocument = ({ data }: { data: any }) => {
                             textTransform: 'uppercase',
                         }}
                     >
-                        {data.risk_level}
+                        {safeText(data.risk_level)}
                     </Text>
 
                     {/* Description */}
@@ -389,10 +390,10 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     {data.finding_counts?.map((item: any, i: number) => (
                         <View style={styles.tableRow} key={i}>
                             <View style={[styles.tableCol, { width: '50%' }]}>
-                                <SeverityBadge severity={item.severity} />
+                                <SeverityBadge severity={safeText(item.severity)} />
                             </View>
                             <View style={[styles.tableCol, { width: '50%', borderRightWidth: 0 }]}>
-                                <Text style={styles.tableCell}>{item.count}</Text>
+                                <Text style={styles.tableCell}>{safeText(item.count)}</Text>
                             </View>
                         </View>
                     ))}
@@ -417,10 +418,10 @@ export const PDFDocument = ({ data }: { data: any }) => {
                 </Text>
                 <Text style={styles.h3}>Asset Details</Text>
                 <View style={styles.table}>
-                    <TableRow label="Target URL" value={data.target} />
+                    <TableRow label="Target URL" value={safeText(data.target)} />
                     <TableRow label="Scan Date" value={safeDate(data.scanned_at)} />
                     <TableRow label="Scan Type" value="Automated Blackbox Data Collection" />
-                    <TableRow label="Scan Context" value={data.scan_context || 'Standard Web Scan'} />
+                    <TableRow label="Scan Context" value={safeText(data.scan_context) || 'Standard Web Scan'} />
                 </View>
 
                 <Text style={styles.h3}>Methodology</Text>
@@ -594,13 +595,13 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     </Text>
                 </View>
                 <View style={styles.table}>
-                    <TableRow label="Load Time" value={`${data.performance?.load_time_ms} ms`} />
-                    <TableRow label="Page Size" value={`${data.performance?.page_size_kb} KB`} />
+                    <TableRow label="Load Time" value={`${safeText(data.performance?.load_time_ms)} ms`} />
+                    <TableRow label="Page Size" value={`${safeText(data.performance?.page_size_kb)} KB`} />
                     <TableRow label="Status" value={safeText(data?.performance?.status) || "-"} />
-                    <TableRow label="Scripts (Inline/External)" value={`${data.performance?.script_analysis?.inline_script_count} / ${data.performance?.script_analysis?.external_script_count}`} />
+                    <TableRow label="Scripts (Inline/External)" value={`${safeText(data.performance?.script_analysis?.inline_script_count)} / ${safeText(data.performance?.script_analysis?.external_script_count)}`} />
                     <TableRow label="Sitemap XML" value={`${safeText(data?.seo_check?.sitemap_xml) || "0"}`} />
                     <TableRow label="Robots.txt" value={`${safeText(data?.seo_check?.robots_txt) || "0"}`} />
-                    <TableRow label="Blacklisted" value={`${data?.summary?.blacklisted ? "Blacklisted Webiste" : "Not Blacklist"}`} />
+                    <TableRow label="Blacklisted" value={`${data?.summary?.blacklisted ? "Blacklisted Website" : "Not Blacklist"}`} />
                 </View>
 
                 <Text style={styles.h3}>Security Headers Analysis</Text>
@@ -673,9 +674,9 @@ export const PDFDocument = ({ data }: { data: any }) => {
                             {/* List Details if array */}
                             {Array.isArray(details) && details.map((risk: any, rIdx: number) => (
                                 <View key={rIdx} style={{ marginTop: 5, borderBottom: '1px solid #f5c6cb', paddingBottom: 5 }}>
-                                    <Text style={{ fontSize: 9, fontWeight: 'bold' }}>{risk.type}</Text>
-                                    <Text style={styles.textSmall}>{risk.detail}</Text>
-                                    <Text style={{ fontSize: 8, color: '#444' }}>Fix: {risk.solution}</Text>
+                                    <Text style={{ fontSize: 9, fontWeight: 'bold' }}>{safeText(risk.type)}</Text>
+                                    <Text style={styles.textSmall}>{safeText(risk.detail)}</Text>
+                                    <Text style={{ fontSize: 8, color: '#444' }}>Fix: {safeText(risk.solution)}</Text>
                                 </View>
                             ))}
                         </View>
@@ -715,31 +716,31 @@ export const PDFDocument = ({ data }: { data: any }) => {
             {data.network_info?.findings?.map((finding: any, index: number) => (
                 <Page size="A4" style={styles.page} key={`finding-${index}`}>
                     <Header />
-                    <Text style={styles.h2}>Finding #{index + 1}: {finding.type || finding.key}</Text>
+                    <Text style={styles.h2}>Finding #{index + 1}: {safeText(finding.type) || safeText(finding.key)}</Text>
 
                     <View style={{ flexDirection: 'row', gap: 10, marginBottom: 15 }}>
-                        <SeverityBadge severity={finding.severity} />
-                        <Text style={{ fontSize: 9, color: '#666' }}>{finding.owasp || 'General Security'}</Text>
+                        <SeverityBadge severity={safeText(finding.severity)} />
+                        <Text style={{ fontSize: 9, color: '#666' }}>{safeText(finding.owasp) || 'General Security'}</Text>
                     </View>
 
                     <View style={styles.card}>
                         <Text style={styles.h4}>Description</Text>
-                        <Text style={styles.text}>{finding.detail || finding.desc || 'No detailed description available.'}</Text>
+                        <Text style={styles.text}>{safeText(finding.detail) || safeText(finding.desc) || 'No detailed description available.'}</Text>
                     </View>
 
                     <Text style={styles.h4}>Impact</Text>
                     <Text style={styles.text}>
-                        {finding.impact || 'Exploitation could lead to unauthorized actions or information disclosure.'}
+                        {safeText(finding.impact) || 'Exploitation could lead to unauthorized actions or information disclosure.'}
                     </Text>
 
                     <Text style={styles.h4}>Recommendation</Text>
                     <Text style={styles.text}>
-                        {finding.solution || 'Apply standard security patches and configuration hardening.'}
+                        {safeText(finding.solution) || 'Apply standard security patches and configuration hardening.'}
                     </Text>
 
                     <Text style={styles.h4}>Evidence / Payload</Text>
                     <View style={{ backgroundColor: '#f1f1f1', padding: 10, borderRadius: 5 }}>
-                        <Text style={{ fontFamily: 'Courier', fontSize: 8 }}>{finding.evidence || 'N/A'}</Text>
+                        <Text style={{ fontFamily: 'Courier', fontSize: 8 }}>{safeText(finding.evidence) || 'N/A'}</Text>
                     </View>
                     <Footer />
                 </Page>
@@ -760,8 +761,8 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     </View>
                     {data.route_scans?.map((route: any, i: number) => (
                         <View style={styles.tableRow} key={i}>
-                            <View style={[styles.tableCol, { width: '80%' }]}><Text style={styles.tableCell}>{route.url}</Text></View>
-                            <View style={[styles.tableCol, { width: '20%', borderRightWidth: 0 }]}><Text style={styles.tableCell}>{route.vulnerabilities?.length || 0}</Text></View>
+                            <View style={[styles.tableCol, { width: '80%' }]}><Text style={styles.tableCell}>{safeText(route.url)}</Text></View>
+                            <View style={[styles.tableCol, { width: '20%', borderRightWidth: 0 }]}><Text style={styles.tableCell}>{safeText(route.vulnerabilities?.length) || 0}</Text></View>
                         </View>
                     ))}
                     {(!data.route_scans || data.route_scans.length === 0) && (
@@ -816,7 +817,7 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     </View>
                     <Text style={{ fontSize: 14, fontWeight: 'bold', letterSpacing: 1, color: '#666' }}>SECURITY RATING</Text>
                     <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 5, color: data.risk_level === 'Low Risk' ? '#28a745' : '#dc3545' }}>
-                        {data.risk_level?.toUpperCase()}
+                        {safeText(data.risk_level)?.toUpperCase()}
                     </Text>
                 </View>
 

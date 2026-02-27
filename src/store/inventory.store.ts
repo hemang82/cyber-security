@@ -12,7 +12,7 @@ interface InventoryState {
     assets_details: InventoryType | null;
     credentials: InventoryType | null;
     owners: InventoryType | null;
-    finel_validate_data: InventoryType | null;
+    final_validate_data: InventoryType | null;
     active_tab: string | TAB_KEY.ASSETS_TYPE | TAB_KEY.ASSETS_DETAILS | TAB_KEY.CREDENTIALS | TAB_KEY.OWNERS | TAB_KEY.PREVIEW;
     is_loading: boolean;
 
@@ -21,7 +21,7 @@ interface InventoryState {
     setAssetsDetails: (data: InventoryType) => void;
     setCredentials: (data: InventoryType) => void;
     setOwners: (data: InventoryType) => void;
-    setFinelValidateData: (data: InventoryType) => void;
+    setFinalValidateData: (data: InventoryType) => void;
     setActiveTab: (data: string) => void;
     setLoader: (data: boolean) => void;
 
@@ -35,7 +35,7 @@ export const useInventoryStore = create<InventoryState>((set) => ({
     assets_details: null,
     credentials: null,
     owners: null,
-    finel_validate_data: null,
+    final_validate_data: null,
     active_tab: TAB_KEY.ASSETS_TYPE,
     is_loading: false,
 
@@ -51,8 +51,8 @@ export const useInventoryStore = create<InventoryState>((set) => ({
     setOwners: (data) =>
         set({ owners: data }),
 
-    setFinelValidateData: (data) =>
-        set({ finel_validate_data: data }),
+    setFinalValidateData: (data) =>
+        set({ final_validate_data: data }),
 
     setActiveTab: (data) =>
         set({ active_tab: data }),
@@ -65,7 +65,7 @@ export const useInventoryStore = create<InventoryState>((set) => ({
             assets_details: null,
             credentials: null,
             owners: null,
-            finel_validate_data: null,
+            final_validate_data: null,
             active_tab: TAB_KEY.ASSETS_TYPE,
         }),
 }));

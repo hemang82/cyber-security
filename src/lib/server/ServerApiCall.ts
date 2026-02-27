@@ -43,16 +43,18 @@ export async function getInventoryList() {
     }
 }
 
-export async function getScanList() {
+export async function getScanList(data: Record<string, any>) {
     try {
         const headerList = await headers();
 
+        console.log("data getScanList", data);
         const resList = await fetch(`${TEMP_URL}/api/inventory/scanlist`, {
             method: "POST",
             cache: "no-store",
             headers: {
                 cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
             },
+            body: JSON.stringify(data),
         });
         const res = await resList.json();
 
@@ -145,6 +147,23 @@ export async function getInventoryView(data: Record<string, any>) {
     try {
 
         const res: InventoryResponse = await fetcher("/api/inventoryView", { method: "POST", body: data });
+
+        console.log("res test", res);
+
+        if (res?.code == CODES?.SUCCESS) {
+            return res?.data;
+        } else {
+            return {};
+        }
+    } catch (err: any) {
+        console.log(err.message); // user-friendly message
+    }
+}
+
+export async function getCloudScanDetails(data: Record<string, any>) {
+    try {
+
+        const res: InventoryResponse = await fetcher("/api/cloudScanDetails", { method: "POST", body: data });
 
         if (res?.code == CODES?.SUCCESS) {
             return res?.data;

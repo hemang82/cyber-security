@@ -53,12 +53,22 @@ export async function POST(req: Request) {
                 body: JSON.stringify({
                     "name": newItem?.assets_details?.value?.assets_name,
                     "type": newItem?.assets_type?.value,
-                    "url": newItem?.website_url,
+                    ...(newItem?.assets_type?.value === "web_app" && { "url": newItem?.website_url }),
                     "description": newItem?.assets_details?.value?.description,
                     "tags": newItem?.assets_details?.value?.tags,
                     "contact_name": newItem?.assets_details?.value?.name,
                     "contact_email": newItem?.assets_details?.value?.email,
-                    "contact_phone": newItem?.assets_details?.value?.phone_number
+                    "contact_phone": newItem?.assets_details?.value?.phone_number,
+                    ...(newItem?.assets_type?.value === "cloud" && {
+                        "metadata": {
+                            "credentials": {
+                                "provider": newItem?.assets_details?.value?.provider,
+                                "access_key": newItem?.assets_details?.value?.access_key,
+                                "secret_key": newItem?.assets_details?.value?.secret_key,
+                                "region": newItem?.assets_details?.value?.region,
+                            }
+                        }
+                    })
                 }),
                 cache: "no-store",
             }

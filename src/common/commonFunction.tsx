@@ -48,7 +48,13 @@ export const logoutRedirection = () => {
 //     return decryptedData;
 // }
 
-export const safeText = (value: any) => value === null || value === undefined || value === "" ? "N/A" : value;
+export const safeText = (value: any) => {
+    if (value === null || value === undefined || value === "") return "N/A";
+    if (typeof value === "object") {
+        return value.name || value.title || value.text || JSON.stringify(value);
+    }
+    return value;
+};
 
 // --------------------------------------------------------- Date Manage Function ---------------------------------------------------------------------------
 

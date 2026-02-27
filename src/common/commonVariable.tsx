@@ -49,7 +49,6 @@ export const INPUT_PATTERN = {
         pattern: /^[A-Za-z\s]*$/,
         message: "Please enter only letters (2–30 chars)",
     },
-
     EMAIL: {
         pattern: /^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
         message: "Please enter a valid email address",

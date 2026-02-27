@@ -5,7 +5,7 @@ import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Leg
 import { RiGlobalLine, RiShieldCheckLine, RiAlertLine, RiCheckDoubleLine, RiFileList3Line, RiShieldFlashLine, RiLock2Line, RiServerLine, RiSpyLine, RiCodeLine, RiBugLine, RiEarthLine, RiSpeedUpLine, RiEyeLine } from "react-icons/ri";
 import { formatDate, safeText } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
-import { Badge, CyberColorClass, getGrade } from "@/components/cyber/Inventory/InventoryDetailsComponent";
+import { Badge, CyberColorClass } from "@/components/cyber/Inventory/assetsDetails/WebsiteDetails";
 import { useRouter } from "next/navigation";
 import DynamicTable from "@/components/tables/DynamicTable";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
@@ -67,7 +67,12 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
     });
 
     const avgScore = scoredAssets > 0 ? Math.round(totalScore / scoredAssets) : 0;
-    const avgGrade = getGrade(avgScore);
+    
+    const getScoreColor = (score: number) => {
+        if (score >= 80) return "text-green-600";
+        if (score >= 60) return "text-yellow-600";
+        return "text-red-600";
+    };
 
     // Chart Data
     const riskData = [
@@ -104,15 +109,11 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             title: "Score",
             render: (row: any) => {
                 const score = Number(row?.security_score) || 0;
-                const grade = getGrade(score);
                 return (
                     <div className="flex items-center gap-2">
-                        <span className={`text-sm font-bold ${grade.color}`}>
+                        <span className={`text-sm font-bold ${getScoreColor(score)}`}>
                             {score} / 100
                         </span>
-                        {/* <span className={`text-xs px-1.5 py-0.5 rounded ${grade.bg} ${grade.color} border border-current opacity-80`}>
-                            {grade.grade}
-                        </span> */}
                     </div>
                 );
             }
@@ -205,18 +206,12 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                         </div>
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Avg Security Score</span>
                     </div>
-                    <div className="flex items-end justify-between">
                         <div className="flex items-baseline gap-2">
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
                                 <CountUp end={avgScore} duration={2.5} />
                             </h3>
                             <span className="text-sm text-gray-400">/ 100</span>
                         </div>
-
-                        {/* <span className={`text-lg font-bold px-2 py-0.5 rounded ${avgGrade.bg} ${avgGrade.color} border border-current opacity-90`}>
-                            {avgGrade.grade}
-                        </span> */}
-                    </div>
                 </div>
 
                 {/* Critical Threats */}
@@ -317,7 +312,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                                     <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                         <p className="text-xs text-gray-500 uppercase font-semibold">Score</p>
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-sm font-bold ${getGrade(Number(latestAsset?.security_score)).color}`}>
+                                            <span className={`text-sm font-bold ${getScoreColor(Number(latestAsset?.security_score))}`}>
                                                 {Number(latestAsset?.security_score) || 0} / 100
                                             </span>
                                         </div>

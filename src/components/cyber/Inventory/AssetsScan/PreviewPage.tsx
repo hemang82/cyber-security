@@ -1,31 +1,27 @@
 "use client";
 
-import TextArea from "@/components/form/input/TextArea";
-import Label from "@/components/form/Label";
-import { TabContent } from "../AddInventory";
 import { FormProvider, useForm } from "react-hook-form";
 import { useInventoryStore } from "@/store";
 import { useEffect } from "react";
-import { ASSETS_INPUTS } from "./AddAssets";
 import { useRouter } from "next/navigation";
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import { assets } from "./AssetsTypes";
-// import { getInventoryDetails } from "@/lib/server/ServerApiCall";
+import { ASSETS_INPUTS } from "../Assets/AddAssets";
 
 
 export default function PreviewPage({ resDomainList }: any) {
 
     const router = useRouter();
-    const { assets_type, assets_details, credentials, owners, finel_validate_data, setFinelValidateData, setLoader } = useInventoryStore();
+    const { assets_type, assets_details, credentials, owners, final_validate_data, setFinalValidateData, resetInventory } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
     });
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async () => {
 
-        setFinelValidateData({
+        setFinalValidateData({
             value: new Date(),
             is_valid: true,
         });
@@ -40,7 +36,8 @@ export default function PreviewPage({ resDomainList }: any) {
                 assets_details,
                 credentials,
                 owners,
-                finel_validate_data,
+                website_url: resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain : "N/A",
+                final_validate_data,
             }),
         });
 
@@ -48,19 +45,16 @@ export default function PreviewPage({ resDomainList }: any) {
 
         if (res.code == CODES?.SUCCESS) {
             TOAST_SUCCESS(res?.message)
-            // return
-            // setLoader(true)
+            resetInventory()
             router.push(`/inventory`);
-            // router.push(`/asset-details?url=${encodeURIComponent(resDomainList?.length > 0 && resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || '')}`);
         } else {
             TOAST_ERROR(res?.message)
         }
     };
 
     useEffect(() => {
-        console.log("credentials store data 👉", finel_validate_data);
-        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, finel_validate_data?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
-    }, [methods, finel_validate_data]);
+        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, final_validate_data?.value?.[ASSETS_INPUTS.WEBSITE_URL.name] || '');
+    }, [methods, final_validate_data]);
 
     return (<>
         <FormProvider {...methods}>
@@ -102,15 +96,11 @@ export default function PreviewPage({ resDomainList }: any) {
                                             title: "Phone Number",
                                             value: assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name]
                                         },
-                                        // {
-                                        //     title: "Credentials - Website URL",
-                                        //     value: credentials?.value?.[ASSETS_INPUTS.WEBSITE_URL.name]
-                                        // },
                                         {
                                             title: "Owners - Name",
                                             value: owners?.value?.[ASSETS_INPUTS.OWNER.name]
                                         },
-                                    ].map((data, index) => {
+                                    ].filter(Boolean).map((data, index) => {
                                         return <div key={index}>
                                             <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                                                 {data.title}

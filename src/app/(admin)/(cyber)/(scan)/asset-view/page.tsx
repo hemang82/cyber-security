@@ -1,6 +1,8 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import InventoryDetailsComponent from "@/components/cyber/Inventory/InventoryDetailsComponent";
+import { ASSETS_KEYS } from "@/components/cyber/Inventory/Assets/AssetsTypes";
+import CloudDetails from "@/components/cyber/Inventory/assetsDetails/CloudDetails";
+import WebsiteDetails from "@/components/cyber/Inventory/assetsDetails/WebsiteDetails";
 import { getInventoryDetails, getInventoryView } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
 
@@ -11,16 +13,24 @@ export const metadata: Metadata = {
 };
 
 export default async function InventoryDetails({ searchParams, }: { searchParams: Promise<{ id?: string }> }) {
-    
+
     const params = await searchParams;
 
-    const InventoryData = await getInventoryView({ id:  params.id })
+    const resAssetsDetails = await getInventoryView({ id: params.id })
+
+    console.log('resAssetsDetails Server', ASSETS_KEYS?.cloud, "resAssetsDetails?.asset_type == ASSETS_KEYS?.cloud", resAssetsDetails?.asset_type == ASSETS_KEYS?.cloud, resAssetsDetails);
 
     return (
         <div>
-            <PageBreadcrumb pageTitle="Inventory Details" />
+            <PageBreadcrumb pageTitle="Asset Details" />
             <div className="space-y-6">
-                <InventoryDetailsComponent InventoryData={InventoryData} />
+                {
+                    resAssetsDetails?.asset_type == "cloud" ? (
+                        <CloudDetails resAssetsDetails={resAssetsDetails} />
+                    ) : (
+                        <WebsiteDetails resAssetsDetails={resAssetsDetails} />
+                    )
+                }
             </div>
         </div>
     );

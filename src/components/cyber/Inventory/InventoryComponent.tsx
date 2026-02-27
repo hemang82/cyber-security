@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { ASSETS_INPUTS } from "./Assets/AddAssets";
 import { assets } from "./Assets/AssetsTypes";
 import { useInventoryStore } from "@/store";
-import { Badge, CyberColorClass, severityColor } from "./InventoryDetailsComponent";
+import { Badge, CyberColorClass, severityColor } from "./assetsDetails/WebsiteDetails";
 import { GoEye } from "react-icons/go";
 
 export default function InventoryComponent({ InventoryData }: any) {
@@ -51,22 +51,22 @@ export default function InventoryComponent({ InventoryData }: any) {
       className: "min-w-[150px]",
       render: (row: any) => (
         <div className="">
-          <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
+          <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-sm font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
             {assets.find((item) => item?.key === row?.type)?.title || "-"}
           </span>
         </div>
       ),
     },
-    {
-      key: "url",
-      title: "Website URL",
-      className: "min-w-[250px]",
-      render: (row: any) => (
-        <span title={row?.url} className="block w-full max-w-[250px] truncate">
-          {row?.url || "N/A"}
-        </span>
-      ),
-    },
+    // {
+    //   key: "url",
+    //   title: "Website URL",
+    //   className: "min-w-[250px]",
+    //   render: (row: any) => (
+    //     <span title={row?.url} className="block w-full max-w-[250px] truncate">
+    //       {row?.url || "N/A"}
+    //     </span>
+    //   ),
+    // },
     {
       key: "scan_count",
       title: "Scan Count",
@@ -87,7 +87,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       key: "created_at", title: "Created At",
       className: "min-w-[150px]",
       render: (row: any) => (
-        <span>{formatDate(row?.created_at, DATE_FORMAT?.FULL_DAY_MONTH_YEAR) || "-"}</span>
+        <span>{formatDate(row?.created_at, DATE_FORMAT?.DASH_DD_MM_YYYY) || "-"}</span>
       ),
     },
     {
@@ -96,7 +96,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" onClick={() => {
           // setLoader(true);
-          router.push(`/scan?domain=${encodeURIComponent(row?.url)}`);
+          router.push(`/scan?assets_id=${encodeURIComponent(row?.id)}&type=${encodeURIComponent(row?.type)}`);
         }}>
           {/* {row.action || "view"} */}
           <GoEye size={18} />

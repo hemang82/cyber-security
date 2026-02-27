@@ -27,9 +27,9 @@ export function TabContent({ title, children }: {
     );
 }
 
-export default function AddScan({ resDomainList }: any) {
+export default function AddScan({ resInventoryList, resDomainList }: any) {
 
-    const { active_tab, setActiveTab, assets_type, assets_details, credentials, owners, finel_validate_data } = useInventoryStore();
+    const { active_tab, setActiveTab, assets_type, assets_details, credentials, owners, final_validate_data } = useInventoryStore();
 
     type TabKey = TAB_KEY.ASSETS_TYPE | TAB_KEY.ASSETS_DETAILS | TAB_KEY.CREDENTIALS | TAB_KEY.OWNERS | TAB_KEY.PREVIEW;
 
@@ -56,7 +56,7 @@ export default function AddScan({ resDomainList }: any) {
                             {/* <button className={tabClass(TAB_KEY.OWNERS, owners)} onClick={() => { owners?.is_valid && setActiveTab(TAB_KEY.OWNERS) }}>
                                 Owners
                             </button> */}
-                            {/* <button className={tabClass(TAB_KEY.PREVIEW, finel_validate_data)} onClick={() => { finel_validate_data?.is_valid && setActiveTab(TAB_KEY.PREVIEW) }}>
+                            {/* <button className={tabClass(TAB_KEY.PREVIEW, final_validate_data)} onClick={() => { final_validate_data?.is_valid && setActiveTab(TAB_KEY.PREVIEW) }}>
                                 Preview
                             </button> */}
                         </nav>
@@ -70,7 +70,7 @@ export default function AddScan({ resDomainList }: any) {
                         )}
 
                         {active_tab === TAB_KEY.ASSETS_DETAILS && (
-                            <AddAssets resDomainList={resDomainList} />
+                            <AddAssets resInventoryList={resInventoryList} />
                         )}
 
                         {/* {active_tab === TAB_KEY.CREDENTIALS && (
@@ -81,11 +81,9 @@ export default function AddScan({ resDomainList }: any) {
                             <Owners />
                         )} */}
 
-                        {/* {active_tab === TAB_KEY.PREVIEW && (
-                            // <TabContent title="Preview">
+                        {active_tab === TAB_KEY.PREVIEW && (
                             <PreviewPage resDomainList={resDomainList} />
-                            // </TabContent>
-                        )} */}
+                        )}
 
                     </div>
                 </div>

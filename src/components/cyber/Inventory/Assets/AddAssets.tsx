@@ -8,9 +8,10 @@ import { TabContent } from "../AddInventory";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE, TAB_KEY } from "@/common/commonVariable";
 import { useInventoryStore } from "@/store";
-import { watch } from "fs";
+
 import Select from "@/components/form/Select";
 import Badge from "@/components/ui/badge/Badge";
+import { ASSETS_KEYS } from "./AssetsTypes";
 
 type Product = {
     name: string;
@@ -65,15 +66,79 @@ export const ASSETS_INPUTS = {
         name: "password",
         validation: "Enter password.",
     },
+    PROVIDER: {
+        placeholder: "Enter provider",
+        name: "provider",
+        validation: "Enter provider.",
+    },
+    ACCESS_KEY: {
+        placeholder: "Enter access key",
+        name: "access_key",
+        validation: "Enter access key.",
+    },
+    SECRET_KEY: {
+        placeholder: "Enter secret key",
+        name: "secret_key",
+        validation: "Enter secret key.",
+    },
+    REGION: {
+        placeholder: "Enter region",
+        name: "region",
+        validation: "Enter region.",
+    },
+    CLIENT_ID: {
+        placeholder: "Enter client id",
+        name: "client_id",
+        validation: "Enter client id.",
+    },
+    CLIENT_SECRET: {
+        placeholder: "Enter client secret",
+        name: "client_secret",
+        validation: "Enter client secret.",
+    },
+    TENANT_ID: {
+        placeholder: "Enter tenant id",
+        name: "tenant_id",
+        validation: "Enter tenant id.",
+    },
+    SUBSCRIPTION_ID: {
+        placeholder: "Enter subscription id",
+        name: "subscription_id",
+        validation: "Enter subscription id.",
+    },
+    PROJECT_ID: {
+        placeholder: "Enter project id",
+        name: "project_id",
+        validation: "Enter project id.",
+    },
+    KEY_FILENAME: {
+        placeholder: "Enter key filename",
+        name: "key_filename",
+        validation: "Enter key filename.",
+    },
 }
+
+export enum PROVIDER_KEY {
+    AWS = 'aws',
+    AZURE = 'azure',
+    GCP = 'gcp',
+}
+export const ALL_PROVIDER_LIST = [
+    { value: PROVIDER_KEY.AWS, label: 'AWS' },
+    { value: PROVIDER_KEY.AZURE, label: 'Azure' },
+    { value: PROVIDER_KEY.GCP, label: 'GCP' },
+];
 
 export default function AddAssets({ resDomainList }: any) {
 
-    const { assets_details, setAssetsDetails, setActiveTab } = useInventoryStore();
+    const { assets_type, assets_details, setAssetsDetails, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
         mode: "onBlur", // validation timing
     });
+
+    // Explicitly watch the provider to trigger re-renders
+    const selectedProvider = methods.watch(ASSETS_INPUTS.PROVIDER.name);
 
     const [products, setProducts] = useState<Product[]>([
         { name: "Macbook Pro 13”", price: 1200, quantity: 1, discount: 0 },
@@ -97,28 +162,44 @@ export default function AddAssets({ resDomainList }: any) {
     };
 
     useEffect(() => {
-        methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
-        methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.id : 0 || '');
-        methods.setValue(ASSETS_INPUTS.DESCRIPTION.name, assets_details?.value?.[ASSETS_INPUTS.DESCRIPTION.name] || '');
-        methods.setValue(ASSETS_INPUTS.NAME.name, assets_details?.value?.[ASSETS_INPUTS.NAME.name] || '');
-        methods.setValue(ASSETS_INPUTS.EMAIL.name, assets_details?.value?.[ASSETS_INPUTS.EMAIL.name] || '');
-        methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, assets_details?.value?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
+        const val = assets_details?.value;
 
-    }, [methods, assets_details, resDomainList]);
+        methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, val?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
+        methods.setValue(ASSETS_INPUTS.DESCRIPTION.name, val?.[ASSETS_INPUTS.DESCRIPTION.name] || '');
+        methods.setValue(ASSETS_INPUTS.NAME.name, val?.[ASSETS_INPUTS.NAME.name] || '');
+        methods.setValue(ASSETS_INPUTS.EMAIL.name, val?.[ASSETS_INPUTS.EMAIL.name] || '');
+        methods.setValue(ASSETS_INPUTS.PHONE_NUMBER.name, val?.[ASSETS_INPUTS.PHONE_NUMBER.name] || '');
+
+        if (assets_type?.value === ASSETS_KEYS.web) {
+            const urlId = val?.[ASSETS_INPUTS.WEBSITE_URL.name];
+            const match = resDomainList?.find((item: any) => item.id == urlId);
+            methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, match?.id || '');
+        }
+
+        if (assets_type?.value === ASSETS_KEYS.cloud) {
+            methods.setValue(ASSETS_INPUTS.PROVIDER.name, val?.[ASSETS_INPUTS.PROVIDER.name] || '');
+            methods.setValue(ASSETS_INPUTS.ACCESS_KEY.name, val?.[ASSETS_INPUTS.ACCESS_KEY.name] || '');
+            methods.setValue(ASSETS_INPUTS.SECRET_KEY.name, val?.[ASSETS_INPUTS.SECRET_KEY.name] || '');
+            methods.setValue(ASSETS_INPUTS.REGION.name, val?.[ASSETS_INPUTS.REGION.name] || '');
+        }
+
+        // if (assets_type?.value === ASSETS_KEYS.api) {
+        //     const urlId = val?.[ASSETS_INPUTS.WEBSITE_URL.name];
+        //     const match = resDomainList?.find((item: any) => item.id == urlId);
+        //     methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, match?.id || '');
+        // }
+
+    }, [methods, assets_details, resDomainList, assets_type?.value]);
 
     const selectList = useMemo(() => {
         return resDomainList?.map((item: any) => ({
             value: item.id,
-            label: item.domain,
+            label: item.domain || item.name || item.url,
             status: item.status
-            // <>
-            //     <p>{item.domain}
-            //     {/* <Badge size="sm"  variant="light" color="success">
-            //         {item.status || "Pending"}
-            //     </Badge> */}
-            // </>
         })) || [];
     }, [resDomainList]);
+
+    console.log('methods', selectedProvider, "PROVIDER_KEY", PROVIDER_KEY.AWS);
 
     return (<>
         <FormProvider {...methods}>
@@ -129,7 +210,7 @@ export default function AddAssets({ resDomainList }: any) {
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {/* Assets Name */}
                             <div>
-                                <Label>Assets Name</Label>
+                                <Label>Assets Name <span className="text-error-500">*</span></Label>
                                 <Input
                                     type={INPUT_TYPE.TEXT}
                                     placeholder={ASSETS_INPUTS.ASSETS_NAME.placeholder}
@@ -144,43 +225,166 @@ export default function AddAssets({ resDomainList }: any) {
                                 />
                             </div>
 
-                            {/* Web URL */}
-                            <div>
-
-                                <Label>Website URL <span className="text-gray-500">(Note : Domain verified after selection)</span> </Label>
-
-
-                                <Controller
-                                    control={methods.control}
-                                    name={ASSETS_INPUTS?.WEBSITE_URL.name}
-                                    rules={{ required: ASSETS_INPUTS.WEBSITE_URL.validation }}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={selectList}
-                                            // options={[
-                                            //     { value: "admin", label: "Admin" },
-                                            // ]}
-                                            placeholder="Select Option"
+                            {
+                                (assets_type?.value === ASSETS_KEYS?.web) ? (
+                                    <div>
+                                        <Label>Website URL<span className="text-gray-500">(Note : Domain verified after selection)</span> </Label>
+                                        <Controller
+                                            control={methods.control}
+                                            name={ASSETS_INPUTS?.WEBSITE_URL.name}
+                                            rules={{ required: ASSETS_INPUTS.WEBSITE_URL.validation }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    options={selectList}
+                                                    placeholder="Select Option"
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </div>
+                                    </div>
+                                ) : assets_type?.value === ASSETS_KEYS?.cloud ? (
+                                    <>
+                                        <div>
+                                            <Label>Provider <span className="text-error-500">*</span> </Label>
+                                            <Controller
+                                                control={methods.control}
+                                                name={ASSETS_INPUTS?.PROVIDER.name}
+                                                rules={{ required: ASSETS_INPUTS.PROVIDER.validation }}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        options={ALL_PROVIDER_LIST}
+                                                        placeholder={ASSETS_INPUTS.PROVIDER.placeholder}
+                                                    />
+                                                )}
+                                            />
+                                        </div>
 
-                            {/* Additional Info */}
-                            {/* <div className="col-span-full">
-                                <Label>Description</Label>
-                                <TextArea
-                                    className="!w-1/2"
-                                    placeholder={ASSETS_INPUTS.DESCRIPTION.placeholder}
-                                    name={ASSETS_INPUTS.DESCRIPTION.name}
-                                // rules={{
-                                //     required: ASSETS_INPUTS.DESCRIPTION.validation
-                                // }}
-                                // value={methods.watch(ASSETS_INPUTS.DESCRIPTION.name) || ""}
-                                />
-                            </div> */}
+                                        {/* AWS Specific Fields */}
+                                        {selectedProvider == PROVIDER_KEY.AWS && (
+                                            <>
+                                                <div>
+                                                    <Label>Access ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Access ID"
+                                                        name={ASSETS_INPUTS.ACCESS_KEY.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.ACCESS_KEY.validation,
+                                                        }}
+                                                    />
+                                                </div>
 
+                                                <div>
+                                                    <Label>Secret Key <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Secret Key"
+                                                        name={ASSETS_INPUTS.SECRET_KEY.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.SECRET_KEY.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Region <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Region"
+                                                        name={ASSETS_INPUTS.REGION.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.REGION.validation,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* Azure Specific Fields */}
+                                        {selectedProvider == PROVIDER_KEY.AZURE && (
+                                            <>
+                                                <div>
+                                                    <Label>Client ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Client ID"
+                                                        name={ASSETS_INPUTS.CLIENT_ID.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.CLIENT_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Client Secret <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Client Secret"
+                                                        name={ASSETS_INPUTS.CLIENT_SECRET.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.CLIENT_SECRET.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Tenant ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Tenant ID"
+                                                        name={ASSETS_INPUTS.TENANT_ID.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.TENANT_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Subscription ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Subscription ID"
+                                                        name={ASSETS_INPUTS.SUBSCRIPTION_ID.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.SUBSCRIPTION_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* GCP Specific Fields */}
+                                        {selectedProvider == PROVIDER_KEY.GCP && (
+                                            <>
+                                                <div>
+                                                    <Label>Project ID <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Project ID"
+                                                        name={ASSETS_INPUTS.PROJECT_ID.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.PROJECT_ID.validation,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <Label>Key Filename <span className="text-error-500">*</span></Label>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Key Filename"
+                                                        name={ASSETS_INPUTS.KEY_FILENAME.name}
+                                                        rules={{
+                                                            required: ASSETS_INPUTS.KEY_FILENAME.validation,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
+                                ) : null
+                            }
                         </div>
                     </TabContent>
                     {/* </form> */}
@@ -192,52 +396,52 @@ export default function AddAssets({ resDomainList }: any) {
 
                             {/* Name */}
                             <div>
-                                <Label>Name</Label>
+                                <Label>Name </Label>
                                 <Input
                                     type={INPUT_TYPE.TEXT}
                                     placeholder={ASSETS_INPUTS.NAME.placeholder}
                                     name={ASSETS_INPUTS.NAME.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.NAME.validation,
-                                        pattern: {
-                                            value: INPUT_PATTERN.NAME.pattern,
-                                            message: INPUT_PATTERN.NAME.message,
-                                        },
-                                    }}
+                                // rules={{
+                                //     required: ASSETS_INPUTS.NAME.validation,
+                                //     pattern: {
+                                //         value: INPUT_PATTERN.NAME.pattern,
+                                //         message: INPUT_PATTERN.NAME.message,
+                                //     },
+                                // }}
                                 />
                             </div>
 
                             {/* Email */}
                             <div>
-                                <Label>Email</Label>
+                                <Label>Email </Label>
                                 <Input
                                     placeholder={ASSETS_INPUTS.EMAIL.placeholder}
                                     type={INPUT_TYPE.TEXT}
                                     name={ASSETS_INPUTS.EMAIL.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.EMAIL.validation,
-                                        pattern: {
-                                            value: INPUT_PATTERN.EMAIL.pattern,
-                                            message: INPUT_PATTERN.EMAIL.message,
-                                        },
-                                    }}
+                                // rules={{
+                                //     required: ASSETS_INPUTS.EMAIL.validation,
+                                //     pattern: {
+                                //         value: INPUT_PATTERN.EMAIL.pattern,
+                                //         message: INPUT_PATTERN.EMAIL.message,
+                                //     },
+                                // }}
                                 />
                             </div>
 
                             {/* Phone Number */}
                             <div>
-                                <Label>Phone Number</Label>
+                                <Label>Phone Number </Label>
                                 <Input
                                     placeholder={ASSETS_INPUTS.PHONE_NUMBER.placeholder}
                                     type={INPUT_TYPE.TEXT}
                                     name={ASSETS_INPUTS.PHONE_NUMBER.name}
-                                    rules={{
-                                        required: ASSETS_INPUTS.PHONE_NUMBER.validation,
-                                        pattern: {
-                                            value: INPUT_PATTERN.MOBILE.pattern,
-                                            message: INPUT_PATTERN.MOBILE.message,
-                                        },
-                                    }}
+                                // rules={{
+                                //     required: ASSETS_INPUTS.PHONE_NUMBER.validation,
+                                //     pattern: {
+                                //         value: INPUT_PATTERN.MOBILE.pattern,
+                                //         message: INPUT_PATTERN.MOBILE.message,
+                                //     },
+                                // }}
                                 />
                             </div>
 

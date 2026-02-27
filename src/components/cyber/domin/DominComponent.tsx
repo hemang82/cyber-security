@@ -61,7 +61,7 @@ export default function DominComponent({ resDomainList }: any) {
             className: "min-w-[200px]",
             render: (row: any) => (
                 // Truncate domain if too long
-                <span title={row?.domain} className="block w-full max-w-[200px] truncate">
+                <span title={row?.domain} className="block w-full !text-sm max-w-[200px] truncate">
                     {row?.domain || "-"}
                 </span>
             ),
@@ -72,7 +72,7 @@ export default function DominComponent({ resDomainList }: any) {
             className: "min-w-[300px]",
             render: (row: any) => (
                 // Truncate TXT record if too long
-                <span title={row?.txt_value} className="block w-full max-w-[300px] truncate">
+                <span title={row?.txt_value} className="block w-full !text-sm max-w-[300px] truncate">
                     {row?.txt_value || "-"}
                 </span>
             ),
@@ -89,7 +89,7 @@ export default function DominComponent({ resDomainList }: any) {
                     <div className="flex items-center gap-3">
                         {/* Status badge with conditional styling */}
                         <span
-                            className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium capitalize
+                            className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-sm font-medium capitalize
             ${statusClasses[row.status?.toLowerCase()] || "bg-gray-100 text-gray-700"}
           `}
                         >
@@ -123,10 +123,10 @@ export default function DominComponent({ resDomainList }: any) {
             },
         },
         {
-            key: "created_at", title: "Created",
+            key: "created_at", title: "Created At",
             className: "min-w-[150px]",
             render: (row: any) => (
-                <span>{formatDate(row.created_at, DATE_FORMAT?.FULL_DAY_MONTH_YEAR)}</span>
+                <span>{formatDate(row.created_at, DATE_FORMAT?.DASH_DD_MM_YYYY)}</span>
             ),
         },
     ];

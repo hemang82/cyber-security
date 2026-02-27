@@ -9,6 +9,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { safeText } from "@/common/commonFunction";
 
 type Column<T> = {
     key: keyof T | string;
@@ -66,13 +67,7 @@ export default function DynamicTable<T>({ columns, data, className }: DynamicTab
 
                                                 {col.render
                                                     ? col.render(row)
-                                                    : row[col.key as keyof T] !== undefined &&
-                                                        row[col.key as keyof T] !== null &&
-                                                        row[col.key as keyof T] !== "" ? (
-                                                        row[col.key as keyof T] as React.ReactNode
-                                                    ) : (
-                                                        <span className="text-gray-400 text-base">N/A</span>
-                                                    )}
+                                                    : safeText(row[col.key as keyof T])}
 
                                             </TableCell>
                                         ))}

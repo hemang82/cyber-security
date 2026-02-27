@@ -8,7 +8,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
 import { ASSETS_INPUTS } from "../Inventory/Assets/AddAssets";
 import { useRouter } from "next/navigation";
-import { addDomainDetails } from "@/lib/server/ServerApiCall";
+
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import { useInventoryStore } from "@/store";

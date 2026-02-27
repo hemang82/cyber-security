@@ -1,6 +1,6 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import InventoryDetailsComponent from "@/components/cyber/Inventory/InventoryDetailsComponent";
+import WebsiteDetails from "@/components/cyber/Inventory/assetsDetails/WebsiteDetails";
 import { getInventoryDetails } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
 
@@ -20,7 +20,7 @@ export default async function InventoryDetails({ searchParams, }: { searchParams
         <div>
             <PageBreadcrumb pageTitle="Inventory Details" />
             <div className="space-y-6">
-                <InventoryDetailsComponent InventoryData={InventoryData} />
+                <WebsiteDetails InventoryData={InventoryData} />
             </div>
         </div>
     );

@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   try {
 
     // ✅ frontend thi aavelu full body
-    // const body = await req.json();
+    const body = await req.json();
 
     const response = await fetch("http://cyberapi.tracewavetransparency.com/api/scan/history",
       {
@@ -63,12 +63,11 @@ export async function POST(req: Request) {
           "Content-Type": "application/json",
         },
         cache: "no-store",
+        body: JSON.stringify(body),
       }
     );
 
     const data = await response.json();
-
-    console.log('datadatadata', data);
 
     return NextResponse.json({
       code: CODES?.SUCCESS,

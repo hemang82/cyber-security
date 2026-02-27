@@ -1,3 +1,4 @@
+"use client"
 import { GroupIcon } from "@/icons";
 import { TfiWorld } from "react-icons/tfi";
 import { LuFileCode2 } from "react-icons/lu";
@@ -9,28 +10,33 @@ import { TAB_KEY } from "@/common/commonVariable";
 
 let iconClass = 'text-gray-800 size-6 dark:text-white/90'
 
+export const ASSETS_KEYS = {
+    cloud: "cloud",
+    web: "web_app",
+    api: "api",
+}
+
 export const assets = [
     {
         image: <TfiWorld className={iconClass} />,
         title: "Web App",
-        key: 'web_app',
+        key: ASSETS_KEYS.web,
         description: "Scan browser-based application hosted online",
         is_show: true
-    },
-    {
-        image: <LuFileCode2 className={iconClass} />,
-        title: "API",
-        key: 'api',
-        description: "Scan browser-based application hosted online",
-        is_show: false
-    },
-    {
+    }, {
         image: <IoCloudOutline className={iconClass} />,
         title: "Cloud",
-        key: 'cloud',
+        key: ASSETS_KEYS.cloud,
+        description: "Scan browser-based application hosted online",
+        is_show: true
+    }, {
+        image: <LuFileCode2 className={iconClass} />,
+        title: "API",
+        key: ASSETS_KEYS.api,
         description: "Scan browser-based application hosted online",
         is_show: false
     }
+
 ]
 export default function AssetsType() {
 
@@ -49,6 +55,7 @@ export default function AssetsType() {
         setActiveTab(TAB_KEY.ASSETS_DETAILS);
     };
 
+
     return (<>
         {/* <FormProvider {...methods}>
             <form className=" " onSubmit={methods.handleSubmit(onSubmit)}> */}
@@ -56,7 +63,6 @@ export default function AssetsType() {
             {
                 assets?.map((assets, index) => {
                     return <div className={`rounded-2xl border border-gray-200  p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-5  ${assets.is_show ? 'hover:cursor-pointer hover:shadow-lg hover:border-brand-500 bg-white' : ' hover:shadow-lg hover:border-gray-100 bg-gray-100'} ${assets_type?.value == assets.key ? '!border-brand-500 shadow-lg' : ''}`} key={index} onClick={() => { assets.is_show && handleAssetSelect(assets) }}>
-
                         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
                             {assets.image}
                         </div>

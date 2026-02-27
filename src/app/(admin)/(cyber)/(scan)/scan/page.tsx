@@ -12,9 +12,10 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-export default async function Page() {
-
-  const ScanHistory = await getScanList();
+export default async function Page({ searchParams }: any) {
+  const params = await searchParams;
+  const ScanHistory = await getScanList({ assetId: params?.assets_id });
+  console.log("ScanHistory ScanHistory", ScanHistory);
 
   return (
     <div>
