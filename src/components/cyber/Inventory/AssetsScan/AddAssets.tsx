@@ -13,6 +13,7 @@ import Badge from "@/components/ui/badge/Badge";
 import { useRouter } from "next/navigation";
 import { ASSETS_KEYS } from "../Assets/AssetsTypes";
 import { ALL_PROVIDER_LIST, ASSETS_INPUTS, PROVIDER_KEY } from "../Assets/AddAssets";
+export { ALL_PROVIDER_LIST, ASSETS_INPUTS, PROVIDER_KEY };
 import { getCloudScanDetails, getWebsiteDetails } from "@/lib/clientApi";
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR } from "@/common/commonFunction";
