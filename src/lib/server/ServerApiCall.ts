@@ -43,7 +43,7 @@ export async function getInventoryList() {
     }
 }
 
-export async function getScanList(data: Record<string, any>) {
+export async function getScanList(data: Record<string, any> = {}) {
     try {
         const headerList = await headers();
 
@@ -127,7 +127,7 @@ export async function listVulnerability() {
     }
 }
 
-export async function getInventoryDetails(data: Record<string, any>) {
+export async function getInventoryDetails(data: Record<string, any> = {}) {
     try {
 
         console.log("getInventoryDetails", data);
@@ -143,7 +143,7 @@ export async function getInventoryDetails(data: Record<string, any>) {
     }
 }
 
-export async function getInventoryView(data: Record<string, any>) {
+export async function getInventoryView(data: Record<string, any> = {}) {
     try {
 
         const res: InventoryResponse = await fetcher("/api/inventoryView", { method: "POST", body: data });
@@ -160,7 +160,7 @@ export async function getInventoryView(data: Record<string, any>) {
     }
 }
 
-export async function getCloudScanDetails(data: Record<string, any>) {
+export async function getCloudScanDetails(data: Record<string, any> = {}) {
     try {
 
         const res: InventoryResponse = await fetcher("/api/cloudScanDetails", { method: "POST", body: data });
