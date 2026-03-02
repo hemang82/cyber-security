@@ -5,7 +5,7 @@ import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
 import { useEffect, useMemo, useState } from "react";
 import { TabContent } from "../AddInventory";
-import { useForm, FormProvider, Controller } from "react-hook-form";
+import { useForm, FormProvider, Controller, useWatch } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE, TAB_KEY } from "@/common/commonVariable";
 import { useInventoryStore } from "@/store";
 
@@ -137,8 +137,10 @@ export default function AddAssets({ resDomainList }: any) {
         mode: "onBlur", // validation timing
     });
 
-    // Explicitly watch the provider to trigger re-renders
-    const selectedProvider = methods.watch(ASSETS_INPUTS.PROVIDER.name);
+    const selectedProvider = useWatch({
+        control: methods.control,
+        name: ASSETS_INPUTS.PROVIDER.name,
+    });
 
     const [products, setProducts] = useState<Product[]>([
         { name: "Macbook Pro 13”", price: 1200, quantity: 1, discount: 0 },
@@ -198,8 +200,6 @@ export default function AddAssets({ resDomainList }: any) {
             status: item.status
         })) || [];
     }, [resDomainList]);
-
-    console.log('methods', selectedProvider, "PROVIDER_KEY", PROVIDER_KEY.AWS);
 
     return (<>
         <FormProvider {...methods}>
