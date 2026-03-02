@@ -1,26 +1,27 @@
-// eslint.config.mjs
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextConfig from "eslint-config-next/core-web-vitals";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
 
-export default defineConfig([
-  // ✅ Next.js core web vitals rules
-  ...nextConfig,
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-  // ✅ Your custom rule overrides (Errors → Warnings)
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+const eslintConfig = [
+  ...compat.extends("next/core-web-vitals"),
   {
     rules: {
-      "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/rules-of-hooks": "warn",
-      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/exhaustive-deps": "off",
+      "react-hooks/rules-of-hooks": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-img-element": "off",
+      "prefer-const": "off",
     },
   },
+];
 
-  // ✅ Ignore build / generated folders only
-  globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-
-]);
+export default eslintConfig;

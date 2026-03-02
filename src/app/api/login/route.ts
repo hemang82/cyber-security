@@ -3,7 +3,7 @@ import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { setCookie } from "@/common/middleware.function";
 import { NextResponse } from "next/server";
 
-export const DefaultUser = {
+const DefaultUser = {
   name: "Admin",
   role: "admin",
   profile_image: "https://jain-fintech-assets.s3.us-east-1.amazonaws.com/profile_image/1747048240510.webp",
