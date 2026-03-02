@@ -9,13 +9,19 @@ import { useInventoryStore } from "@/store";
 import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 
 const AppHeader: React.FC = () => {
 
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
-  const { is_loading } = useInventoryStore();
+  const { is_loading, setLoader } = useInventoryStore();
+  const pathname = usePathname();
 
+  useEffect(() => {
+    // Reset loader when path changes (page transition complete)
+    setLoader(false);
+  }, [pathname, setLoader]);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 

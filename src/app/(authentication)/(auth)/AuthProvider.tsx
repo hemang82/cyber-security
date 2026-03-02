@@ -40,4 +40,5 @@ export default function AuthProvider({
   }, [clearUserAuth, setUser]); // ✅ correct dependency array
 
   return <>{children}</>;
+
 }

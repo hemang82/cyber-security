@@ -136,6 +136,7 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
   }, [resetInventory])
 
   const handlePageChange = (newPage: number, newPerPage: number) => {
+    setLoader(true);
     const params = new URLSearchParams(searchParams);
     params.set("page", newPage.toString());
     params.set("page_size", newPerPage.toString());
