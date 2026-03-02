@@ -255,9 +255,38 @@ const AppSidebar: React.FC = () => {
 
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => path === pathname;
-  const isActive = useCallback((path: string) => path === pathname, [pathname]);
-  // AppSidebar.tsx
+  // isActive.ts logic
+  const isActive = useCallback((path: string) => {
+    if (!path || !pathname) return false;
+
+    // Exact match for the current route
+    if (path === pathname) return true;
+
+    // Logic for Scan sub-routes
+    if (path === "/scan") {
+      const scanSubRoutes = ["/asset-view", "/add-asset", "/asset-details", "/cloud-view"];
+      return scanSubRoutes.some(subPath => pathname.startsWith(subPath));
+    }
+
+    // Logic for Inventory sub-routes
+    if (path === "/inventory") {
+      const inventorySubRoutes = ["/Inventory-view", "/add-inventory", "/Inventory-details", "/inventory-report"];
+      return inventorySubRoutes.some(subPath => pathname.toLowerCase().startsWith(subPath.toLowerCase()));
+    }
+
+    // Logic for Domain sub-routes
+    if (path === "/domain") {
+      return pathname.startsWith("/domain");
+    }
+
+    // Logic for Vulnerability sub-routes
+    if (path === "/vulnerability") {
+      return pathname.startsWith("/vulnerability");
+    }
+
+    // Default check: if the path is a prefix of the pathname
+    return path !== "/" && pathname.startsWith(path);
+  }, [pathname]);
   const matchedSubmenu = useMemo(() => {
     let result: { type: "main" | "others"; index: number } | null = null;
 

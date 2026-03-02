@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import DynamicTable from "@/components/tables/DynamicTable";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import StatisticsChart from "@/components/ecommerce/StatisticsChart";
+import { ASSETS } from "../Inventory/Assets/AssetsTypes";
 // import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 
 
@@ -50,7 +51,6 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         const riskLevel = item?.risk_level || "Unknown";
         // Use security_score if available (from recent user edit), fallback to output_score
         const score = Number(item?.security_score) || 0;
-        console.log("score", score);
 
         if (score > 0) {
             totalScore += score;
@@ -67,7 +67,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
     });
 
     const avgScore = scoredAssets > 0 ? Math.round(totalScore / scoredAssets) : 0;
-    
+
     const getScoreColor = (score: number) => {
         if (score >= 80) return "text-green-600";
         if (score >= 60) return "text-yellow-600";
@@ -105,6 +105,15 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             )
         },
         {
+            key: "asset_type",
+            title: "Asset Type",
+            render: (row: any) => (
+                <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-800 dark:text-white break-all">{ASSETS.find((item) => item?.key === row?.asset_type)?.title || "N/A"}</span>
+                </div>
+            )
+        },
+        {
             key: "security_score",
             title: "Score",
             render: (row: any) => {
@@ -112,7 +121,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                 return (
                     <div className="flex items-center gap-2">
                         <span className={`text-sm font-bold ${getScoreColor(score)}`}>
-                            {score} / 100
+                            {score}
                         </span>
                     </div>
                 );
@@ -132,7 +141,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             title: "Scan Date",
             render: (row: any) => (
                 <span className="text-gray-500 text-sm">
-                    {formatDate(row?.scanned_at, DATE_FORMAT.FULL_DAY_MONTH_YEAR)}
+                    {formatDate(row?.scanned_at, DATE_FORMAT.DASH_DD_MM_YYYY)}
                 </span>
             )
         },
@@ -206,12 +215,12 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                         </div>
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Avg Security Score</span>
                     </div>
-                        <div className="flex items-baseline gap-2">
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
-                                <CountUp end={avgScore} duration={2.5} />
-                            </h3>
-                            <span className="text-sm text-gray-400">/ 100</span>
-                        </div>
+                    <div className="flex items-baseline gap-2">
+                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                            <CountUp end={avgScore} duration={2.5} />
+                        </h3>
+                        <span className="text-sm text-gray-400">/ 100</span>
+                    </div>
                 </div>
 
                 {/* Critical Threats */}
@@ -258,36 +267,6 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                 {/* Left Column: Charts & Domain Info */}
                 <div className="space-y-6 lg:col-span-1">
 
-                    {/* <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 flex flex-col">
-                        <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                            <RiShieldFlashLine className="text-brand-500" />
-                            Risk Distribution
-                        </h3>
-
-                        <div className="flex-1 min-h-[250px] flex items-center justify-center">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={riskData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={80}
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {riskData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip
-                                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                    />
-                                    <Legend verticalAlign="bottom" height={36} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div> */}
 
                     {/* Domain Information Card */}
                     {latestAsset && (

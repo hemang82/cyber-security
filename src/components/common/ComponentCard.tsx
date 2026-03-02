@@ -20,7 +20,8 @@ interface ComponentCardProps {
   desc?: string; // Description text
   buttonName?: String;
   navigation?: String;
-  excel?: Boolean
+  excel?: Boolean;
+  extraHeader?: React.ReactNode;
 }
 
 const ComponentCard: React.FC<ComponentCardProps> = ({
@@ -30,7 +31,8 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   desc = "",
   buttonName = null,
   navigation = "/",
-  excel = false
+  excel = false,
+  extraHeader = null
 }) => {
 
   const router = useRouter()
@@ -46,11 +48,12 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
 
   let iconClass = 'text-gray-800 size-6 dark:text-white/90'
 
+
   return (<>
 
-    <div className={`rounded-2xl ${title && 'border-b border-gray-200 '}  bg-white dark:bg-white/[0.03] ${className}`} >
-      {title && <div className={`flex flex-col justify-between gap-5 ${title && 'border-b border-gray-200'} px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800`}>
+    <div className={`rounded-2xl ${'border-b border-gray-200 '}  bg-white dark:bg-white/[0.03] ${className}`} >
 
+      {<div className={`flex flex-col justify-between gap-5 ${'border-b border-gray-200'} px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800`}>
         {title || desc && <div>
 
           <h3 className="text-base font-medium text-gray-800 dark:text-white/90">
@@ -62,6 +65,9 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
             </p>
           )}
         </div>}
+
+        {extraHeader && <div className="flex-1 px-4">{extraHeader}</div>}
+
 
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center dark:border-gray-800">
 
@@ -79,7 +85,6 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
       }
       {/* Card Body */}
       <div className="p-4 dark:border-gray-800 sm:p-6">
-        {/* <div className="border-t border-gray-100 dark:border-gray-800"> */}
         <div className="space-y-6">{children}</div>
       </div>
 

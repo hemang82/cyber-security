@@ -33,7 +33,7 @@ export default function AddScan({ resInventoryList, resDomainList }: any) {
 
     type TabKey = TAB_KEY.ASSETS_TYPE | TAB_KEY.ASSETS_DETAILS | TAB_KEY.CREDENTIALS | TAB_KEY.OWNERS | TAB_KEY.PREVIEW;
 
-    const tabClass = (tab: TabKey, data: any) => `${data?.is_valid && "text-green-900 border-green-900"} inline-flex items-center border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200
+    const tabClass = (tab: TabKey, data: any) => `${data?.is_valid && "text-green-900 border-green-900"} inline-flex items-center border-b-2 px-2.5 py-2 text-md font-semibold transition-colors duration-200
 
     ${active_tab === tab ? "text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"}`;
 
@@ -41,6 +41,7 @@ export default function AddScan({ resInventoryList, resDomainList }: any) {
         <>
             <div className="border-gray-100 dark:border-gray-800">
                 <div className="rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+
                     {/* Tabs */}
                     <div className="border-b border-gray-200 dark:border-gray-800">
                         <nav className="-mb-px flex space-x-2 overflow-x-auto">
@@ -86,6 +87,7 @@ export default function AddScan({ resInventoryList, resDomainList }: any) {
                         )}
 
                     </div>
+
                 </div>
             </div>
         </>

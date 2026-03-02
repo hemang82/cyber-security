@@ -6,43 +6,43 @@ import { CODES } from "@/common/constant";
 import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
 import Badge from "@/components/ui/badge/Badge";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMdRefresh } from "react-icons/io";
-
-// export const metadata: Metadata = {
-//   title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
-//   description: "This is Next.js Basic Table  page for Cyber Admin  Tailwind CSS Admin Dashboard Template",
-//   // other metadata
-// };
+import { IoCopyOutline, IoCheckmarkSharp } from "react-icons/io5";
 
 export default function DominComponent({ resDomainList }: any) {
-    // State for domains list, initialized from props
-    const [domains, setDomains] = useState(resDomainList);
+    const list = Array.isArray(resDomainList?.domains) ? resDomainList.domains : (Array.isArray(resDomainList?.data) ? resDomainList.data : (Array.isArray(resDomainList) ? resDomainList : []));
+    const totalCount = resDomainList?.total_count || list.length;
 
-    // Router hook (currently unused but kept if needed for navigation)
+    const [domains, setDomains] = useState<any[]>(list);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
 
-    // State to track which domain is currently refreshing to show spinner
     const [refreshingId, setRefreshingId] = useState<number | null>(null);
+    const [copiedId, setCopiedId] = useState<number | null>(null);
 
-    // Status badge styling map
+    const handleCopy = (text: string, id: number) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        TOAST_SUCCESS("Copied to clipboard");
+        setTimeout(() => setCopiedId(null), 2000);
+    };
+
     const statusClasses: any = {
         pending: "bg-yellow-100 text-yellow-700",
         verified: "bg-green-100 text-green-700",
         cancelled: "bg-red-100 text-red-700",
     };
 
-    // Pagination state
-    const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(15);
+    const page = Number(searchParams.get("page")) || 1;
+    const perPage = Number(searchParams.get("page_size")) || 15;
 
-    // --- Pagination Logic ---
-    // Calculate start index for the current page
     const startIndex = (page - 1) * perPage;
 
-    // Sequential ID = (Page Index * Items Per Page) + Current Index + 1
-    const currentData = domains?.slice(startIndex, startIndex + perPage).map((item: any, index: number) => ({
+    // Use server-side data directly
+    const currentData = domains?.map((item: any, index: number) => ({
         ...item,
         displayId: startIndex + index + 1
     })) || [];
@@ -60,21 +60,39 @@ export default function DominComponent({ resDomainList }: any) {
             title: "Domain",
             className: "min-w-[200px]",
             render: (row: any) => (
-                // Truncate domain if too long
-                <span title={row?.domain} className="block w-full !text-sm max-w-[200px] truncate">
-                    {row?.domain || "-"}
-                </span>
+                <div className="flex flex-col">
+                    <span title={row?.domain} className="text-sm font-medium text-gray-900 dark:text-white max-w-[200px] truncate">
+                        {row?.domain || "-"}
+                    </span>
+                    {/* <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                        Token: {row?.token?.substring(0, 8)}...
+                    </span> */}
+                </div>
             ),
         },
         {
             key: "txt_value",
             title: "TXT record",
-            className: "min-w-[300px]",
+            className: "min-w-[400px]",
             render: (row: any) => (
-                // Truncate TXT record if too long
-                <span title={row?.txt_value} className="block w-full !text-sm max-w-[300px] truncate">
-                    {row?.txt_value || "-"}
-                </span>
+                <div className="flex items-center gap-2 group">
+                    <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono max-w-[320px] truncate" title={row?.txt_value}>
+                        {row?.txt_value || "-"}
+                    </code>
+                    {row?.txt_value && (
+                        <button
+                            onClick={() => handleCopy(row.txt_value, row.id)}
+                            className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-brand-500 transition-colors"
+                            title="Copy TXT record"
+                        >
+                            {copiedId === row.id ? (
+                                <IoCheckmarkSharp size={16} className="text-green-500" />
+                            ) : (
+                                <IoCopyOutline size={16} />
+                            )}
+                        </button>
+                    )}
+                </div>
             ),
         },
         {
@@ -174,30 +192,33 @@ export default function DominComponent({ resDomainList }: any) {
 
     // Sync state if props change
     useEffect(() => {
-        setDomains(resDomainList);
+        const newList = Array.isArray(resDomainList?.data) ? resDomainList.data : (Array.isArray(resDomainList) ? resDomainList : []);
+        setDomains(newList);
     }, [resDomainList]);
 
     return (
         <>
             <DynamicTable columns={columns} data={currentData} className="min-w-[1000px]" />
 
-            {/* Pagination Info & Controls */}
             <div className="mt-4 flex flex-col items-center justify-between gap-4 md:flex-row">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Showing {domains?.length > 0 ? startIndex + 1 : 0} to{" "}
-                    {Math.min(startIndex + perPage, domains?.length || 0)} of {domains?.length || 0} entries
+                    Showing {totalCount > 0 ? startIndex + 1 : 0} to{" "}
+                    {Math.min(startIndex + perPage, totalCount)} of {totalCount} entries
                 </div>
 
                 <Pagination
                     currentPage={page}
                     perPage={perPage}
-                    totalCount={domains?.length || 0}
+                    totalCount={totalCount}
                     onChange={(newPage, newPerPage) => {
-                        setPage(newPage);
-                        setPerPage(newPerPage);
+                        const params = new URLSearchParams(searchParams);
+                        params.set("page", newPage.toString());
+                        params.set("page_size", newPerPage.toString());
+                        router.push(`${pathname}?${params.toString()}`);
                     }}
                 />
             </div>
+
         </>
     );
 }

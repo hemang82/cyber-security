@@ -7,27 +7,24 @@ import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
 import { formatDate, safeText } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { ASSETS_INPUTS } from "./Assets/AddAssets";
-import { assets } from "./Assets/AssetsTypes";
+import { ASSETS } from "./Assets/AssetsTypes";
 import { useInventoryStore } from "@/store";
 import { Badge, CyberColorClass, severityColor } from "./assetsDetails/WebsiteDetails";
 import { GoEye } from "react-icons/go";
 
 export default function InventoryComponent({ InventoryData }: any) {
+  const list = Array.isArray(InventoryData?.assets) ? InventoryData.assets : (Array.isArray(InventoryData) ? InventoryData : []);
+  const totalCount = InventoryData?.total_count || list.length;
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const { setLoader, resetInventory } = useInventoryStore();
 
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(15);
-
-  // Calculate paginated data
-  const startIndex = (page - 1) * perPage;
-  const currentData = InventoryData?.slice(startIndex, startIndex + perPage).map((item: any, index: number) => ({
-    ...item,
-    displayId: startIndex + index + 1
-  })) || [];
+  const page = Number(searchParams.get("page")) || 1;
+  const perPage = Number(searchParams.get("page_size")) || 15;
 
   const columns = [
     {
@@ -52,7 +49,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-sm font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {assets.find((item) => item?.key === row?.type)?.title || "-"}
+            {ASSETS.find((item) => item?.key === row?.type)?.title || "-"}
           </span>
         </div>
       ),
@@ -109,6 +106,20 @@ export default function InventoryComponent({ InventoryData }: any) {
     resetInventory()
   }, [resetInventory])
 
+  const startIndex = (page - 1) * perPage;
+
+  const handlePageChange = (newPage: number, newPerPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage.toString());
+    params.set("page_size", newPerPage.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  }
+
+  const currentData = list?.map((item: any, index: number) => ({
+    ...item,
+    displayId: startIndex + index + 1
+  })) || [];
+
   return (
     <>
       <DynamicTable columns={columns} data={currentData} className="min-w-[1100px]" />
@@ -116,18 +127,15 @@ export default function InventoryComponent({ InventoryData }: any) {
       {/* Pagination Info & Controls */}
       <div className="mt-4 flex flex-col items-center justify-between gap-4 md:flex-row">
         <div className="text-sm text-gray-500 dark:text-gray-400">
-          Showing {InventoryData?.length > 0 ? startIndex + 1 : 0} to{" "}
-          {Math.min(startIndex + perPage, InventoryData?.length || 0)} of {InventoryData?.length || 0} entries
+          Showing {totalCount > 0 ? startIndex + 1 : 0} to{" "}
+          {Math.min(startIndex + perPage, totalCount)} of {totalCount} entries
         </div>
 
         <Pagination
           currentPage={page}
           perPage={perPage}
-          totalCount={InventoryData?.length || 0}
-          onChange={(newPage, newPerPage) => {
-            setPage(newPage);
-            setPerPage(newPerPage);
-          }}
+          totalCount={totalCount}
+          onChange={handlePageChange}
         />
       </div>
     </>

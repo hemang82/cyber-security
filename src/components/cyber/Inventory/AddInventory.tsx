@@ -37,7 +37,6 @@ export default function AddInventory({ resDomainList }: any) {
     const tabClass = (tab: TabKey, data: any) => `${data?.is_valid && "text-green-900 border-green-900"} inline-flex items-center border-b-2 px-2.5 py-2 text-base font-semibold transition-colors duration-200
     ${active_tab === tab ? "text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"}`;
 
-    console.log("assets_type test", assets_type?.value);
 
     return (
         <>
@@ -78,6 +77,7 @@ export default function AddInventory({ resDomainList }: any) {
                         {active_tab === TAB_KEY.ASSETS_DETAILS && (
                             <AddAssets resDomainList={resDomainList} />
                         )}
+                        
 
                         {active_tab === TAB_KEY.CREDENTIALS && (
                             <Credentials />

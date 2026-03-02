@@ -24,7 +24,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <div className="flex flex-wrap items-center justify-between gap-4">
 
       {/* Per Page Selector */}
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <span className="text-sm text-gray-500">Rows per page:</span>
         <select
           value={perPage}
@@ -37,7 +37,7 @@ const Pagination: React.FC<PaginationProps> = ({
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       {/* Pagination Buttons */}
       <div className="flex items-center">
@@ -57,8 +57,8 @@ const Pagination: React.FC<PaginationProps> = ({
               key={page}
               onClick={() => onChange(page, perPage)}
               className={`h-10 w-10 rounded-lg text-sm font-medium ${currentPage === page
-                  ? "bg-brand-500 text-white"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                ? "bg-brand-500 text-white"
+                : "hover:bg-gray-100 dark:hover:bg-gray-800"
                 }`}
             >
               {page}

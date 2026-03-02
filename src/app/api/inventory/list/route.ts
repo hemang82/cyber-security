@@ -54,25 +54,29 @@ export async function POST(req: Request) {
   try {
 
     // ✅ frontend thi aavelu full body
-    // const body = await req.json();
+    const body = await req.json();
 
-    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/assets/list",
+    const url = "http://cyberapi.tracewavetransparency.com/api/assets/list";
+    console.log("External Backend Call:", { url, method: "POST", body });
+
+    const response = await fetch(url,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         cache: "no-store",
+        body: JSON.stringify(body),
       }
     );
 
-    const data = await response.json();
+    const responseData = await response.json();
 
     return NextResponse.json({
       code: CODES?.SUCCESS,
-      message: data?.message,
+      message: responseData?.message,
       success: true,
-      data: data?.data,
+      data: responseData?.data || responseData,
     });
 
   } catch (error) {

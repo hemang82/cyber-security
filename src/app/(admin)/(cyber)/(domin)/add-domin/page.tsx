@@ -5,10 +5,9 @@ import { Metadata } from "next";
 import AddDomin from "@/components/cyber/domin/AddDomin";
 
 export const metadata: Metadata = {
-    title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
-    description:
-        "This is Next.js Basic Table  page for Cyber Admin  Tailwind CSS Admin Dashboard Template",
-    // other metadata
+    title: "Verify New Domain | CyberSafe DNS Setup",
+    description: "Start the domain verification process to enable continuous security monitoring, DNS auditing, and SSL tracking for your new domain.",
+    keywords: ["Domain Verification", "DNS Setup", "Verify Ownership", "Security Onboarding"],
 };
 
 export default function page() {

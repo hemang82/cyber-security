@@ -4,7 +4,7 @@
  * Always fresh per request
  */
 
-import { TOAST_ERROR } from "@/common/commonFunction";
+
 import { CODES, TEMP_URL } from "@/common/constant";
 import { fetcher } from "@/lib/fetcher";
 import { headers } from "next/headers";
@@ -15,10 +15,11 @@ type InventoryResponse = {
     data?: any
 };
 
-export async function getInventoryList() {
+export async function getInventoryList(data: Record<string, any> = {}) {
     try {
         const headerList = await headers();
-        console.log("TEMP_URL", `${TEMP_URL}/api/inventory/list`);
+        const url = `${TEMP_URL}/api/inventory/list`;
+        console.log("Backend Call:", { url, body: data });
 
         const resList = await fetch(`${TEMP_URL}/api/inventory/list`, {
             method: "POST",
@@ -26,12 +27,11 @@ export async function getInventoryList() {
             headers: {
                 cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
             },
+            body: JSON.stringify(data),
         });
         const res = await resList.json();
 
-        console.log("getInventory res", res);
-
-        if (res?.code === CODES?.SUCCESS) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res.data;
         }
 
@@ -46,9 +46,10 @@ export async function getInventoryList() {
 export async function getScanList(data: Record<string, any> = {}) {
     try {
         const headerList = await headers();
+        const url = `${TEMP_URL}/api/inventory/scanlist`;
+        console.log("Backend Call:", { url, body: data });
 
-        console.log("data getScanList", data);
-        const resList = await fetch(`${TEMP_URL}/api/inventory/scanlist`, {
+        const resList = await fetch(url, {
             method: "POST",
             cache: "no-store",
             headers: {
@@ -58,9 +59,7 @@ export async function getScanList(data: Record<string, any> = {}) {
         });
         const res = await resList.json();
 
-        console.log("getInventory res", res);
-
-        if (res?.code === CODES?.SUCCESS) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res.data;
         }
         return [];
@@ -70,25 +69,25 @@ export async function getScanList(data: Record<string, any> = {}) {
     }
 }
 
-export async function listDomain() {
+export async function listDomain(data: Record<string, any> = {}) {
     try {
         const headerList = await headers();
-        console.log(`tempp ${TEMP_URL}/api/domain/list`);
+        const url = `${TEMP_URL}/api/domain/list`;
+        console.log("Backend Call:", { url, body: data });
 
         const resList = await fetch(`${TEMP_URL}/api/domain/list`, {
             method: "POST",
             cache: "no-store",
-            // headers: {
-            //     cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
-            // },
+            headers: {
+                cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+            },
+            body: JSON.stringify(data),
         });
 
         const res = await resList.json();
 
-        if (res?.code === CODES?.SUCCESS) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res.data;
-        } else {
-            TOAST_ERROR("Something went wrong .")
         }
 
         return [];
@@ -99,38 +98,36 @@ export async function listDomain() {
     }
 }
 
-export async function listVulnerability() {
+export async function listVulnerability(data: Record<string, any> = {}) {
     try {
         const headerList = await headers();
-        console.log(`tempp ${TEMP_URL}/api/vulnerability/list`);
+        const url = `${TEMP_URL}/api/vulnerability/list`;
+        console.log("Backend Call:", { url, body: data });
         const resList = await fetch(`${TEMP_URL}/api/vulnerability/list`, {
             method: "POST",
             cache: "no-store",
-            // headers: {
-            //     cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
-            // },
+            headers: {
+                cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+            },
+            body: JSON.stringify(data),
         });
 
         const res = await resList.json();
 
-        if (res?.code === CODES?.SUCCESS) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res.data;
-        } else {
-            TOAST_ERROR("Something went wrong .")
         }
 
         return [];
 
     } catch (err: any) {
-        console.log("listVulnerability error", err.message);
         return [];
     }
 }
 
 export async function getInventoryDetails(data: Record<string, any> = {}) {
     try {
-
-        console.log("getInventoryDetails", data);
+        console.log("Backend Call:", { url: "/api/inventoryDetails", body: data });
 
         const res: InventoryResponse = await fetcher("/api/inventoryDetails", { method: "POST", body: data });
         if (res?.code == CODES?.SUCCESS) {
@@ -147,10 +144,9 @@ export async function getInventoryView(data: Record<string, any> = {}) {
     try {
 
         const res: InventoryResponse = await fetcher("/api/inventoryView", { method: "POST", body: data });
+        console.log("Backend Call:", { url: "/api/inventoryView", body: data });
 
-        console.log("res test", res);
-
-        if (res?.code == CODES?.SUCCESS) {
+        if (res?.code == CODES?.SUCCESS || res?.code === 1) {
             return res?.data;
         } else {
             return {};
@@ -187,7 +183,7 @@ export async function addDomainDetails(data: Record<string, any>) {
 
         const res: InventoryResponse = await response.json();
 
-        if (res?.code === CODES?.SUCCESS) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res;
         }
 

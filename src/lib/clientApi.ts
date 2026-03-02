@@ -6,6 +6,7 @@ import { CODES } from "@/common/constant";
 export async function clientFetcher(url: string, options: any = {}) {
     const { method = "GET", body, headers: customHeaders } = options;
 
+    console.log("Backend Call:", { url, method, body });
     const response = await fetch(url, {
         method,
         headers: {
@@ -33,7 +34,6 @@ export async function getCloudScanDetails(data: Record<string, any>) {
         return res;
 
     } catch (err: any) {
-        console.error("getCloudScanDetails error:", err.message);
         return [];
     }
 }
@@ -50,6 +50,5 @@ export async function getWebsiteDetails(data: Record<string, any>) {
         return res;
 
     } catch (err: any) {
-        console.log(err.message); // user-friendly message
     }
 }

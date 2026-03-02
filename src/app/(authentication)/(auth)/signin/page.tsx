@@ -2,8 +2,9 @@ import SignInForm from "@/components/auth/SignInForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Next.js SignIn Page | Cyber Admin - Next.js Dashboard Template",
-  description: "This is Next.js Signin Page Cyber Admin Dashboard Template",
+  title: "Secure Login | CyberSafe Security Portal",
+  description: "Access your CyberSafe security dashboard through our encrypted authentication gateway for secure asset management.",
+  keywords: ["Security Login", "Cyber Dashboard Access", "Secure Admin Sign-in"],
 };
 
 export default function SignIn() {

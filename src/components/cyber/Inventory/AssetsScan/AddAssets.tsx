@@ -118,20 +118,28 @@ export default function AddAssets({ resInventoryList }: any) {
         methods.setValue(ASSETS_INPUTS.ASSETS_NAME.name, assets_details?.value?.[ASSETS_INPUTS.ASSETS_NAME.name] || '');
 
         const urlValue = assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name];
-        const match = resInventoryList?.find((item: any) => item.id == urlValue || item.url == urlValue);
+        const inventoryArr = Array.isArray(resInventoryList)
+            ? resInventoryList
+            : (Array.isArray(resInventoryList?.assets) ? resInventoryList.assets : []);
+
+        const match = inventoryArr.find((item: any) => item.id == urlValue || item.url == urlValue);
         methods.setValue(ASSETS_INPUTS.WEBSITE_URL.name, (match?.url || urlValue) || '');
     }, [methods, assets_details, resInventoryList]);
 
     const selectList = useMemo(() => {
+        const inventoryArr = Array.isArray(resInventoryList)
+            ? resInventoryList
+            : (Array.isArray(resInventoryList?.assets) ? resInventoryList.assets : []);
+
         return (
-            resInventoryList
+            inventoryArr
                 ?.filter((item: any) => item.type === assets_type?.value)
                 ?.map((item: any) => ({
                     value: item.id,
                     inventory_id: item.id,
                     website_url: item.url,
                     label: item.name,
-                    full_data: item   // 👈 Ahiya badho original object add kari didho
+                    full_data: item
                 })) || []
         );
 

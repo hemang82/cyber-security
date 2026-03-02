@@ -8,16 +8,20 @@ export const runtime = "nodejs";
 export async function POST(req: Request) {
   try {
 
-    // const body = await req.json();
+    const body = await req.json();
 
-    // ✅ External API call (body direct forward)
-    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/verification-history",
+    const baseUrl = "http://cyberapi.tracewavetransparency.com/api/verification-history";
+    const queryString = body ? new URLSearchParams(Object.entries(body).map(([k, v]) => [k, String(v)])).toString() : "";
+    const finalUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+
+    console.log("External Backend Call:", { url: finalUrl, method: "GET" });
+
+    const response = await fetch(finalUrl,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        // body: JSON.stringify(body), // 👈 DIRECT PASS
         cache: "no-store",
       }
     );
@@ -26,15 +30,13 @@ export async function POST(req: Request) {
       throw new Error("External API failed");
     }
 
-    const data = await response.json();
+    const responseData = await response.json();
 
-    console.log('ssr New', data);
-    
     return NextResponse.json({
       code: CODES?.SUCCESS,
-      message: data?.message,
+      message: responseData?.message,
       success: true,
-      data: data?.data,
+      data: responseData?.data || responseData,
     });
 
   } catch (error) {

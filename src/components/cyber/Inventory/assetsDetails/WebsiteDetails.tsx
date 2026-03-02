@@ -174,7 +174,6 @@ const StatCard = ({ label, value, icon, trend, subValue }: any) => (
 
 export default function WebsiteDetails({ resAssetsDetails }: any) {
 
-    console.log("InventoryData Wevsite", resAssetsDetails);
 
     const { setLoader, resetInventory } = useInventoryStore();
     const [isClient, setIsClient] = useState(false);
@@ -292,7 +291,6 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                             }`}
                         onClick={() => {
                             if (row?.solution) {
-                                console.log("Clicked Row 👉", row); // 👈 click સમયે પણ log
                                 openModal(row);
                             }
                         }}
@@ -344,7 +342,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
 
     return (
         <>
-            <div className="mx-auto max-w-[1600px] p-4 lg:p-6 space-y-6">
+            <div className="mx-auto max-w-[1800px] p-4 lg:p-6 space-y-6">
                 {/* HERO SECTION */}
                 <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-white/3 border border-gray-200 dark:border-gray-800 p-6 lg:p-8 shadow-sm">
                     <div className="absolute right-0 top-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-brand-500/5 blur-3xl" />

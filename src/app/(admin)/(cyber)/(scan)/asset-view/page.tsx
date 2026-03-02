@@ -7,9 +7,9 @@ import { getInventoryDetails, getInventoryView } from "@/lib/server/ServerApiCal
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
-    description: "This is Next.js Basic Table  page for Cyber Admin  Tailwind CSS Admin Dashboard Template",
-    // other metadata
+    title: "Asset Security Analysis | CyberSafe View",
+    description: "In-depth analysis of your security assets. View comprehensive reports on cloud vulnerabilities and website safety status.",
+    keywords: ["Security Analysis", "Asset Monitoring", "Cloud Vulnerability Report", "Website Security Audit"],
 };
 
 export default async function InventoryDetails({ searchParams, }: { searchParams: Promise<{ id?: string }> }) {

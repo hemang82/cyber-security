@@ -10,8 +10,9 @@ import AddScan from "@/components/cyber/Inventory/AddScan";
  * This helps with SEO and browser tab titling.
  */
 export const metadata: Metadata = {
-    title: "Add Scan | CyberSecurity Inventory",
-    description: "Initiate security scans for your registered assets. Manage and monitor vulnerabilities across your infrastructure.",
+    title: "Initiate Security Scan | CyberSafe Assessment",
+    description: "Launch on-demand security scans for your registered assets. Detailed vulnerability analysis for domains and cloud infrastructure.",
+    keywords: ["Start Security Scan", "On-demand Scanning", "Vulnerability Analysis", "Cloud Security Audit"],
 };
 
 /**

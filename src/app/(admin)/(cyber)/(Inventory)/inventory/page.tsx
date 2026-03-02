@@ -5,14 +5,20 @@ import { getInventoryList, getScanList } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
-  description: "This is Next.js Basic Table  page for Cyber Admin  Tailwind CSS Admin Dashboard Template",
-  // other metadata
+  title: "Asset Inventory Management | CyberSafe Digital Assets",
+  description: "Monitor and manage your organization's digital assets including domains, sub-domains, cloud infrastructure, and verified assets for continuous security.",
+  keywords: ["Security Inventory", "Asset Management", "Domain Monitoring", "Digital Infrastructure Security", "Asset Tracking"],
 };
 
-export default async function Page() {
+export default async function Page({ searchParams }: any) {
+  const params = await searchParams;
+  const page = params?.page || "1";
+  const pageSize = params?.page_size || "10";
 
-  const InventoryData = await getInventoryList();
+  const InventoryData = await getInventoryList({
+    page: page,
+    page_size: pageSize
+  });
 
   return (
     <div>
@@ -22,7 +28,7 @@ export default async function Page() {
           buttonName={"Add Asset "}
           navigation={"/add-inventory"} excel={false}>
           <InventoryComponent
-            InventoryData={InventoryData?.length > 0 ? InventoryData : []} />
+            InventoryData={InventoryData} />
         </ComponentCard>
       </div>
     </div>

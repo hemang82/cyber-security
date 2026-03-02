@@ -6,10 +6,9 @@ import AddInventory from "@/components/cyber/Inventory/AddInventory";
 import { listDomain } from "@/lib/server/ServerApiCall";
 
 export const metadata: Metadata = {
-    title: "Next.js Basic Table | Cyber Admin - Next.js Dashboard Template",
-    description:
-        "This is Next.js Basic Table  page for Cyber Admin  Tailwind CSS Admin Dashboard Template",
-    // other metadata
+    title: "Add New Security Asset | CyberSafe Inventory Management",
+    description: "Register new domains or cloud infrastructure assets to start security monitoring and vulnerability tracking.",
+    keywords: ["Add Security Asset", "CyberSecurity Enrollment", "Domain Registration", "Cloud Monitoring", "Vulnerability Tracking"],
 };
 
 export default async function page() {

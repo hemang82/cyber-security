@@ -7,7 +7,7 @@ import { ALL_PROVIDER_LIST, ASSETS_INPUTS, PROVIDER_KEY } from "./AddAssets";
 import { useRouter } from "next/navigation";
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
-import { assets, ASSETS_KEYS } from "./AssetsTypes";
+import { ASSETS, ASSETS_KEYS } from "./AssetsTypes";
 
 
 export default function PreviewPage({ resDomainList }: any) {
@@ -26,7 +26,10 @@ export default function PreviewPage({ resDomainList }: any) {
             assets_details,
             credentials,
             owners,
-            website_url: resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain : "N/A",
+            website_url: (() => {
+                const domainArr = Array.isArray(resDomainList) ? resDomainList : (Array.isArray(resDomainList?.data) ? resDomainList.data : []);
+                return domainArr.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || "N/A";
+            })(),
             final_validate_data,
         });
 
@@ -45,7 +48,10 @@ export default function PreviewPage({ resDomainList }: any) {
                 assets_details,
                 credentials,
                 owners,
-                website_url: resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain : "N/A",
+                website_url: (() => {
+                    const domainArr = Array.isArray(resDomainList) ? resDomainList : (Array.isArray(resDomainList?.data) ? resDomainList.data : []);
+                    return domainArr.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || "N/A";
+                })(),
                 final_validate_data,
             }),
         });
@@ -89,7 +95,7 @@ export default function PreviewPage({ resDomainList }: any) {
                                         <div>
                                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Asset Type</p>
                                             <p className="text-md font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
-                                                {assets.find((item) => item?.key === assets_type?.value)?.title || "N/A"}
+                                                {ASSETS.find((item) => item?.key === assets_type?.value)?.title || "N/A"}
                                             </p>
                                         </div>
                                         <div>
@@ -102,7 +108,10 @@ export default function PreviewPage({ resDomainList }: any) {
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Website URL</p>
                                                 <p className="text-md font-semibold text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-100 dark:border-blue-900/30 break-all">
-                                                    {resDomainList?.length > 0 ? resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain : "N/A"}
+                                                    {(() => {
+                                                        const domainArr = Array.isArray(resDomainList) ? resDomainList : (Array.isArray(resDomainList?.data) ? resDomainList.data : []);
+                                                        return domainArr.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || "N/A";
+                                                    })()}
                                                 </p>
                                             </div>
                                         )}
