@@ -193,7 +193,6 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
         setData(resAssetsDetails)
         setLoader(false)
         resetInventory()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

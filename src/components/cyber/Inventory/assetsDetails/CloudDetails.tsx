@@ -67,7 +67,6 @@ export default function CloudDetails({ resAssetsDetails }: any) {
             setLoader(false)
             resetInventory()
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [finalData]);
 
     const [isGenerating, setIsGenerating] = useState(false);
