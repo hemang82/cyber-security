@@ -51,7 +51,8 @@ export async function getScanList(data: Record<string, any> = {}) {
 
         const resList = await fetch(url, {
             method: "POST",
-            cache: "no-store",
+            // cache: "no-store",
+            next: { revalidate: 60 }, // 🔥 Cache for 60 seconds
             headers: {
                 cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
             },

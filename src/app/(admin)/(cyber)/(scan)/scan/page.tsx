@@ -18,12 +18,14 @@ export default async function Page({ searchParams }: any) {
   const page = params?.page || "1";
   const pageSize = params?.page_size || "15";
 
-  const ScanHistory = await getScanList({
-    assetId: params?.assets_id,
-    page: page,
-    page_size: pageSize
-  });
-  const resInventoryList = await getInventoryList();
+  const [ScanHistory, resInventoryList] = await Promise.all([
+    getScanList({
+      assetId: params?.assets_id,
+      page: page,
+      page_size: pageSize
+    }),
+    getInventoryList()
+  ]);
 
   return (
     <div>

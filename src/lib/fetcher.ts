@@ -37,7 +37,9 @@ export async function fetcher(
     throw new Error("Host not found in request headers");
   }
 
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const protocol =
+    headersList.get("x-forwarded-proto") ||
+    (host.includes("localhost") || host.includes("127.0.0.1") ? "http" : "https");
 
   const fullUrl = url.startsWith("http")
     ? url

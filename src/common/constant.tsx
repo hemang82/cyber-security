@@ -1,4 +1,4 @@
-export const PRODUCTION = true ;
+export const PRODUCTION = false;
 
 const CONSTENT = {
 
@@ -12,7 +12,7 @@ const CONSTENT = {
     API_BASE_URL: PRODUCTION ? process.env.NEXT_PUBLIC_LIVE_API_BASE_URL : process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL,
 
     // # ----------------------------- Encreption keys --------------------------------------
-
+    
     KEY: process.env.NEXT_PUBLIC_CRYPTO_KEY,
     IV: process.env.NEXT_PUBLIC_CRYPTO_IV,
 }

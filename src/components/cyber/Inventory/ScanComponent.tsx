@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../../ui/table";
 import Image from "next/image";
+import Link from "next/link";
 import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
 import { formatDate, safeText } from "@/common/commonFunction";
@@ -119,14 +120,13 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
       key: "action", title: "Action",
       className: "min-w-[100px]",
       render: (row: any) => (
-        <button className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" onClick={() => {
-          router.push(`/asset-view?id=${encodeURIComponent(row?.id)}&type=${row?.asset_type}`);
-          setLoader(true)
-          // router.push(`/Inventory-details`); 
-        }}>
-          {/* {row.action || "view"} */}
+        <Link
+          href={`/asset-view?id=${encodeURIComponent(row?.id)}&type=${row?.asset_type}`}
+          prefetch={true}
+          className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        >
           <GoEye size={18} />
-        </button>
+        </Link>
       ),
     },
   ];
@@ -136,7 +136,6 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
   }, [resetInventory])
 
   const handlePageChange = (newPage: number, newPerPage: number) => {
-    setLoader(true);
     const params = new URLSearchParams(searchParams);
     params.set("page", newPage.toString());
     params.set("page_size", newPerPage.toString());

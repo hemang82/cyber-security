@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function AssetFilter({ resInventoryList }: { resInventoryList: any }) {
     const router = useRouter();
@@ -23,9 +24,23 @@ export default function AssetFilter({ resInventoryList }: { resInventoryList: an
     };
 
     const assets = resInventoryList?.assets || (Array.isArray(resInventoryList) ? resInventoryList : []);
-
+    const pathname_str = pathname || "";
+    
     return (
         <div className="w-full max-w-xs">
+            {/* 🔥 PREFETCH TRICK: Hidden links to trigger Next.js background loading for each asset filter */}
+            <div className="hidden" aria-hidden="true">
+                {assets?.map((asset: any) => {
+                    const params = new URLSearchParams(searchParams);
+                    params.set("assets_id", asset.id);
+                    params.set("page", "1");
+                    return (
+                        <Link key={asset.id} href={`${pathname_str}?${params.toString()}`} prefetch={true}>
+                            prefetch
+                        </Link>
+                    );
+                })}
+            </div>
             <div className="relative">
                 <select
                     value={selectedAssetId}
