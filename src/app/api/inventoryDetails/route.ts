@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     // ✅ frontend thi aavelu full body
     const body = await req.json();
 
-    const url = "http://cyberapi.tracewavetransparency.com/api/scan/website";
+    const url = "https://cyberapi.ipotrending.com/api/scan/website";
     console.log("External Backend Call:", { url, method: "POST", body });
 
     const response = await fetch(url,

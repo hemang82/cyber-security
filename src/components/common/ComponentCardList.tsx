@@ -18,9 +18,9 @@ interface ComponentCardProps {
   children: React.ReactNode;
   className?: string; // Additional custom classes for styling
   desc?: string; // Description text
-  buttonName?: String;
-  navigation?: String;
-  excel?: Boolean
+  buttonName?: string;
+  navigation?: string;
+  excel?: boolean
 }
 
 const ComponentCardList: React.FC<ComponentCardProps> = ({

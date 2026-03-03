@@ -44,7 +44,7 @@ export async function POST(req: Request) {
             sameSite: "lax",
         });
 
-        const response = await fetch("http://cyberapi.tracewavetransparency.com/api/assets/",
+        const response = await fetch("https://cyberapi.ipotrending.com/api/assets/",
             {
                 method: "POST",
                 headers: {

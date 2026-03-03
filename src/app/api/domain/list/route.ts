@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const baseUrl = "http://cyberapi.tracewavetransparency.com/api/verification-history";
+    const baseUrl = "https://cyberapi.ipotrending.com/api/verification-history";
     const queryString = body ? new URLSearchParams(Object.entries(body).map(([k, v]) => [k, String(v)])).toString() : "";
     const finalUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 

@@ -60,17 +60,25 @@ const Input: FC<InputProps> = ({
     inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800`;
   }
 
+  const { onChange: rhfOnChange, onBlur: rhfOnBlur, ref: rhfRef, name: rhfName } = register(name || "", rules || "");
+
   return (
     <div className="relative">
 
       <input
-        {...register(name || "", rules || "")}
         type={type}
-        id={id}
-        name={name}
+        id={id || name}
+        name={rhfName}
+        ref={rhfRef}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        onChange={onChange}
+        onChange={(e) => {
+          rhfOnChange(e);
+          if (onChange) onChange(e);
+        }}
+        onBlur={(e) => {
+          rhfOnBlur(e);
+        }}
         min={min}
         max={max}
         step={step}

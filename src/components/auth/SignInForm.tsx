@@ -27,7 +27,8 @@ export default function SignInForm() {
   const router = useRouter();
 
   const methods = useForm({
-    mode: "onBlur", // validation timing
+    mode: "onSubmit", // Trigger validation only on submit
+    reValidateMode: "onChange" // Re-validate on change after first submission attempt
   });
 
   const [showPassword, setShowPassword] = useState(false);

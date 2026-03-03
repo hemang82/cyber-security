@@ -2,6 +2,7 @@ import { CODES } from "@/common/constant";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { setCookie } from "@/common/middleware.function";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const DefaultUser = {
   name: "Admin",
@@ -12,44 +13,13 @@ const DefaultUser = {
   phone_number: "1234567891"
 }
 
-// export async function POST(request: Request) {
-
-//   const body = await request.json();
-
-//   const { email, password } = body;
-
-//   if (email === DefaultUser?.email && password === DefaultUser?.password) {
-//     const response = NextResponse.json({
-//       code: CODES?.SUCCESS,
-//       // success: true,
-//       message: "Login success",
-//       data: {
-//         email: email,
-//         password: password
-//       }
-//     });
-
-// setCookie(response, MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, true)
-// setCookie(response, MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, DefaultUser)
-// setCookie(response, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, DefaultUser?.role)
-
-//     return response;
-//   }
-
-//   return NextResponse.json(
-//     { code: CODES?.ERROR, message: "Invalid credentials" },
-//     { status: 401 }
-//   );
-// }
-
-
 export async function POST(req: Request) {
   try {
 
     const body = await req.json();
 
     // ✅ External API call (body direct forward)
-    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/auth/login",
+    const response = await fetch("https://cyberapi.ipotrending.com/api/auth/login",
       {
         method: "POST",
         headers: {
@@ -69,7 +39,7 @@ export async function POST(req: Request) {
     const data = await response.json();
 
     let updatedRes;
-    if (data?.code == '1') {
+    if (data?.code == 1) {
 
       updatedRes = NextResponse.json({
         code: CODES?.SUCCESS,
@@ -78,21 +48,22 @@ export async function POST(req: Request) {
         data: data?.data,
       });
 
-      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, true)
-      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, data?.data?.user)
-      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, DefaultUser?.role)
+      const cookieStore = await cookies();
+      cookieStore.set(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, "true", { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
+      cookieStore.set(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, JSON.stringify(data?.data?.user), { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
+      cookieStore.set(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, JSON.stringify(DefaultUser?.role), { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
 
     } else {
 
       updatedRes = NextResponse.json({
         code: CODES?.ERROR,
         message: data?.message,
-        success: true,
+        success: false,
         data: data?.data,
       });
     }
 
-    return updatedRes
+    return updatedRes;
 
   } catch (error) {
 

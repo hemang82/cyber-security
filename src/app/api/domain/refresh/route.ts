@@ -9,7 +9,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         // ✅ External API call (body direct forward)
-        const response = await fetch("http://cyberapi.tracewavetransparency.com/api/check_txt_record",
+        const response = await fetch("https://cyberapi.ipotrending.com/api/check_txt_record",
             {
                 method: "POST",
                 headers: {

@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     // ✅ External API call (body direct forward)
 
-    const response = await fetch("http://cyberapi.tracewavetransparency.com/api/scan/scan-details",
+    const response = await fetch("https://cyberapi.ipotrending.com/api/scan/scan-details",
       {
         method: "POST",
         headers: {
@@ -47,8 +47,8 @@ export async function POST(req: Request) {
 
     const data = await response.json();
 
-    console.log("scan-details data",data);
-    
+    console.log("scan-details data", data);
+
     return NextResponse.json({
       code: CODES?.SUCCESS,
       message: data?.message,

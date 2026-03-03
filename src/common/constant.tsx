@@ -1,7 +1,6 @@
-export const PRODUCTION = false;
+export const PRODUCTION = true ;
 
 const CONSTENT = {
-
 
     APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
     API_KEY: process.env.NEXT_PUBLIC_API_KEY,

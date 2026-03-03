@@ -2,7 +2,7 @@ import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
 
     console.log("🔥 MIDDLEWARE HIT:", request.nextUrl.pathname);
 

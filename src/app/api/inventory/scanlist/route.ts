@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     // ✅ frontend thi aavelu full body
     const body = await req.json();
 
-    const url = "http://cyberapi.tracewavetransparency.com/api/scan/history";
+    const url = "https://cyberapi.ipotrending.com/api/scan/history";
     console.log("External Backend Call:", { url, method: "POST", body });
 
     const response = await fetch(url,
