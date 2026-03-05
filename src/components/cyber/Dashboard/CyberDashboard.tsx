@@ -11,6 +11,7 @@ import DynamicTable from "@/components/tables/DynamicTable";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 import { ASSETS } from "../Inventory/Assets/AssetsTypes";
+import { GoEye } from "react-icons/go";
 // import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 
 
@@ -95,6 +96,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         {
             key: "target_url",
             title: "Target Asset",
+            className: "min-w-[300px]",
             render: (row: any) => (
                 <div className="flex items-center gap-2">
                     <div className="p-1.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
@@ -107,6 +109,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         {
             key: "asset_type",
             title: "Asset Type",
+            className: "min-w-[120px]",
             render: (row: any) => (
                 <div className="flex items-center gap-2">
                     <span className="font-medium text-gray-800 dark:text-white break-all">{ASSETS.find((item) => item?.key === row?.asset_type)?.title || "N/A"}</span>
@@ -116,6 +119,8 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         {
             key: "security_score",
             title: "Score",
+            className: "min-w-[100px]",
+
             render: (row: any) => {
                 const score = Number(row?.security_score) || 0;
                 return (
@@ -130,31 +135,31 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         {
             key: "risk_level",
             title: "Risk Level",
+            className: "min-w-[150px]",
             render: (row: any) => (
                 <span className={`inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-medium ${CyberColorClass[row?.risk_color as keyof typeof CyberColorClass]}`}>
                     {safeText(row?.risk_level) || "Unknown"}
                 </span>
             )
         },
-        {
-            key: "scanned_at",
-            title: "Scan Date",
-            render: (row: any) => (
-                <span className="text-gray-500 text-sm">
-                    {formatDate(row?.scanned_at, DATE_FORMAT.DASH_DD_MM_YYYY)}
-                </span>
-            )
-        },
+        // {
+        //     key: "scanned_at",
+        //     title: "Scan Date",
+        //     render: (row: any) => (
+        //         <span className="text-gray-500 text-sm">
+        //             {formatDate(row?.scanned_at, DATE_FORMAT.DASH_DD_MM_YYYY)}
+        //         </span>
+        //     )
+        // },
         {
             key: "action",
             title: "Action",
             render: (row: any) => (
-
                 <button
                     onClick={() => router.push(`/Inventory-view?id=${encodeURIComponent(row?.id)}`)}
                     className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400"
                 >
-                    View Report
+                    <GoEye size={18} />
                 </button>
             )
         }
@@ -317,6 +322,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                                         </p>
                                     </div>
                                 </div>
+
                                 <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                     <p className="text-xs text-gray-500 uppercase font-semibold">Scan Date</p>
                                     <p className="font-medium text-gray-800 dark:text-white truncate">
