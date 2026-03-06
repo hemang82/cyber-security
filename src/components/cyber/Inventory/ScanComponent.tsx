@@ -38,7 +38,7 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
     {
       key: "displayId",
       title: "ID",
-      className: "min-w-[70px]",
+      className: "min-w-[40px]",
     },
     {
       key: "asset_name",
@@ -142,10 +142,11 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
     router.push(`${pathname}?${params.toString()}`);
   };
 
+  console.log("ScanHistory", ScanHistory);
 
   return (
     <>
-      <DynamicTable columns={columns} data={currentData} className="min-w-[1400px]" />
+      <DynamicTable columns={columns} data={currentData} className="min-w-[1100px]" />
 
       {/* Pagination Info & Controls */}
       <div className="mt-4 flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -153,6 +154,7 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
           Showing {totalCount > 0 ? startIndex + 1 : 0} to{" "}
           {Math.min(startIndex + perPage, totalCount)} of {totalCount} entries
         </div>
+
 
         <Pagination
           currentPage={page}

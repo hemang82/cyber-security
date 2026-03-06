@@ -58,9 +58,9 @@ const styles = StyleSheet.create({
     },
     h3: { fontSize: 11, fontWeight: 'bold', color: '#2c3e50', marginTop: 12, marginBottom: 8 },
     h4: { fontSize: 10, fontWeight: 'bold', color: '#444', marginTop: 8, marginBottom: 5 },
-    text: { fontSize: 8.5, marginBottom: 8, textAlign: 'justify', color: '#444', lineHeight: 1.4 },
-    textBold: { fontSize: 9.5, fontWeight: 'bold', color: '#1a2a6c' },
-    textSmall: { fontSize: 8.5, color: '#666' },
+    text: { fontSize: 14, marginBottom: 8, textAlign: 'justify', color: '#444', lineHeight: 1.4 },
+    textBold: { fontSize: 14, fontWeight: 'bold', color: '#1a2a6c' },
+    textSmall: { fontSize: 14, color: '#666' },
 
     card: {
         backgroundColor: '#f8f9fa',
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         borderStyle: 'solid'
     },
     sectionDescBox: {
-        fontSize: 8,
+        fontSize: 10,
         color: '#555',
         marginBottom: 15,
         padding: 10,
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     tableColSmall: { padding: 4, borderRightWidth: 0.5, borderColor: '#cbd5e1', width: '30%' },
     tableColStatus: { padding: 4, borderRightWidth: 0.5, borderColor: '#cbd5e1', width: '15%' },
     tableColLarge: { padding: 4, borderRightWidth: 0, borderColor: '#cbd5e1', width: '55%' },
-    tableCell: { fontSize: 7.5 },
-    tableCellBold: { fontSize: 7.5, fontWeight: 'bold', color: '#1e293b' },
+    tableCell: { fontSize: 10 },
+    tableCellBold: { fontSize: 10, fontWeight: 'bold', color: '#1e293b' },
 
     coverPage: {
         display: 'flex',

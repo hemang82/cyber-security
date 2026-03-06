@@ -16,7 +16,7 @@ import { safeJoin } from '../assetsDetails/WebsiteDetails';
 const styles = StyleSheet.create({
     page: {
         padding: 40,
-        fontSize: 10,
+        fontSize: 14,
         fontFamily: 'Helvetica',
         color: '#333',
         lineHeight: 1.5,
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     h2: { fontSize: 15, fontWeight: 'bold', color: '#1a2a6c', marginTop: 20, marginBottom: 15, paddingBottom: 5 },
     h3: { fontSize: 12, fontWeight: 'bold', color: '#2c3e50', marginTop: 15, marginBottom: 15 },
     h4: { fontSize: 10, fontWeight: 'bold', color: '#444', marginTop: 10, marginBottom: 10 },
-    text: { fontSize: 8.5, marginBottom: 10, textAlign: 'justify', color: '#444' },
+    text: { fontSize: 14, marginBottom: 10, textAlign: 'justify', color: '#444' },
     textSmall: { fontSize: 9, color: '#666' },
 
     // Components
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     badge: {
         padding: '2px 8px',
         borderRadius: 4,
-        fontSize: 8,
+        fontSize: 10,
         color: 'white',
         backgroundColor: '#6c757d'
     },
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#bfbfbf', minHeight: 18, alignItems: 'center' },
     tableHeaderRow: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#bfbfbf', backgroundColor: '#f1f1f1', minHeight: 18, alignItems: 'center' },
     tableCol: { padding: 4, borderRightWidth: 1, borderColor: '#bfbfbf' },
-    tableCell: { fontSize: 8 },
-    tableCellBold: { fontSize: 8, fontWeight: 'bold' },
+    tableCell: { fontSize: 10 },
+    tableCellBold: { fontSize: 10, fontWeight: 'bold' },
 
     // Special
     coverPage: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     },
     coverTitle: { fontSize: 36, fontWeight: 'bold', color: 'white', marginBottom: 20, textAlign: 'center' },
     coverSubtitle: { fontSize: 18, color: '#ecf0f1', marginBottom: 60, textAlign: 'center' },
-    coverInfo: { fontSize: 12, color: '#bdc3c7', marginBottom: 5 },
+    coverInfo: { fontSize: 14, color: '#bdc3c7', marginBottom: 5 },
 
     // Scorecard
     scoreContainer: {

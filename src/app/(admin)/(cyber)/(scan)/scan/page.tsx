@@ -31,13 +31,8 @@ export default async function Page({ searchParams }: any) {
     <div>
       <PageBreadcrumb pageTitle="Scan History" />
       <div className="space-y-6">
-        <ComponentCard title=""
-          buttonName={"Scan Assets"}
-          navigation={"/add-asset"} excel={false}
-          extraHeader={<AssetFilter resInventoryList={resInventoryList} />}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <ScanComponent ScanHistory={ScanHistory} resInventoryList={resInventoryList} />
-          </Suspense>
+        <ComponentCard title="" buttonName={"Scan Assets"} navigation={"/add-asset"} excel={false} extraHeader={<AssetFilter resInventoryList={resInventoryList} />}>
+          <ScanComponent ScanHistory={ScanHistory} resInventoryList={resInventoryList} />
         </ComponentCard>
       </div>
     </div>
