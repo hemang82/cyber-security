@@ -8,11 +8,13 @@ export const metadata: Metadata = {
   keywords: ["CyberSecurity Dashboard", "Threat Monitoring", "Vulnerability Management", "Security Insights", "Real-time Security Alerts"],
 };
 
+export const dynamic = "force-dynamic";
+
 import { getScanList } from "@/lib/server/ServerApiCall";
 import CyberDashboard from "@/components/cyber/Dashboard/CyberDashboard";
 
 export default async function Page() {
-  const InventoryData = await getScanList({ page: "1", page_size: "5" });
+  const InventoryData = await getScanList({ page: "1", page_size: "25" });
   const scans = InventoryData?.scans || (Array.isArray(InventoryData) ? InventoryData : []);
 
   // Calculate risk counts

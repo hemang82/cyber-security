@@ -147,8 +147,13 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
 
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const { setLoader } = useInventoryStore();
+  const [pendingNavPath, setPendingNavPath] = useState<string | null>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    // Reset pending path when navigation completes
+    setPendingNavPath(null);
+  }, [pathname]);
 
   const renderMenuItems = (navItems: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
@@ -190,6 +195,7 @@ const AppSidebar: React.FC = () => {
               <Link
                 href={nav.path}
                 prefetch={true}
+                onClick={() => setPendingNavPath(nav.path!)}
                 className={`menu-item group ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                   }`}
               >
@@ -221,6 +227,7 @@ const AppSidebar: React.FC = () => {
                     <Link
                       href={subItem.path}
                       prefetch={true}
+                      onClick={() => setPendingNavPath(subItem.path)}
                       className={`menu-dropdown-item ${isActive(subItem.path) ? "menu-dropdown-item-active" : "menu-dropdown-item-inactive"}`}
                     >
                       {subItem.name}
@@ -261,36 +268,37 @@ const AppSidebar: React.FC = () => {
 
   // isActive.ts logic
   const isActive = useCallback((path: string) => {
-    if (!path || !pathname) return false;
+    const currentPath = pendingNavPath || pathname;
+    if (!path || !currentPath) return false;
 
     // Exact match for the current route
-    if (path === pathname) return true;
+    if (path === currentPath) return true;
 
     // Logic for Scan sub-routes
     if (path === "/scan") {
       const scanSubRoutes = ["/asset-view", "/add-asset", "/asset-details", "/cloud-view"];
-      return scanSubRoutes.some(subPath => pathname.startsWith(subPath));
+      return scanSubRoutes.some(subPath => currentPath.startsWith(subPath));
     }
 
     // Logic for Inventory sub-routes
     if (path === "/inventory") {
       const inventorySubRoutes = ["/Inventory-view", "/add-inventory", "/Inventory-details", "/inventory-report"];
-      return inventorySubRoutes.some(subPath => pathname.toLowerCase().startsWith(subPath.toLowerCase()));
+      return inventorySubRoutes.some(subPath => currentPath.toLowerCase().startsWith(subPath.toLowerCase()));
     }
 
     // Logic for Domain sub-routes
     if (path === "/domain") {
-      return pathname.startsWith("/domain");
+      return currentPath.startsWith("/domain");
     }
 
     // Logic for Vulnerability sub-routes
     if (path === "/vulnerability") {
-      return pathname.startsWith("/vulnerability");
+      return currentPath.startsWith("/vulnerability");
     }
 
     // Default check: if the path is a prefix of the pathname
-    return path !== "/" && pathname.startsWith(path);
-  }, [pathname]);
+    return path !== "/" && currentPath.startsWith(path);
+  }, [pathname, pendingNavPath]);
   const matchedSubmenu = useMemo(() => {
     let result: { type: "main" | "others"; index: number } | null = null;
 
@@ -348,7 +356,7 @@ const AppSidebar: React.FC = () => {
     >
 
       <div className={`py-6 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`} >
-        <Link href="/" >
+        <Link href="/" prefetch={true}>
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image

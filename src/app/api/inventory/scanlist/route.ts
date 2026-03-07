@@ -1,7 +1,6 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { CODES } from "@/common/constant";
-import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
+import { apiLogger } from "@/lib/logger";
 
 export async function POST(req: Request) {
   try {
@@ -10,7 +9,6 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const url = "https://cyberapi.ipotrending.com/api/scan/history";
-    console.log("External Backend Call:", { url, method: "POST", body });
 
     const response = await fetch(url,
       {
@@ -23,6 +21,7 @@ export async function POST(req: Request) {
       }
     );
 
+    apiLogger(url, "POST", body, response.status);
     const responseData = await response.json();
 
     return NextResponse.json({

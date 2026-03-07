@@ -84,7 +84,7 @@ export default function AddBankAccount() {
     const total = subtotal + vat;
 
     const handleSelectChange = (value: string) => {
-        console.log("Selected value:", value);
+        // Log removed
     };
 
     return (

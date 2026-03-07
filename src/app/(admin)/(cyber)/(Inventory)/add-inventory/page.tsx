@@ -11,6 +11,8 @@ export const metadata: Metadata = {
     keywords: ["Add Security Asset", "CyberSecurity Enrollment", "Domain Registration", "Cloud Monitoring", "Vulnerability Tracking"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function page() {
 
     const resDomainList = await listDomain();

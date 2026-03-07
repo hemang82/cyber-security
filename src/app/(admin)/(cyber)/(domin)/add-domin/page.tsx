@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     keywords: ["Domain Verification", "DNS Setup", "Verify Ownership", "Security Onboarding"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default function page() {
     return (
         <div>

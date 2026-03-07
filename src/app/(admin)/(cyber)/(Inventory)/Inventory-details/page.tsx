@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     keywords: ["Security Details", "Asset Audit", "Individual Asset Security", "SSL/DNS Inventory Details"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function InventoryDetails({ searchParams, }: { searchParams: Promise<{ url?: string, inventory_id?: String }> }) {
     const params = await searchParams;
 

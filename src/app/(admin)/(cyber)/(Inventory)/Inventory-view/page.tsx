@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     keywords: ["Security Summary", "Endpoint Monitoring", "Cloud Infrastructure Audit", "Asset View"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function InventoryView({ searchParams, }: { searchParams: Promise<{ id?: string }> }) {
 
     const params = await searchParams;

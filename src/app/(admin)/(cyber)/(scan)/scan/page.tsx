@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   keywords: ["Vulnerability Scan History", "Security Audit Logs", "CyberSecurity Reports", "Automated Scan History", "Threat Assessment History"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({ searchParams }: any) {
   const params = await searchParams;
   const page = params?.page || "1";

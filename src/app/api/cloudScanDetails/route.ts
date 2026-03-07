@@ -1,5 +1,7 @@
 import { CODES } from "@/common/constant";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { apiLogger } from "@/lib/logger";
 
 /**
  * This API is STATIC
@@ -15,7 +17,6 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const url = "https://cyberapi.ipotrending.com/api/scan/cloud";
-    console.log("External Backend Call:", { url, method: "POST", body });
 
     const response = await fetch(url,
       {
@@ -32,7 +33,10 @@ export async function POST(req: Request) {
       throw new Error("External API failed");
     }
 
+    apiLogger(url, "POST", body, response.status);
     const data = await response.json();
+
+    revalidatePath("/scan");
 
     return NextResponse.json({
       code: CODES?.SUCCESS,

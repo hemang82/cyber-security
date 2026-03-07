@@ -1,5 +1,6 @@
 import { CODES } from "@/common/constant";
 import { NextResponse } from "next/server";
+import { apiLogger } from "@/lib/logger";
 
 /**
  * This API is STATIC
@@ -14,40 +15,22 @@ export async function POST(req: Request) {
     // ✅ frontend thi aavelu full body
     const body = await req.json();
 
-    console.log("scan-details Incoming body:", body);
-
-    // // (optional) empty body check
-    // if (!body || Object.keys(body).length === 0) {
-    //   return NextResponse.json(
-    //     {
-    //       code: CODES?.ERROR,
-    //       success: false,
-    //       message: "Request body is required",
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // ✅ External API call (body direct forward)
-
-    const response = await fetch("https://cyberapi.ipotrending.com/api/scan/scan-details",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body), // 👈 DIRECT PASS
-        cache: "no-store",
-      }
-    );
+    const url = "https://cyberapi.ipotrending.com/api/scan/scan-details";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body), // 👈 DIRECT PASS
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       throw new Error("External API failed");
     }
 
+    apiLogger(url, "POST", body, response.status);
     const data = await response.json();
-
-    console.log("scan-details data", data);
 
     return NextResponse.json({
       code: CODES?.SUCCESS,

@@ -1,4 +1,5 @@
 import { CODES } from "@/common/constant";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 /**
@@ -33,6 +34,8 @@ export async function POST(req: Request) {
     }
 
     const data = await response.json();
+
+    revalidatePath("/scan");
 
     return NextResponse.json({
       code: CODES?.SUCCESS,

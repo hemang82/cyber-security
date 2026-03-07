@@ -18,7 +18,6 @@ export default function UserMetaCard({ user }: UserCardProps) {
 
   const handleSave = () => {
     // Handle save logic here
-    console.log("Saving changes...");
     closeModal();
   };
 

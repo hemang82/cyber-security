@@ -15,6 +15,8 @@ export const metadata: Metadata = {
     keywords: ["Start Security Scan", "On-demand Scanning", "Vulnerability Analysis", "Cloud Security Audit"],
 };
 
+export const dynamic = "force-dynamic";
+
 /**
  * AddAssetPage (Server Component)
  * 

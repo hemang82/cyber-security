@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { CODES } from "@/common/constant";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
     try {
@@ -79,6 +80,8 @@ export async function POST(req: Request) {
         // }
 
         const data = await response.json();
+
+        revalidatePath("/inventory");
 
         return NextResponse.json({
             code: CODES?.SUCCESS,

@@ -6,13 +6,13 @@ import DynamicTable from "@/components/tables/DynamicTable";
 import OwaspReport, { RoutesScanned, VurnabilitiesFindings } from "@/components/ui/faq/FaqSection";
 import { useInventoryStore } from "@/store";
 import { useEffect, useRef, useState } from "react";
-import { RiInformation2Line, RiFileList3Line, RiGlobalLine, RiSpeedUpLine, RiServerLine, RiShieldCheckLine, RiPieChartLine, RiClipboardLine, RiLightbulbLine } from "react-icons/ri";
+import { RiInformation2Line, RiFileList3Line, RiGlobalLine, RiSpeedUpLine, RiServerLine, RiShieldCheckLine, RiPieChartLine, RiClipboardLine, RiLightbulbLine, RiShieldFlashLine, RiAlarmWarningFill } from "react-icons/ri";
 import { HiDownload } from "react-icons/hi";
 import { toPng } from "html-to-image";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { PerformanceChart } from "@/components/charts/circular/PerformanceChart";
-import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
+import { FINDINGS_COLORS, VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
 
 import { GoEye } from "react-icons/go";
 import CountUp from "react-countup";
@@ -399,89 +399,265 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                 </div>
 
                 {/* TOP METRICS GRID */}
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-                    {/* Score & Vulnerability Breakdown */}
+                <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+                    {/* Security Health Index */}
                     <div className="xl:col-span-8">
-                        <Card
-                            title="Security Health Index"
-                            tooltip={
-                                <div className="space-y-2">
-                                    <p className="font-bold">Score Calculation</p>
-                                    <p>Integrated analysis of {safeText(data?.summary?.checks_performed) || 0} checks across your infrastructure. High criticality findings impact this score exponentially.</p>
-                                </div>
-                            }
-                        >
-                            <div className="flex flex-col gap-8 md:flex-row md:items-center justify-center">
-                                <div className="flex flex-col items-center gap-6 sm:flex-row text-center sm:text-left">
-                                    <div className="relative group">
-                                        <div className={`flex h-36 w-36 items-center justify-center rounded-full border-[10px] bg-white shadow-sm dark:bg-gray-900 transition-transform group-hover:scale-105 ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'}`}>
+                        <Card title="Security Health Index">
+
+                            <div className="flex flex-col lg:flex-row gap-8">
+
+                                {/* LEFT SECTION */}
+                                {/* aspect-square flex items-center justify-center rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4 */}
+                                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 lg:w-2/3 ">
+
+                                    {/* SCORE CIRCLE */}
+                                    {/* <div className="relative shrink-0">
+
+                                        <div
+                                            className={`flex items-center justify-center rounded-full border-[10px] sm:border-[12px] h-28 w-28 sm:h-36 sm:w-36 bg-white dark:bg-gray-900 shadow-md transition-all hover:scale-105 ${data?.security_score >= 80
+                                                ? "border-green-500/20 ring-4 ring-green-500/10"
+                                                : data?.security_score >= 60
+                                                    ? "border-yellow-400/20 ring-4 ring-yellow-400/10"
+                                                    : "border-red-500/20 ring-4 ring-red-500/10"
+                                                }`} >
+
+                                            <div
+                                                className="absolute inset-0 rounded-full border-[10px] sm:border-[12px] border-transparent"
+                                                style={{
+                                                    borderTopColor: data?.security_score >= 80 ? "#22c55e" : data?.security_score >= 60 ? "#facc15" : "#ef4444",
+                                                    transform: `rotate(${Math.min(360, (data?.security_score) * 360
+                                                    )}deg)`
+                                                }}
+                                            />
+
                                             <div className="flex flex-col items-center">
-                                                <span className="text-5xl font-bold text-gray-900 dark:text-white">
-                                                    <CountUp end={Number(safeText(data?.security_score)) || 0} duration={2} />
+                                                <span
+                                                    className={`text-3xl sm:text-4xl font-extrabold ${data?.security_score >= 80
+                                                        ? "text-green-600"
+                                                        : data?.security_score >= 60
+                                                            ? "text-yellow-600"
+                                                            : "text-red-600"
+                                                        }`}
+                                                >
+                                                    <CountUp end={Number(data?.security_score) || 0} duration={2} />
                                                 </span>
-                                                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-1"></span>
+
+                                                <span className="text-[10px] uppercase tracking-widest text-gray-400">
+                                                    Score
+                                                </span>
                                             </div>
+
                                         </div>
+                                    </div> */}
+                                    {/* SCORE CIRCLE */}
+                                    <div className="relative shrink-0">
+                                        {(() => {
+
+                                            const score = Number(data?.security_score) || 0;
+
+                                            const radius = 60;
+                                            const stroke = 10;
+                                            const normalizedRadius = radius - stroke * 2;
+                                            const circumference = normalizedRadius * 2 * Math.PI;
+
+                                            const strokeDashoffset = circumference - (score / 100) * circumference;
+
+                                            const findings = data?.finding_counts || [];
+
+                                            const severityPriority = [
+                                                "Critical",
+                                                "High",
+                                                "Medium",
+                                                "Low",
+                                                "Info"
+                                            ];
+
+                                            // const FINDINGS_COLORS = {
+                                            //     Critical: "#7f1d1d",
+                                            //     High: "#ef4444",
+                                            //     Medium: "#fb923c",
+                                            //     Low: "#facc15",
+                                            //     Info: "#3b82f6"
+                                            // };
+
+                                            const activeSeverity = severityPriority.find(sev =>
+                                                findings.find((f: any) => f.severity === sev && f.count > 0)
+                                            );
+
+                                            const progressColor = FINDINGS_COLORS[activeSeverity as keyof typeof FINDINGS_COLORS] || "#22c55e";
+
+                                            return (
+
+                                                <div className="relative flex items-center justify-center h-60 w-40 sm:h-36 sm:w-36">
+
+                                                    <svg
+                                                        height={radius * 2}
+                                                        width={radius * 2}
+                                                        className="rotate-[-90deg]"
+                                                    >
+
+                                                        {/* Background */}
+                                                        <circle
+                                                            stroke="#e5e7eb"
+                                                            fill="transparent"
+                                                            strokeWidth={stroke}
+                                                            r={normalizedRadius}
+                                                            cx={radius}
+                                                            cy={radius}
+                                                        />
+
+                                                        {/* Progress */}
+                                                        <circle
+                                                            stroke={progressColor}
+                                                            fill="transparent"
+                                                            strokeWidth={stroke}
+                                                            strokeDasharray={`${circumference} ${circumference}`}
+                                                            style={{ strokeDashoffset }}
+                                                            strokeLinecap="round"
+                                                            r={normalizedRadius}
+                                                            cx={radius}
+                                                            cy={radius}
+                                                            className="transition-all duration-700"
+                                                        />
+
+                                                    </svg>
+
+                                                    {/* Score Text */}
+                                                    <div className="absolute flex flex-col items-center">
+
+                                                        <span className="text-3xl sm:text-4xl font-extrabold">
+                                                            <CountUp end={score} duration={2} />
+                                                        </span>
+
+                                                        <span className="text-[10px] uppercase tracking-widest text-gray-400">
+                                                            Score
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+                                            );
+
+                                        })()}
+
                                     </div>
 
-                                    <div className="space-y-4 text-center sm:text-left">
-                                        <div>
-                                            <p className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Finding Distribution</p>
-                                            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                                                {(data?.finding_counts || []).map((item: any, idx: number) => (
-                                                    <div key={idx} className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 ${severityColor(item.severity)}`}>
-                                                        <span className="text-base font-bold">{safeText(item.count)}</span>
-                                                        <span className="text-xs font-bold uppercase tracking-wide opacity-70">{safeText(item.severity)}</span>
-                                                    </div>
-                                                ))}
+                                    {/* THREAT LANDSCAPE */}
+                                    <div className="flex-1 text-center sm:text-left space-y-4">
+
+                                        <p className="text-xs uppercase tracking-widest text-gray-400 font-bold">
+                                            Threat Landscape
+                                        </p>
+
+                                        <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+
+                                            {(data?.finding_counts || []).map((item: any, idx: any) => (<div
+                                                key={idx} className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 ${severityColor(
+                                                    item.severity
+                                                )}`}
+                                            >
+                                                <span className="text-sm font-bold">{item.count}</span>
+                                                <span>{item.severity}</span>
                                             </div>
+                                            ))}
+
                                         </div>
-                                        <p className="max-w-md text-base text-gray-500 dark:text-gray-400 leading-relaxed">
-                                            Detecting potential attack vectors through automated footprinting and configuration analysis. Fixed vulnerabilities enhance overall resilience.
+
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-lg">
+                                            Our system analyzed{" "}
+                                            <span className="font-bold text-gray-900 dark:text-white">
+                                                {data?.summary?.checks_performed || 0}
+                                            </span>{" "}
+                                            security checks to identify vulnerabilities and configuration issues.
+                                        </p>
+
+                                    </div>
+                                </div>
+
+
+                                {/* RIGHT SECTION - CHART */}
+                                <div className="flex justify-center lg:w-1/3">
+
+                                    <div className="w-[150px] sm:w-[240px] aspect-square flex items-center justify-center rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4">
+                                        <VulnerabilityChart data={data?.finding_counts || []} />
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </Card>
+                    </div>
+
+
+                    {/* QUICK RECOMMENDATIONS */}
+                    <div className="xl:col-span-4">
+                        <Card title="Quick Recommendations">
+
+                            <div className="space-y-4">
+
+                                {/* Priority */}
+                                <div className="flex gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-500/10">
+
+                                    <div className="h-9 w-9 flex items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-500/20">
+                                        <RiShieldCheckLine size={20} />
+                                    </div>
+
+                                    <div>
+                                        <p className="font-semibold text-gray-900 dark:text-white">
+                                            Priority Remediation
+                                        </p>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                                            Fix{" "} <b> {data?.finding_counts?.find((f: any) => f.severity === "High")?.count || 0} </b>{" "} critical issues.
                                         </p>
                                     </div>
+
                                 </div>
-                                <div className="flex-1 min-h-[220px] flex items-center justify-center">
-                                    <VulnerabilityChart data={data?.finding_counts || []} />
+
+
+                                {/* Optimization */}
+                                <div className="flex gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10">
+
+                                    <div className="h-9 w-9 flex items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-500/20">
+                                        <RiSpeedUpLine size={20} />
+                                    </div>
+
+                                    <div>
+                                        <p className="font-semibold text-gray-900 dark:text-white">
+                                            Optimization Needed
+                                        </p>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                                            Page size {data?.performance?.page_size_kb} KB detected.
+                                        </p>
+                                    </div>
+
                                 </div>
+
+
+                                {/* Security */}
+                                <div className="flex gap-3 p-3 rounded-xl bg-yellow-50 dark:bg-yellow-500/10">
+
+                                    <div className="h-9 w-9 flex items-center justify-center rounded-lg bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20">
+                                        <RiLightbulbLine size={20} />
+                                    </div>
+
+                                    <div>
+                                        <p className="font-semibold text-gray-900 dark:text-white">
+                                            Security Hygiene
+                                        </p>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                                            Implement CSP headers to prevent XSS attacks.
+                                        </p>
+                                    </div>
+
+                                </div>
+
                             </div>
+
                         </Card>
                     </div>
 
-                    {/* Recommendations */}
-                    <div className="xl:col-span-4">
-                        <Card title="Quick Recommendations" className="bg-white border-brand-100 dark:bg-white/5 border-2 shadow-lg shadow-brand-500/5">
-                            <div className="space-y-5">
-                                <div className="flex items-start gap-4 rounded-xl bg-red-50 p-4 transition-colors hover:bg-red-100 dark:bg-red-500/10">
-                                    <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-500/20">
-                                        <RiShieldCheckLine size={24} />
-                                    </div>
-                                    <div>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">Priority Remediation</p>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">Fix <b>{safeText(data?.finding_counts?.find((f: any) => f.severity === 'High')?.count) || 0} Critical</b> issues to prevent unauthorized console access.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4 rounded-xl bg-blue-50 p-4 transition-colors hover:bg-blue-100 dark:bg-blue-500/10">
-                                    <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-500/20">
-                                        <RiSpeedUpLine size={24} />
-                                    </div>
-                                    <div>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">Optimization Needed</p>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">Large payload detected ({safeText(data?.performance?.page_size_kb)}). Minify JS/CSS assets.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4 rounded-xl bg-yellow-50 p-4 transition-colors hover:bg-yellow-100 dark:bg-yellow-500/10">
-                                    <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20">
-                                        <RiLightbulbLine size={24} />
-                                    </div>
-                                    <div>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">Security Hygiene</p>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">Implement CSP headers to mitigate XSS and data injection risks.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-                    </div>
                 </div>
 
                 {/* SECONDARY GRID - INFO & PERFORMANCE */}
@@ -603,6 +779,20 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                 </div>
                             </div>
 
+                            {data?.network_info?.findings?.length > 0 && <div className="overflow-x-auto">
+                                <DynamicTable
+                                    columns={column4}
+                                    data={data?.network_info?.findings || []}
+                                    // data={Object.entries(data?.network_info?.findings ?? {}).map(([key, value]: any) => ({
+                                    //     key: key.replaceAll("-", " "),
+                                    //     status: value?.status ?? "N/A",
+                                    //     severity: value?.severity ?? "Info",
+                                    //     solution: value?.solution ?? null
+                                    // })) || []}
+                                    className="min-w-full"
+                                />
+                            </div>
+                            }
                         </div>
                     </Card>
                 </div>

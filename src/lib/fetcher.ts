@@ -1,5 +1,5 @@
-// lib/fetcher.ts
 import { headers } from "next/headers";
+import { apiLogger } from "./logger";
 
 /* ✅ DEFINE TYPE */
 export type FetcherOptions = {
@@ -9,7 +9,7 @@ export type FetcherOptions = {
   cache?: RequestCache;
   revalidate?: number;
 };
-
+// ... (rest of types)
 type ApiError = {
   message: string;
   status?: number;
@@ -29,7 +29,6 @@ export async function fetcher(
     revalidate,
   } = options;
 
-  /* ✅ FIX: await headers() */
   const headersList = await headers();
   const host = headersList.get("host");
 
@@ -58,12 +57,9 @@ export async function fetcher(
       ...(revalidate ? { next: { revalidate } } : {}),
     });
 
-    if (!response.ok) {
-      console.error("API ERROR", {
-        url: fullUrl,
-        status: response.status,
-      });
+    apiLogger(fullUrl, method, body, response.status);
 
+    if (!response.ok) {
       throw {
         message: DEFAULT_ERROR_MESSAGE,
         status: response.status,
@@ -72,8 +68,6 @@ export async function fetcher(
 
     return await response.json();
   } catch (error) {
-    console.error("FETCH ERROR", error);
-
     throw {
       message: "Unable to process your request. Please try again.",
     } as ApiError;

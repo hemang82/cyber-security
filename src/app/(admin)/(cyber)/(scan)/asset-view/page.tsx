@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     keywords: ["Security Analysis", "Asset Monitoring", "Cloud Vulnerability Report", "Website Security Audit"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function InventoryDetails({ searchParams, }: { searchParams: Promise<{ id?: string }> }) {
 
     const params = await searchParams;
 
     const resAssetsDetails = await getInventoryView({ id: params.id })
-
-    console.log('resAssetsDetails Server', ASSETS_KEYS?.cloud, "resAssetsDetails?.asset_type == ASSETS_KEYS?.cloud", resAssetsDetails?.asset_type == ASSETS_KEYS?.cloud, resAssetsDetails);
 
     return (
         <div>

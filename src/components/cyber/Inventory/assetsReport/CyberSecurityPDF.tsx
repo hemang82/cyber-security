@@ -47,12 +47,12 @@ const styles = StyleSheet.create({
         fontSize: 8
     },
     // Typography
-    h1: { fontSize: 18, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 20, marginTop: 10 },
+    h1: { fontSize: 18, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 14, marginTop: 10 },
     h2: { fontSize: 15, fontWeight: 'bold', color: '#1a2a6c', marginTop: 20, marginBottom: 15, paddingBottom: 5 },
     h3: { fontSize: 12, fontWeight: 'bold', color: '#2c3e50', marginTop: 15, marginBottom: 15 },
     h4: { fontSize: 10, fontWeight: 'bold', color: '#444', marginTop: 10, marginBottom: 10 },
     text: { fontSize: 14, marginBottom: 10, textAlign: 'justify', color: '#444' },
-    textSmall: { fontSize: 9, color: '#666' },
+    textSmall: { fontSize: 12, color: '#666' },
 
     // Components
     card: {
@@ -454,8 +454,8 @@ export const PDFDocument = ({ data }: { data: any }) => {
                 </Text>
 
                 <View style={{ backgroundColor: '#f0f4f8', padding: 10, borderRadius: 5, marginBottom: 15 }}>
-                    <Text style={{ fontSize: 9, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 5 }}> Why this matters?</Text>
-                    <Text style={{ fontSize: 9, color: '#444' }}>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 5 }}> Why this matters?</Text>
+                    <Text style={{ fontSize: 12, color: '#444' }}>
                         Publicly available WHOIS and DNS information can enable attackers to conduct social engineering,
                         identify hosting providers, and map out the organization&apos;s infrastructure.
                         Ensuring privacy protection and correct DNS records (like SPF/DMARC) relies on this data.
@@ -537,8 +537,8 @@ export const PDFDocument = ({ data }: { data: any }) => {
                 </Text>
 
                 <View style={{ backgroundColor: '#f0f4f8', padding: 10, borderRadius: 5, marginBottom: 15 }}>
-                    <Text style={{ fontSize: 9, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 5 }}> Why this matters?</Text>
-                    <Text style={{ fontSize: 9, color: '#444' }}>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 5 }}> Why this matters?</Text>
+                    <Text style={{ fontSize: 12, color: '#444' }}>
                         Every open port is a potential door for an attacker. Services running on these ports may have vulnerabilities
                         or weak authentication. Knowing the server technology allows attackers to look for specific exploits (CVEs)
                         associated with that version.
@@ -581,14 +581,14 @@ export const PDFDocument = ({ data }: { data: any }) => {
                 <Header />
                 <Text style={styles.h1}>5. Performance & Security Headers</Text>
 
-                <Text style={styles.h3}>Performance Metrics</Text>
+                {/* <Text style={styles.h3}>Performance Metrics</Text> */}
                 <Text style={styles.text}>
                     Availability is a key component of the CIA triad. Slow loading times or heavy payloads can impact service availability.
                 </Text>
 
-                <View style={{ backgroundColor: '#f0f4f8', padding: 10, borderRadius: 5, marginBottom: 15 }}>
-                    <Text style={{ fontSize: 9, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 5 }}>Why this matters?</Text>
-                    <Text style={{ fontSize: 9, color: '#444' }}>
+                <View style={{ backgroundColor: '#f0f4f8', padding: 10, borderRadius: 5, marginBottom: 10 }}>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#1a2a6c', marginBottom: 5 }}>Why this matters?</Text>
+                    <Text style={{ fontSize: 12, color: '#444' }}>
                         Slow websites frustrate users and may signal underlying infrastructure issues (like DoS vulnerability).
                         Security headers (HSTS, CSP, X-Frame-Options) tell the browser how to behave, preventing Cross-Site Scripting (XSS)
                         and Clickjacking attacks.
@@ -604,6 +604,11 @@ export const PDFDocument = ({ data }: { data: any }) => {
                     <TableRow label="Blacklisted" value={`${data?.summary?.blacklisted ? "Blacklisted Website" : "Not Blacklist"}`} />
                 </View>
 
+                <Footer />
+            </Page>
+
+            <Page size="A4" style={styles.page} break>
+                <Header />
                 <Text style={styles.h3}>Security Headers Analysis</Text>
                 <Text style={styles.text}>
                     HTTP security headers provide an extra layer of security by restricting modern browser behaviors.
@@ -628,7 +633,6 @@ export const PDFDocument = ({ data }: { data: any }) => {
                 </View>
                 <Footer />
             </Page>
-
             {/* --- PAGES 8-18: OWASP TOP 10 (One page per category or grouped) --- */}
             {/* We will create a loop for the sections. */}
             <Page size="A4" style={styles.page} break>
@@ -670,13 +674,13 @@ export const PDFDocument = ({ data }: { data: any }) => {
                         </View>
                     ) : details?.length > 0 && (
                         <View style={{ backgroundColor: '#f8d7da', padding: 10, borderRadius: 5 }}>
-                            <Text style={{ color: '#721c24', fontWeight: 'bold' }}>❌ ISSUES DETECTED</Text>
+                            <Text style={{ color: '#721c24', fontWeight: 'bold' }}>ISSUES DETECTED</Text>
                             {/* List Details if array */}
                             {Array.isArray(details) && details.map((risk: any, rIdx: number) => (
                                 <View key={rIdx} style={{ marginTop: 5, borderBottom: '1px solid #f5c6cb', paddingBottom: 5 }}>
-                                    <Text style={{ fontSize: 9, fontWeight: 'bold' }}>{safeText(risk.type)}</Text>
+                                    <Text style={{ fontSize: 12, fontWeight: 'bold' }}>{safeText(risk.type)}</Text>
                                     <Text style={styles.textSmall}>{safeText(risk.detail)}</Text>
-                                    <Text style={{ fontSize: 8, color: '#444' }}>Fix: {safeText(risk.solution)}</Text>
+                                    <Text style={{ fontSize: 12, color: '#444' }}>Fix: {safeText(risk.solution)}</Text>
                                 </View>
                             ))}
                         </View>

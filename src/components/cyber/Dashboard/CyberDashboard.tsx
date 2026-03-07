@@ -125,7 +125,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                 const score = Number(row?.security_score) || 0;
                 return (
                     <div className="flex items-center gap-2">
-                        <span className={`text-sm font-bold ${getScoreColor(score)}`}>
+                        <span className={`text-sm font-bold`}>
                             {score}
                         </span>
                     </div>
@@ -296,7 +296,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                                     <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                         <p className="text-xs text-gray-500 uppercase font-semibold">Score</p>
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-sm font-bold ${getScoreColor(Number(latestAsset?.security_score))}`}>
+                                            <span className={`text-sm font-bold`}>
                                                 {Number(latestAsset?.security_score) || 0} / 100
                                             </span>
                                         </div>

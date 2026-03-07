@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   keywords: ["Domain Security", "Verified Domains", "DNS Protection", "Ownership Verification", "CyberSecurity DNS Tracking"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({ searchParams }: any) {
   const params = await searchParams;
   const page = params?.page || "1";

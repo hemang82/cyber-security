@@ -8,6 +8,9 @@
 import { CODES, TEMP_URL } from "@/common/constant";
 import { fetcher } from "@/lib/fetcher";
 import { headers } from "next/headers";
+import { apiLogger } from "../logger";
+
+const BASE_EXTERNAL_URL = "https://cyberapi.ipotrending.com";
 
 type InventoryResponse = {
     code?: any
@@ -17,18 +20,17 @@ type InventoryResponse = {
 
 export async function getInventoryList(data: Record<string, any> = {}) {
     try {
-        const headerList = await headers();
-        const url = `${TEMP_URL}/api/inventory/list`;
-        console.log("Backend Call:", { url, body: data });
-
-        const resList = await fetch(`${TEMP_URL}/api/inventory/list`, {
+        const url = `${BASE_EXTERNAL_URL}/api/assets/list`;
+        const resList = await fetch(url, {
             method: "POST",
             cache: "no-store",
             headers: {
-                cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
         });
+
+        apiLogger(url, "POST", data, resList.status);
         const res = await resList.json();
 
         if (res?.code === CODES?.SUCCESS || res?.code === 1) {
@@ -38,26 +40,23 @@ export async function getInventoryList(data: Record<string, any> = {}) {
         return [];
 
     } catch (err: any) {
-        console.log(err.message);
-        return [];
+        // Log removed
     }
 }
 
 export async function getScanList(data: Record<string, any> = {}) {
     try {
-        const headerList = await headers();
-        const url = `${TEMP_URL}/api/inventory/scanlist`;
-        console.log("Backend Call:", { url, body: data });
-
+        const url = `${BASE_EXTERNAL_URL}/api/scan/history`;
         const resList = await fetch(url, {
             method: "POST",
-            // cache: "no-store",
-            next: { revalidate: 60 }, // 🔥 Cache for 60 seconds
+            cache: "no-store",
             headers: {
-                cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
         });
+
+        apiLogger(url, "POST", data, resList.status);
         const res = await resList.json();
 
         if (res?.code === CODES?.SUCCESS || res?.code === 1) {
@@ -65,26 +64,25 @@ export async function getScanList(data: Record<string, any> = {}) {
         }
         return [];
     } catch (err: any) {
-        console.log(err.message);
-        return [];
+        // Log removed
     }
 }
 
 export async function listDomain(data: Record<string, any> = {}) {
     try {
-        const headerList = await headers();
-        const url = `${TEMP_URL}/api/domain/list`;
-        console.log("Backend Call:", { url, body: data });
+        const baseUrl = `${BASE_EXTERNAL_URL}/api/verification-history`;
+        const queryString = data ? new URLSearchParams(Object.entries(data).map(([k, v]) => [k, String(v)])).toString() : "";
+        const finalUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
-        const resList = await fetch(`${TEMP_URL}/api/domain/list`, {
-            method: "POST",
+        const resList = await fetch(finalUrl, {
+            method: "GET",
             cache: "no-store",
             headers: {
-                cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
         });
 
+        apiLogger(finalUrl, "GET", null, resList.status);
         const res = await resList.json();
 
         if (res?.code === CODES?.SUCCESS || res?.code === 1) {
@@ -94,25 +92,23 @@ export async function listDomain(data: Record<string, any> = {}) {
         return [];
 
     } catch (err: any) {
-        console.log(err.message);
-        return [];
+        // Log removed
     }
 }
 
 export async function listVulnerability(data: Record<string, any> = {}) {
     try {
-        const headerList = await headers();
-        const url = `${TEMP_URL}/api/vulnerability/list`;
-        console.log("Backend Call:", { url, body: data });
-        const resList = await fetch(`${TEMP_URL}/api/vulnerability/list`, {
+        const url = `${BASE_EXTERNAL_URL}/api/scan/findings`;
+        const resList = await fetch(url, {
             method: "POST",
             cache: "no-store",
             headers: {
-                cookie: headerList.get("cookie") ?? "", // 🔥 REQUIRED
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
         });
 
+        apiLogger(url, "POST", data, resList.status);
         const res = await resList.json();
 
         if (res?.code === CODES?.SUCCESS || res?.code === 1) {
@@ -128,24 +124,43 @@ export async function listVulnerability(data: Record<string, any> = {}) {
 
 export async function getInventoryDetails(data: Record<string, any> = {}) {
     try {
-        console.log("Backend Call:", { url: "/api/inventoryDetails", body: data });
+        const url = `${BASE_EXTERNAL_URL}/api/scan/website`;
+        const resList = await fetch(url, {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
 
-        const res: InventoryResponse = await fetcher("/api/inventoryDetails", { method: "POST", body: data });
-        if (res?.code == CODES?.SUCCESS) {
+        apiLogger(url, "POST", data, resList.status);
+        const res = await resList.json();
+
+        if (res?.code == CODES?.SUCCESS || res?.code === 1) {
             return res?.data;
         } else {
             return [];
         }
     } catch (err: any) {
-        console.log(err.message); // user-friendly message
+        // Log removed
     }
 }
 
 export async function getInventoryView(data: Record<string, any> = {}) {
     try {
+        const url = `${BASE_EXTERNAL_URL}/api/scan/scan-details`;
+        const resList = await fetch(url, {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
 
-        const res: InventoryResponse = await fetcher("/api/inventoryView", { method: "POST", body: data });
-        console.log("Backend Call:", { url: "/api/inventoryView", body: data });
+        apiLogger(url, "POST", data, resList.status);
+        const res = await resList.json();
 
         if (res?.code == CODES?.SUCCESS || res?.code === 1) {
             return res?.data;
@@ -153,22 +168,32 @@ export async function getInventoryView(data: Record<string, any> = {}) {
             return {};
         }
     } catch (err: any) {
-        console.log(err.message); // user-friendly message
+        // Log removed
     }
 }
 
 export async function getCloudScanDetails(data: Record<string, any> = {}) {
     try {
+        const url = `${BASE_EXTERNAL_URL}/api/scan/cloud`;
+        const resList = await fetch(url, {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
 
-        const res: InventoryResponse = await fetcher("/api/cloudScanDetails", { method: "POST", body: data });
+        apiLogger(url, "POST", data, resList.status);
+        const res = await resList.json();
 
-        if (res?.code == CODES?.SUCCESS) {
+        if (res?.code == CODES?.SUCCESS || res?.code === 1) {
             return res?.data;
         } else {
             return [];
         }
     } catch (err: any) {
-        console.log(err.message); // user-friendly message
+        // Log removed
     }
 }
 
@@ -182,6 +207,7 @@ export async function addDomainDetails(data: Record<string, any>) {
             body: JSON.stringify(data),
         });
 
+        apiLogger("/api/domain/add", "POST", data, response.status);
         const res: InventoryResponse = await response.json();
 
         if (res?.code === CODES?.SUCCESS || res?.code === 1) {
