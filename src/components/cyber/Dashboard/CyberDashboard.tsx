@@ -2,11 +2,12 @@
 import React from "react";
 import CountUp from "react-countup";
 import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, XAxis, YAxis, CartesianGrid } from "recharts";
-import { RiGlobalLine, RiShieldCheckLine, RiAlertLine, RiCheckDoubleLine, RiFileList3Line, RiShieldFlashLine, RiLock2Line, RiServerLine, RiSpyLine, RiCodeLine, RiBugLine, RiEarthLine, RiSpeedUpLine, RiEyeLine } from "react-icons/ri";
+import { RiGlobalLine, RiShieldCheckLine, RiAlertLine, RiCheckDoubleLine, RiFileList3Line, RiShieldFlashLine, RiLock2Line, RiServerLine, RiSpyLine, RiCodeLine, RiBugLine, RiEarthLine, RiSpeedUpLine, RiEyeLine, RiApps2Line, RiCloudLine, RiSmartphoneLine } from "react-icons/ri";
 import { formatDate, safeText } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
 import { Badge, CyberColorClass } from "@/components/cyber/Inventory/assetsDetails/WebsiteDetails";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import DynamicTable from "@/components/tables/DynamicTable";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import StatisticsChart from "@/components/ecommerce/StatisticsChart";
@@ -50,8 +51,8 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
 
     inventory.forEach(item => {
         const riskLevel = item?.risk_level || "Unknown";
-        // Use security_score if available (from recent user edit), fallback to output_score
-        const score = Number(item?.security_score) || 0;
+        // Use security_score if available, fallback to 0
+        const score = Number(item?.security_score || item?.full_response?.security_score) || 0;
 
         if (score > 0) {
             totalScore += score;
@@ -59,11 +60,12 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         }
 
         // Count risks
-        if (riskLevel.toLowerCase().includes("critical")) riskCounts.Critical++;
-        else if (riskLevel.toLowerCase().includes("high")) riskCounts.High++;
-        else if (riskLevel.toLowerCase().includes("medium")) riskCounts.Medium++;
-        else if (riskLevel.toLowerCase().includes("low")) riskCounts.Low++;
-        else if (riskLevel.toLowerCase().includes("safe")) riskCounts.Safe++;
+        const lowerRisk = riskLevel.toLowerCase();
+        if (lowerRisk.includes("critical")) riskCounts.Critical++;
+        else if (lowerRisk.includes("high")) riskCounts.High++;
+        else if (lowerRisk.includes("medium")) riskCounts.Medium++;
+        else if (lowerRisk.includes("low")) riskCounts.Low++;
+        else if (lowerRisk.includes("safe")) riskCounts.Safe++;
         else riskCounts.Info++;
     });
 
@@ -84,7 +86,11 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         { name: "Safe", value: riskCounts.Safe, color: COLORS.Safe },
     ].filter(d => d.value > 0);
 
-    const recentScans = [...inventory].sort((a, b) => new Date(b.scanned_at).getTime() - new Date(a.scanned_at).getTime()).slice(0, 5);
+    const recentScans = [...inventory].sort((a, b) => {
+        const dateA = new Date(a.scanned_at || a.created_at).getTime();
+        const dateB = new Date(b.scanned_at || b.created_at).getTime();
+        return dateB - dateA;
+    }).slice(0, 5);
 
     // Domain Info (Take the latest one for display)
     const latestAsset = recentScans[0];
@@ -100,9 +106,9 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             render: (row: any) => (
                 <div className="flex items-center gap-2">
                     <div className="p-1.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
-                        <RiGlobalLine size={16} />
+                        {(row?.asset_type === 'app' || row?.type === 'app') ? <RiApps2Line size={16} /> : (row?.asset_type === 'cloud' || row?.type === 'cloud') ? <RiCloudLine size={16} /> : <RiGlobalLine size={16} />}
                     </div>
-                    <span className="font-medium text-gray-800 dark:text-white break-all">{safeText(row?.target_url)}</span>
+                    <span className="font-medium text-gray-800 dark:text-white break-all">{safeText(row?.asset_name || row?.name || row?.target)}</span>
                 </div>
             )
         },
@@ -112,7 +118,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             className: "min-w-[120px]",
             render: (row: any) => (
                 <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-800 dark:text-white break-all">{ASSETS.find((item) => item?.key === row?.asset_type)?.title || "N/A"}</span>
+                    <span className="font-medium text-gray-800 dark:text-white break-all">{ASSETS.find((item) => item?.key === (row?.asset_type || row?.type))?.title || "N/A"}</span>
                 </div>
             )
         },
@@ -155,12 +161,14 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             key: "action",
             title: "Action",
             render: (row: any) => (
-                <button
-                    onClick={() => router.push(`/Inventory-view?id=${encodeURIComponent(row?.id)}`)}
+                <Link
+                    href={`/Inventory-view?id=${encodeURIComponent(row?.id)}`}
+                    prefetch={false}
+                    onClick={() => router.refresh()}
                     className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400"
                 >
                     <GoEye size={18} />
-                </button>
+                </Link>
             )
         }
     ];
@@ -176,7 +184,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
         { icon: <RiShieldFlashLine size={24} />, title: "Dark Web", desc: "Breach monitoring (Basic)", color: "bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400" },
     ];
 
-
+    console.log("recentScans", recentScans);
     return (
         <div className="space-y-6">
 
@@ -186,9 +194,9 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Security Command Center</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Comprehensive overview of your digital security posture.</p>
                 </div>
-                <div className="text-sm font-medium text-brand-600 bg-brand-50 px-3 py-1.5 rounded-lg border border-brand-100 dark:bg-brand-900/20 dark:border-brand-800 dark:text-brand-400 animate-pulse">
+                {/* <div className="text-sm font-medium text-brand-600 bg-brand-50 px-3 py-1.5 rounded-lg border border-brand-100 dark:bg-brand-900/20 dark:border-brand-800 dark:text-brand-400 animate-pulse">
                     ● System Operational
-                </div>
+                </div> */}
             </div>
 
             {/* Stats Grid */}
@@ -277,27 +285,21 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                     {latestAsset && (
                         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                             <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                                <RiEarthLine className="text-blue-500" />
+                                {(latestAsset?.asset_type === 'app' || latestAsset?.type === 'app') ? <RiSmartphoneLine className="text-brand-500" /> : (latestAsset?.asset_type === 'cloud' || latestAsset?.type === 'cloud') ? <RiCloudLine className="text-blue-500" /> : <RiEarthLine className="text-blue-500" />}
                                 Latest Asset Insight
                             </h3>
                             <div className="space-y-4">
                                 <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                     <p className="text-xs text-gray-500 uppercase font-semibold">Asset</p>
-                                    <p className="font-medium text-gray-800 dark:text-white truncate">{safeText(latestAsset?.target_url)}</p>
+                                    <p className="font-medium text-gray-800 dark:text-white truncate">{safeText(latestAsset?.name || latestAsset?.asset_name || latestAsset?.name || latestAsset?.target)}</p>
                                 </div>
 
-                                {/* <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold">Registrar</p>
-                                    <p className="font-medium text-gray-800 dark:text-white truncate">
-                                        {safeText(registrarInfo?.registrar) || 'Unknown'}
-                                    </p>
-                                </div> */}
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                         <p className="text-xs text-gray-500 uppercase font-semibold">Score</p>
                                         <div className="flex items-center gap-2">
                                             <span className={`text-sm font-bold`}>
-                                                {Number(latestAsset?.security_score) || 0} / 100
+                                                {Number(latestAsset?.security_score || latestAsset?.full_response?.security_score) || 0} / 100
                                             </span>
                                         </div>
                                     </div>
@@ -308,25 +310,59 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                                         </span>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">SSL Valid</p>
-                                        <p className={`font-medium ${sslInfo?.valid ? 'text-green-600' : 'text-red-500'}`}>
-                                            {sslInfo?.valid ? 'Yes' : 'No'}
-                                        </p>
+
+                                {/* Type Specific Data */}
+                                {(latestAsset?.asset_type === 'app' || latestAsset?.type === 'app') ? (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold">Findings</p>
+                                            <p className="font-medium text-gray-800 dark:text-white">
+                                                {latestAsset?.full_response?.app_info?.permissions_count || latestAsset?.finding_count || '0'}
+                                            </p>
+                                        </div>
+                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold">Platform</p>
+                                            <p className="font-medium text-gray-800 dark:text-white">
+                                                {latestAsset?.full_response?.app_info?.platform || (latestAsset?.type === 'app' ? 'Android' : 'N/A')}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">Days Left</p>
-                                        <p className="font-medium text-gray-800 dark:text-white">
-                                            {sslInfo?.days_remaining || 'N/A'}
-                                        </p>
+                                ) : (latestAsset?.asset_type === 'cloud' || latestAsset?.type === 'cloud') ? (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold">Provider</p>
+                                            <p className="font-medium text-gray-800 dark:text-white">
+                                                {latestAsset?.full_response?.cloud_provider || latestAsset?.cloud_provider || 'N/A'}
+                                            </p>
+                                        </div>
+                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold">Resources</p>
+                                            <p className="font-medium text-gray-800 dark:text-white">
+                                                {latestAsset?.full_response?.summary?.resources_scanned || 'N/A'}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold">SSL Valid</p>
+                                            <p className={`font-medium ${sslInfo?.valid ? 'text-green-600' : 'text-red-500'}`}>
+                                                {sslInfo?.valid ? 'Yes' : 'No'}
+                                            </p>
+                                        </div>
+                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold">Days Left</p>
+                                            <p className="font-medium text-gray-800 dark:text-white">
+                                                {sslInfo?.days_remaining || 'N/A'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                     <p className="text-xs text-gray-500 uppercase font-semibold">Scan Date</p>
                                     <p className="font-medium text-gray-800 dark:text-white truncate">
-                                        {formatDate(latestAsset?.scanned_at, DATE_FORMAT.FULL_DAY_MONTH_YEAR)}
+                                        {formatDate(latestAsset?.scanned_at || latestAsset?.created_at, DATE_FORMAT.FULL_DAY_MONTH_YEAR)}
                                     </p>
                                 </div>
                             </div>
@@ -341,7 +377,14 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                             <RiFileList3Line className="text-brand-500" />
                             Recent Scans
                         </h3>
-                        <button onClick={() => router.push('/inventory')} className="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">View All</button>
+                        <Link
+                            href='/inventory'
+                            prefetch={false}
+                            onClick={() => router.refresh()}
+                            className="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                        >
+                            View All
+                        </Link>
                     </div>
 
                     <div className="flex-1 overflow-x-auto">

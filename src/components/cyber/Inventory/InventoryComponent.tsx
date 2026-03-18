@@ -39,7 +39,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       className: "min-w-[150px]",
       render: (row: any) => (
         <span title={row?.name} className="block w-full max-w-[200px] truncate">
-          {row?.name || "-"}
+          {safeText(row?.name)}
         </span>
       ),
     },
@@ -50,7 +50,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-sm font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {ASSETS.find((item) => item?.key === row?.type)?.title || "-"}
+            {safeText(ASSETS.find((item) => item?.key === row?.type)?.title || "-")}
           </span>
         </div>
       ),
@@ -70,7 +70,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       title: "Scan Count",
       className: "min-w-[120px]",
       render: (row: any) => (<>
-        {row?.scan_count || "0"}
+        {safeText(row?.scan_count || "0")}
       </>),
     },
     {
@@ -78,7 +78,7 @@ export default function InventoryComponent({ InventoryData }: any) {
       title: "Finding Count",
       className: "min-w-[120px]",
       render: (row: any) => (<>
-        {row?.finding_count || "0"}
+        {safeText(row?.finding_count || "0")}
       </>),
     },
     {
@@ -94,7 +94,8 @@ export default function InventoryComponent({ InventoryData }: any) {
       render: (row: any) => (
         <Link
           href={`/scan?assets_id=${encodeURIComponent(row?.id)}&type=${encodeURIComponent(row?.type)}`}
-          prefetch={true}
+          prefetch={false}
+          onClick={() => router.refresh()}
           className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
         >
           <GoEye size={18} />

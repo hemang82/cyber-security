@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 
 import Spinner from "@/components/common/Spinner";
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
@@ -12,6 +13,7 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 
 const AppHeader: React.FC = () => {
+  const router = useRouter();
 
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const { is_loading } = useInventoryStore();
@@ -95,7 +97,7 @@ const AppHeader: React.FC = () => {
             {/* Cross Icon */}
           </button>
 
-          <Link href="/" className="lg:hidden">
+          <Link href="/" className="lg:hidden" prefetch={false} onClick={() => router.refresh()}>
             <Image
               width={154}
               height={32}

@@ -52,3 +52,14 @@ export async function getWebsiteDetails(data: Record<string, any>) {
     } catch (err: any) {
     }
 }
+
+export async function getApplicationDetails(data: Record<string, any>) {
+    try {
+        const res = await clientFetcher("/api/applicationScanDetails", {
+            method: "POST",
+            body: data
+        });
+        return res;
+    } catch (err: any) {
+    }
+}

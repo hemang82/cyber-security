@@ -77,11 +77,11 @@ const Select: React.FC<SelectProps> = ({
         <option
           key={option.value}
           value={option.value}
-          disabled={option?.status ? option?.status == "pending" : false}
-          className={` ${option?.status == "pending" ? "text-red-300" : ""} ${option?.status == "verified" ? "text-green-700" : ""} dark:bg-gray-900 dark:text-gray-400 cursor-pointer text-gray-800 `}
+          disabled={option?.status?.toLowerCase() === "pending"}
+          className={` ${option?.status?.toLowerCase() === "pending" ? "text-red-300" : ""} ${option?.status === "verified" ? "text-green-700" : ""} dark:bg-gray-900 dark:text-gray-400 cursor-pointer text-gray-800 `}
         >
           {option.label}
-          {option?.status && ` (${option.status})`}
+          {option?.status && option.status != "COMPLETED" && ` (${option.status.toLowerCase()})`}
         </option>
       ))}
 

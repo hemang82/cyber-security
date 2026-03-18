@@ -3,7 +3,9 @@
 import React from 'react';
 import { RotatingTriangles, Triangle, ThreeDots, TailSpin, Oval } from 'react-loader-spinner';
 
-export default function Spinner({ message, isActive } : any) {
+export default function Spinner({ message, isActive }: any) {
+
+    return <></>
 
     if (!isActive) return <></>;
 

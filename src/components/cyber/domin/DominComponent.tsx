@@ -1,6 +1,6 @@
 "use client"
 
-import { formatDate, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
+import { formatDate, safeText, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
 import { CODES } from "@/common/constant";
 import DynamicTable from "@/components/tables/DynamicTable";
@@ -62,7 +62,7 @@ export default function DominComponent({ resDomainList }: any) {
             render: (row: any) => (
                 <div className="flex flex-col">
                     <span title={row?.domain} className="text-sm font-medium text-gray-900 dark:text-white max-w-[200px] truncate">
-                        {row?.domain || "-"}
+                        {safeText(row?.domain)}
                     </span>
                     {/* <span className="text-[10px] text-gray-400 uppercase tracking-wider">
                         Token: {row?.token?.substring(0, 8)}...
@@ -77,7 +77,7 @@ export default function DominComponent({ resDomainList }: any) {
             render: (row: any) => (
                 <div className="flex items-center gap-2 group">
                     <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono max-w-[320px] truncate" title={row?.txt_value}>
-                        {row?.txt_value || "-"}
+                        {safeText(row?.txt_value)}
                     </code>
                     {row?.txt_value && (
                         <button
@@ -111,7 +111,7 @@ export default function DominComponent({ resDomainList }: any) {
             ${statusClasses[row.status?.toLowerCase()] || "bg-gray-100 text-gray-700"}
           `}
                         >
-                            {row.status}
+                            {safeText(row.status)}
                         </span>
 
                         {/* Refresh button: Disabled if verified or currently refreshing */}

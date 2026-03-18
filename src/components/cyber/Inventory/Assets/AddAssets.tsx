@@ -12,6 +12,7 @@ import { useInventoryStore } from "@/store";
 import Select from "@/components/form/Select";
 import Badge from "@/components/ui/badge/Badge";
 import { ASSETS_KEYS } from "./AssetsTypes";
+import FileInput from "@/components/form/input/FileInput";
 
 type Product = {
     name: string;
@@ -116,6 +117,13 @@ export const ASSETS_INPUTS = {
         name: "key_filename",
         validation: "Enter key filename.",
     },
+    APP_FILE: {
+        // placeholder: "Upload app file (.apk, .ipa)",
+
+        placeholder: "Upload app file (.apk)",
+        name: "app_file",
+        validation: "Upload app file.",
+    },
 }
 
 export enum PROVIDER_KEY {
@@ -134,7 +142,8 @@ export default function AddAssets({ resDomainList }: any) {
     const { assets_type, assets_details, setAssetsDetails, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
-        mode: "onBlur", // validation timing
+        mode: "onSubmit", // Trigger validation only on submit
+        reValidateMode: "onChange" // Re-validate on change after first submission attempt
     });
 
     const selectedProvider = useWatch({
@@ -183,6 +192,10 @@ export default function AddAssets({ resDomainList }: any) {
             methods.setValue(ASSETS_INPUTS.ACCESS_KEY.name, val?.[ASSETS_INPUTS.ACCESS_KEY.name] || '');
             methods.setValue(ASSETS_INPUTS.SECRET_KEY.name, val?.[ASSETS_INPUTS.SECRET_KEY.name] || '');
             methods.setValue(ASSETS_INPUTS.REGION.name, val?.[ASSETS_INPUTS.REGION.name] || '');
+        }
+
+        if (assets_type?.value === ASSETS_KEYS.app) {
+            methods.setValue(ASSETS_INPUTS.APP_FILE.name, val?.[ASSETS_INPUTS.APP_FILE.name] || null);
         }
 
         // if (assets_type?.value === ASSETS_KEYS.api) {
@@ -244,6 +257,7 @@ export default function AddAssets({ resDomainList }: any) {
                                     </div>
                                 ) : assets_type?.value === ASSETS_KEYS?.cloud ? (
                                     <>
+
                                         <div>
                                             <Label>Provider <span className="text-error-500">*</span> </Label>
                                             <Controller
@@ -382,7 +396,31 @@ export default function AddAssets({ resDomainList }: any) {
                                                 </div>
                                             </>
                                         )}
+
                                     </>
+                                ) : assets_type?.value === ASSETS_KEYS?.app ? (
+                                    <div>
+                                        {/* <Label>Upload App File <span className="text-error-500">* (Only .apk and .ipa files are allowed) </span></Labe */}
+                                        <Label>Upload App File <span className="text-error-500">* (Only .apk files are allowed) </span></Label>
+
+                                        <FileInput
+                                            name={ASSETS_INPUTS.APP_FILE.name}
+                                            accept=".apk"
+                                            rules={{
+                                                required: ASSETS_INPUTS.APP_FILE.validation,
+                                                validate: (value: any) => {
+                                                    if (!value || (value instanceof FileList && value.length === 0)) return true;
+                                                    const file = value instanceof FileList ? value[0] : value;
+                                                    if (!file) return true;
+                                                    const extension = file.name.split('.').pop()?.toLowerCase();
+                                                    if (!['apk'].includes(extension || '')) {
+                                                        return 'Only .apk files are allowed';
+                                                    }
+                                                    return true;
+                                                }
+                                            }}
+                                        />
+                                    </div>
                                 ) : null
                             }
                         </div>

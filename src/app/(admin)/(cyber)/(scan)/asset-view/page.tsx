@@ -3,6 +3,7 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { ASSETS_KEYS } from "@/components/cyber/Inventory/Assets/AssetsTypes";
 import CloudDetails from "@/components/cyber/Inventory/assetsDetails/CloudDetails";
 import WebsiteDetails from "@/components/cyber/Inventory/assetsDetails/WebsiteDetails";
+import ApplicationDetails from "@/components/cyber/Inventory/assetsDetails/ApplicationDetails";
 import { getInventoryDetails, getInventoryView } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
 
@@ -20,12 +21,16 @@ export default async function InventoryDetails({ searchParams, }: { searchParams
 
     const resAssetsDetails = await getInventoryView({ id: params.id })
 
+    console.log("resAssetsDetails?.asset_type", resAssetsDetails);
+
     return (
         <div>
             <PageBreadcrumb pageTitle="Asset Details" />
             <div className="space-y-6">
                 {
-                    resAssetsDetails?.asset_type == "cloud" ? (
+                    resAssetsDetails?.asset_type == "app" ? (
+                        <ApplicationDetails resAssetsDetails={resAssetsDetails} />
+                    ) : resAssetsDetails?.asset_type == "cloud" ? (
                         <CloudDetails resAssetsDetails={resAssetsDetails} />
                     ) : (
                         <WebsiteDetails resAssetsDetails={resAssetsDetails} />

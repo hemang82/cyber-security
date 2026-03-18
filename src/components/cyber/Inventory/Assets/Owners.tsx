@@ -17,7 +17,8 @@ export default function Owners() {
     const { owners, setOwners, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
-        mode: "onBlur", // validation timing
+        mode: "onSubmit", // Trigger validation only on submit
+        reValidateMode: "onChange" // Re-validate on change after first submission attempt
     });
 
     const handleSelectChange = (value: string) => {

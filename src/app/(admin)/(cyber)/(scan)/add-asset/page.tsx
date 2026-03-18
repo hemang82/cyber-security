@@ -43,12 +43,10 @@ export default async function AddAssetPage() {
 
             <div className="mt-6 space-y-6">
                 <ComponentCard>
-
                     {/* 
                         AddScan is a Client Component that orchestrates the multi-step scan creation process.
                         Passing fetched data as props minimizes client-side data fetching overhead.
                     */}
-
                     <AddScan
                         resInventoryList={resInventoryList || []}
                         resDomainList={resDomainList || []}

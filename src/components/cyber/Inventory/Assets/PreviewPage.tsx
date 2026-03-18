@@ -2,7 +2,7 @@
 
 import { FormProvider, useForm } from "react-hook-form";
 import { useInventoryStore } from "@/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ALL_PROVIDER_LIST, ASSETS_INPUTS, PROVIDER_KEY } from "./AddAssets";
 import { useRouter } from "next/navigation";
 import { CODES } from "@/common/constant";
@@ -13,62 +13,112 @@ import { ASSETS, ASSETS_KEYS } from "./AssetsTypes";
 export default function PreviewPage({ resDomainList }: any) {
 
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
     const { assets_type, assets_details, credentials, owners, final_validate_data, setFinalValidateData, resetInventory } = useInventoryStore();
 
     const methods = useForm({
-        mode: "onBlur", // validation timing
+        mode: "onSubmit", // Trigger validation only on submit
+        reValidateMode: "onChange" // Re-validate on change after first submission attempt
     });
 
     const onSubmit = async () => {
-
-        console.log('Changecode Submit', {
-            assets_type,
-            assets_details,
-            credentials,
-            owners,
-            website_url: (() => {
+        setLoading(true);
+        try {
+            const currentWebsiteUrl = (() => {
                 const domainArr = Array.isArray(resDomainList) ? resDomainList : (Array.isArray(resDomainList?.data) ? resDomainList.data : []);
                 return domainArr.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || "N/A";
-            })(),
-            final_validate_data,
-        });
+            })();
 
-        setFinalValidateData({
-            value: new Date(),
-            is_valid: true,
-        });
+            setFinalValidateData({
+                value: new Date(),
+                is_valid: true,
+            });
 
-        const inventoryData = await fetch("/api/inventory/add", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                assets_type,
-                assets_details,
-                credentials,
-                owners,
-                website_url: (() => {
-                    const domainArr = Array.isArray(resDomainList) ? resDomainList : (Array.isArray(resDomainList?.data) ? resDomainList.data : []);
-                    return domainArr.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || "N/A";
-                })(),
-                final_validate_data,
-            }),
-        });
+            let body: any;
+            let headers: any = {};
 
-        const res = await inventoryData.json()
+            if (assets_type?.value == ASSETS_KEYS.app) {
+                const formData = new FormData();
+                formData.append("assets_type", JSON.stringify(assets_type));
+                formData.append("credentials", JSON.stringify(credentials));
+                formData.append("owners", JSON.stringify(owners));
+                formData.append("final_validate_data", JSON.stringify({ value: new Date(), is_valid: true }));
+                formData.append("website_url", currentWebsiteUrl);
 
-        console.log('/api/inventory/add res', res);
+                const detailsValue = assets_details?.value || {};
+                const appFileField = ASSETS_INPUTS.APP_FILE.name;
 
-        if (res.code == CODES?.SUCCESS) {
-            TOAST_SUCCESS(res?.message)
-            resetInventory()
-            router.push(`/inventory`);
-            // router.push(`/asset-details?url=${encodeURIComponent(resDomainList?.length > 0 && resDomainList?.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || '')}`);
-        } else {
-            TOAST_ERROR(res?.message)
+                // Append other details as JSON string
+                const otherDetails = { ...detailsValue };
+                delete otherDetails[appFileField];
+                formData.append("assets_details", JSON.stringify({ ...assets_details, value: otherDetails }));
+
+                body = formData;
+            } else {
+                headers["Content-Type"] = "application/json";
+                body = JSON.stringify({
+                    assets_type,
+                    assets_details,
+                    credentials,
+                    owners,
+                    website_url: currentWebsiteUrl,
+                    final_validate_data: { value: new Date(), is_valid: true },
+                });
+            }
+
+            const inventoryData = await fetch("/api/inventory/add", { method: "POST", headers, body });
+            const res = await inventoryData.json();
+
+            if (res.code == CODES?.SUCCESS) {
+                console.log("✅ Asset added successfully, ID:", res?.data?.id);
+
+                // Background file upload for apps
+                if (assets_type?.value === ASSETS_KEYS.app) {
+                    const detailsValue = assets_details?.value || {};
+                    const appFileField = ASSETS_INPUTS.APP_FILE.name;
+                    const appFile = detailsValue[appFileField];
+
+                    if (appFile && res?.data?.id) {
+                        const uploadFormData = new FormData();
+                        uploadFormData.append("id", res?.data?.id);
+
+                        if (appFile instanceof FileList && appFile.length > 0) {
+                            uploadFormData.append("app_file", appFile[0]);
+                        } else if (appFile instanceof File) {
+                            uploadFormData.append("app_file", appFile);
+                        }
+
+                        console.log("🚀 Starting file upload...");
+                        setLoading(true); // Keep loading state until file is uploaded
+
+                        try {
+                            const uploadRes = await fetch("https://cyberapi.ipotrending.com/api/assets/upload-file", {
+                                method: "POST",
+                                body: uploadFormData,
+                            });
+                            const uploadResult = await uploadRes.json();
+                            console.log("✅ File upload success:", uploadResult);
+                        } catch (err) {
+                            console.error("❌ File upload error:", err);
+                        }
+                    }
+                }
+
+                TOAST_SUCCESS(res?.message || "Asset added successfully");
+
+                // Now safely reset and redirect
+                resetInventory();
+                window.location.replace("/inventory");
+            } else {
+                TOAST_ERROR(res?.message || "Failed to add asset");
+            }
+
+        } catch (error) {
+            console.error("Submission Error:", error);
+            TOAST_ERROR("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
         }
-
     };
 
     useEffect(() => {
@@ -111,6 +161,20 @@ export default function PreviewPage({ resDomainList }: any) {
                                                     {(() => {
                                                         const domainArr = Array.isArray(resDomainList) ? resDomainList : (Array.isArray(resDomainList?.data) ? resDomainList.data : []);
                                                         return domainArr.find((item: any) => item.id == assets_details?.value?.[ASSETS_INPUTS.WEBSITE_URL.name])?.domain || "N/A";
+                                                    })()}
+                                                </p>
+                                            </div>
+                                        )}
+                                        {assets_type?.value === ASSETS_KEYS?.app && (
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">App File</p>
+                                                <p className="text-md font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
+                                                    {(() => {
+                                                        const fileData = assets_details?.value?.[ASSETS_INPUTS.APP_FILE.name];
+                                                        if (fileData instanceof FileList) {
+                                                            return fileData[0]?.name || "N/A";
+                                                        }
+                                                        return fileData?.name || "N/A";
                                                     })()}
                                                 </p>
                                             </div>
@@ -239,8 +303,22 @@ export default function PreviewPage({ resDomainList }: any) {
                 </div>
 
                 <div className="flex justify-center m-4">
-                    <button type="submit" className="bg-blue-600 hover:bg-blue-800 text-white rounded px-6 py-2" >
-                        Submit
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl px-8 py-3 transition-all shadow-lg active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed`}
+                    >
+                        {loading ? (
+                            <>
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>{assets_type?.value === ASSETS_KEYS.app ? "Uploading..." : "Processing..."}</span>
+                            </>
+                        ) : (
+                            "Confirm & Submit Asset"
+                        )}
                     </button>
                 </div>
             </form>

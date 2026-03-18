@@ -45,8 +45,10 @@ export default function PreviewPage({ resDomainList }: any) {
 
         if (res.code == CODES?.SUCCESS) {
             TOAST_SUCCESS(res?.message)
-            resetInventory()
-            router.push(`/inventory`);
+            // router.push(`/inventory`);
+            resetInventory();
+            window.location.replace("/inventory");
+
         } else {
             TOAST_ERROR(res?.message)
         }

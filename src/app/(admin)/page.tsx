@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
-import StatisticsChart from "@/components/ecommerce/StatisticsChart";
+import { Suspense } from "react";
+import { getScanList } from "@/lib/server/ServerApiCall";
+import CyberDashboard from "@/components/cyber/Dashboard/CyberDashboard";
+import { TableSkeleton } from "@/components/common/Skeleton";
 
 export const metadata: Metadata = {
   title: "CyberSafe Dashboard | Security Insights & Threat Monitoring",
@@ -10,10 +12,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-import { getScanList } from "@/lib/server/ServerApiCall";
-import CyberDashboard from "@/components/cyber/Dashboard/CyberDashboard";
-
-export default async function Page() {
+async function DashboardContent() {
   const InventoryData = await getScanList({ page: "1", page_size: "25" });
   const scans = InventoryData?.scans || (Array.isArray(InventoryData) ? InventoryData : []);
 
@@ -40,12 +39,22 @@ export default async function Page() {
   }
 
   return (
+    <CyberDashboard
+      inventory={scans}
+      riskCounts={riskCounts}
+    />
+  );
+}
+
+import { DashboardSkeleton } from "@/components/common/Skeleton";
+
+export default function Page() {
+  return (
     <div className="grid grid-cols-12 gap-4 md:gap-4">
-      <div className="col-span-12">
-        <CyberDashboard
-          inventory={scans}
-          riskCounts={riskCounts}
-        />
+      <div className="col-span-12 font-outfit">
+        <Suspense fallback={<DashboardSkeleton />}>
+          <DashboardContent />
+        </Suspense>
       </div>
     </div>
   );

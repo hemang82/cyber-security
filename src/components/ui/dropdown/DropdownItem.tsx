@@ -32,7 +32,7 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
 
   if (tag === "a" && href) {
     return (
-      <Link href={href} className={combinedClasses} onClick={handleClick}>
+      <Link href={href} className={combinedClasses} onClick={handleClick} prefetch={true}>
         {children}
       </Link>
     );

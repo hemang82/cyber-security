@@ -16,7 +16,8 @@ export default function Credentials() {
     const { credentials, setCredentials, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
-        mode: "onBlur", // validation timing
+        mode: "onSubmit", // Trigger validation only on submit
+        reValidateMode: "onChange" // Re-validate on change after first submission attempt
     });
 
     const onSubmit = (data: any) => {

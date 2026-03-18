@@ -1,8 +1,10 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import InventoryComponent from "@/components/cyber/Inventory/InventoryComponent";
-import { getInventoryList, getScanList } from "@/lib/server/ServerApiCall";
+import { getInventoryList } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import { TableSkeleton } from "@/components/common/Skeleton";
 
 export const metadata: Metadata = {
   title: "Asset Inventory Management | CyberSafe Digital Assets",
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({ searchParams }: any) {
+async function InventoryContent({ searchParams }: { searchParams: any }) {
   const params = await searchParams;
   const page = params?.page || "1";
   const pageSize = params?.page_size || "10";
@@ -22,15 +24,23 @@ export default async function Page({ searchParams }: any) {
     page_size: pageSize
   });
 
+  return <InventoryComponent InventoryData={InventoryData} />;
+}
+
+export default function Page({ searchParams }: any) {
   return (
     <div>
       <PageBreadcrumb pageTitle="Inventory" />
       <div className="space-y-6">
-        <ComponentCard title="Inventory"
+        <ComponentCard
+          title="Inventory"
           buttonName={"Add Asset "}
-          navigation={"/add-inventory"} excel={false}>
-          <InventoryComponent
-            InventoryData={InventoryData} />
+          navigation={"/add-inventory"}
+          excel={false}
+        >
+          <Suspense fallback={<TableSkeleton />}>
+            <InventoryContent searchParams={searchParams} />
+          </Suspense>
         </ComponentCard>
       </div>
     </div>

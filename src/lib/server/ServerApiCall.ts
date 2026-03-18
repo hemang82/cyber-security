@@ -23,11 +23,12 @@ export async function getInventoryList(data: Record<string, any> = {}) {
         const url = `${BASE_EXTERNAL_URL}/api/assets/list`;
         const resList = await fetch(url, {
             method: "POST",
-            cache: "no-store",
+            cache: "no-store", // Direct real-time fetch
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            next: { revalidate: 0 } 
         });
 
         apiLogger(url, "POST", data, resList.status);
@@ -40,7 +41,7 @@ export async function getInventoryList(data: Record<string, any> = {}) {
         return [];
 
     } catch (err: any) {
-        // Log removed
+        return [];
     }
 }
 
@@ -49,11 +50,12 @@ export async function getScanList(data: Record<string, any> = {}) {
         const url = `${BASE_EXTERNAL_URL}/api/scan/history`;
         const resList = await fetch(url, {
             method: "POST",
-            cache: "no-store",
+            cache: "no-store", // Real-time scan history
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            next: { revalidate: 0 }
         });
 
         apiLogger(url, "POST", data, resList.status);
@@ -101,11 +103,12 @@ export async function listVulnerability(data: Record<string, any> = {}) {
         const url = `${BASE_EXTERNAL_URL}/api/scan/findings`;
         const resList = await fetch(url, {
             method: "POST",
-            cache: "no-store",
+            cache: "no-store", // Real-time vulnerability list
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            next: { revalidate: 0 }
         });
 
         apiLogger(url, "POST", data, resList.status);

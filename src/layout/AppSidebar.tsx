@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { useInventoryStore } from "@/store";
 import { BiPurchaseTag } from "react-icons/bi";
@@ -149,6 +149,15 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const [pendingNavPath, setPendingNavPath] = useState<string | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleNav = (path: string) => {
+    if (path === pathname) {
+      router.refresh();
+      return;
+    }
+    setPendingNavPath(path);
+  };
 
   useEffect(() => {
     // Reset pending path when navigation completes
@@ -195,7 +204,7 @@ const AppSidebar: React.FC = () => {
               <Link
                 href={nav.path}
                 prefetch={true}
-                onClick={() => setPendingNavPath(nav.path!)}
+                onClick={() => handleNav(nav.path!)}
                 className={`menu-item group ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                   }`}
               >
@@ -227,7 +236,7 @@ const AppSidebar: React.FC = () => {
                     <Link
                       href={subItem.path}
                       prefetch={true}
-                      onClick={() => setPendingNavPath(subItem.path)}
+                      onClick={() => handleNav(subItem.path)}
                       className={`menu-dropdown-item ${isActive(subItem.path) ? "menu-dropdown-item-active" : "menu-dropdown-item-inactive"}`}
                     >
                       {subItem.name}
@@ -348,15 +357,13 @@ const AppSidebar: React.FC = () => {
   };
 
   return (
-
     <aside className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"} ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+      onMouseLeave={() => setIsHovered(false)} >
 
       <div className={`py-6 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`} >
-        <Link href="/" prefetch={true}>
+        <Link href="/" prefetch={true} onClick={() => handleNav("/")}>
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image

@@ -12,6 +12,7 @@ import { AiOutlineCloudServer } from "react-icons/ai";
 import { IoCloudOutline } from "react-icons/io5";
 import { HiDocumentCurrencyRupee } from "react-icons/hi2";
 import { TbReceiptRupee } from "react-icons/tb";
+import Link from "next/link";
 
 interface ComponentCardProps {
   title?: string;
@@ -76,9 +77,24 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
             Export <FaDownload />
           </button>}
 
-          {buttonName && <div className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition  cursor-pointer" onClick={() => { handleSelect() }}>
-            <RiAddLargeFill /> {buttonName}
-          </div>}
+          {buttonName && (
+            navigation && typeof navigation === "string" ? (
+              <Link
+                href={navigation}
+                prefetch={true}
+                className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition cursor-pointer"
+              >
+                <RiAddLargeFill /> {buttonName}
+              </Link>
+            ) : (
+              <div
+                className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition cursor-pointer"
+                onClick={openModal}
+              >
+                <RiAddLargeFill /> {buttonName}
+              </div>
+            )
+          )}
 
         </div>
       </div>

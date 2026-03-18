@@ -1,10 +1,10 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import DominComponent from "@/components/cyber/domin/DominComponent";
-import BasicTableOne from "@/components/tables/BasicTableOne";
 import { listDomain } from "@/lib/server/ServerApiCall";
 import { Metadata } from "next";
-import React from "react";
+import React, { Suspense } from "react";
+import { TableSkeleton } from "@/components/common/Skeleton";
 
 export const metadata: Metadata = {
   title: "Verified Domain Management | CyberSafe DNS Security",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({ searchParams }: any) {
+async function DomainContent({ searchParams }: { searchParams: any }) {
   const params = await searchParams;
   const page = params?.page || "1";
   const pageSize = params?.page_size || "15";
@@ -25,6 +25,10 @@ export default async function Page({ searchParams }: any) {
     assetId: params?.assets_id || ""
   });
 
+  return <DominComponent resDomainList={resDomainList} />;
+}
+
+export default function Page({ searchParams }: any) {
   return (
     <div>
       <PageBreadcrumb pageTitle="All Domains" />
@@ -35,7 +39,9 @@ export default async function Page({ searchParams }: any) {
           buttonName={"Add Domain"}
           navigation={"/add-domin"}
         >
-          <DominComponent resDomainList={resDomainList} />
+          <Suspense fallback={<TableSkeleton />}>
+            <DomainContent searchParams={searchParams} />
+          </Suspense>
         </ComponentCard>
       </div>
     </div>

@@ -42,7 +42,7 @@ export const Card = ({ title, tooltip, children, className = "" }: any) => {
     }, [showTooltip]);
 
     return (
-        <div className={`h-full rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3 ${className}`}>
+        <div className={`h-full rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3 ${className}`}>
             {title && (
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -152,7 +152,7 @@ export const Badge = ({ color, children, classname }: any) => {
 export const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
 const StatCard = ({ label, value, icon, trend, subValue }: any) => (
-    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3">
+    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3">
         <div className="flex items-center justify-between mb-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
                 {icon}
@@ -343,7 +343,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
         <>
             <div className="mx-auto max-w-[1800px] p-4 lg:p-6 space-y-6">
                 {/* HERO SECTION */}
-                <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-white/3 border border-gray-200 dark:border-gray-800 p-6 lg:p-8 shadow-sm">
+                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-white/3 border border-gray-200 dark:border-gray-800 p-6 lg:p-8 shadow-sm">
                     <div className="absolute right-0 top-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-brand-500/5 blur-3xl" />
                     <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex flex-col gap-4">
@@ -535,10 +535,8 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                                         </span>
 
                                                     </div>
-
                                                 </div>
                                             );
-
                                         })()}
 
                                     </div>
@@ -557,8 +555,8 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                                     item.severity
                                                 )}`}
                                             >
-                                                <span className="text-sm font-bold">{item.count}</span>
-                                                <span>{item.severity}</span>
+                                                <span className="text-sm font-bold">{safeText(item.count)}</span>
+                                                <span>{safeText(item.severity)}</span>
                                             </div>
                                             ))}
 
@@ -567,7 +565,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                         <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-lg">
                                             Our system analyzed{" "}
                                             <span className="font-bold text-gray-900 dark:text-white">
-                                                {data?.summary?.checks_performed || 0}
+                                                {safeText(data?.summary?.checks_performed || 0)}
                                             </span>{" "}
                                             security checks to identify vulnerabilities and configuration issues.
                                         </p>
@@ -579,7 +577,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                 {/* RIGHT SECTION - CHART */}
                                 <div className="flex justify-center lg:w-1/3">
 
-                                    <div className="w-[150px] sm:w-[240px] aspect-square flex items-center justify-center rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4">
+                                    <div className="w-[150px] sm:w-[240px] aspect-square flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4">
                                         <VulnerabilityChart data={data?.finding_counts || []} />
                                     </div>
 
@@ -609,7 +607,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                             Priority Remediation
                                         </p>
                                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                                            Fix{" "} <b> {data?.finding_counts?.find((f: any) => f.severity === "High")?.count || 0} </b>{" "} critical issues.
+                                            Fix{" "} <b> {safeText(data?.finding_counts?.find((f: any) => f.severity === "High")?.count || 0)} </b>{" "} critical issues.
                                         </p>
                                     </div>
 
@@ -628,7 +626,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                             Optimization Needed
                                         </p>
                                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                                            Page size {data?.performance?.page_size_kb} KB detected.
+                                            Page size {safeText(data?.performance?.page_size_kb)} KB detected.
                                         </p>
                                     </div>
 
@@ -723,7 +721,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                     <p className="text-xs font-bold text-gray-400 tracking-wider">PAYLOAD</p>
                                 </div>
                                 <div>
-                                    <p className="text-base font-bold text-gray-900 dark:text-white uppercase">{data?.performance?.script_analysis?.external_script_count || 0}</p>
+                                    <p className="text-base font-bold text-gray-900 dark:text-white uppercase">{safeText(data?.performance?.script_analysis?.external_script_count || 0)}</p>
                                     <p className="text-xs font-bold text-gray-400 tracking-wider">EXTERNAL ASSETS</p>
                                 </div>
                             </div>
@@ -739,7 +737,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                             <table className="w-full text-base">
                                 <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                                     {[
-                                        ['Registrar', data?.network_info?.whois?.registrar],
+                                        ['Registrar', safeText(data?.network_info?.whois?.registrar)],
                                         ['Expiry Date', formatDate(data?.network_info?.whois?.expiry, DATE_FORMAT?.FULL_DAY_MONTH_YEAR)],
                                         ['Primary IP', safeJoin(data?.network_info?.dns_records?.A)],
                                         ['DNSSEC', safeText(data?.network_info?.dns_records?.dnssec) || 'Inactive'],
@@ -815,14 +813,14 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                     </Card>
 
                     <div id="pdf-section-3">
-                        <RoutesScanned data={data?.route_scans?.length > 0 ? data?.route_scans : []} download={isDownload} />
+                        <OwaspReport data={data?.compliance?.owasp_top_10 ? data?.compliance?.owasp_top_10 : {}} download={isDownload} openModal={openModal} />
                     </div>
 
                     <div id="pdf-section-4">
-                        <OwaspReport data={data?.compliance?.owasp_top_10 ? data?.compliance?.owasp_top_10 : {}} download={isDownload} openModal={openModal} />
+                        <RoutesScanned data={data?.route_scans?.length > 0 ? data?.route_scans : []} download={isDownload} />
                     </div>
-                </div>
 
+                </div>
             </div>
 
             <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[800px] m-4">

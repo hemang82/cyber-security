@@ -3,7 +3,7 @@ import { GroupIcon } from "@/icons";
 import { TfiWorld } from "react-icons/tfi";
 import { LuFileCode2 } from "react-icons/lu";
 import { AiOutlineCloudServer } from "react-icons/ai";
-import { IoCloudOutline } from "react-icons/io5";
+import { IoCloudOutline, IoPhonePortraitOutline } from "react-icons/io5";
 import { FormProvider, useForm } from "react-hook-form";
 import { useInventoryStore } from "@/store";
 import { TAB_KEY } from "@/common/commonVariable";
@@ -11,15 +11,16 @@ import { TAB_KEY } from "@/common/commonVariable";
 let iconClass = 'text-gray-800 size-6 dark:text-white/90'
 
 export const ASSETS_KEYS = {
-    cloud: "cloud",
     web: "web_app",
+    cloud: "cloud",
+    app: "app",
     api: "api",
 }
 
 export const ASSETS = [
     {
         image: <TfiWorld className={iconClass} />,
-        title: "Web App",
+        title: "Website",
         key: ASSETS_KEYS.web,
         description: "Scan browser-based application hosted online",
         is_show: true
@@ -29,21 +30,30 @@ export const ASSETS = [
         key: ASSETS_KEYS.cloud,
         description: "Scan browser-based application hosted online",
         is_show: true
-    }, {
-        image: <LuFileCode2 className={iconClass} />,
-        title: "API",
-        key: ASSETS_KEYS.api,
-        description: "Scan browser-based application hosted online",
-        is_show: false
+    },
+    {
+        image: <IoPhonePortraitOutline className={iconClass} />,
+        title: "Application",
+        key: ASSETS_KEYS.app,
+        description: "Scan Android and iOS mobile applications",
+        is_show: true
     }
-
+    // {
+    //     image: <LuFileCode2 className={iconClass} />,
+    //     title: "API",
+    //     key: ASSETS_KEYS.api,
+    //     description: "Scan browser-based application hosted online",
+    //     is_show: false
+    // }
 ]
+
 export default function AssetsType() {
 
     const { assets_type, setAssetsType, setActiveTab } = useInventoryStore();
 
     const methods = useForm({
-        mode: "onBlur", // validation timing
+        mode: "onSubmit", // Trigger validation only on submit
+        reValidateMode: "onChange" // Re-validate on change after first submission attempt
     });
 
     const handleAssetSelect = (data: any) => {
@@ -54,7 +64,6 @@ export default function AssetsType() {
         });
         setActiveTab(TAB_KEY.ASSETS_DETAILS);
     };
-
 
     return (<>
         {/* <FormProvider {...methods}>

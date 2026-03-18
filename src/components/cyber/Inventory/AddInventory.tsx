@@ -27,7 +27,6 @@ export function TabContent({ title, children }: {
     );
 }
 
-
 export default function AddInventory({ resDomainList }: any) {
 
     const { active_tab, setActiveTab, assets_type, assets_details, credentials, owners, final_validate_data } = useInventoryStore();

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { ASSETS_KEYS } from "../Assets/AssetsTypes";
 import { ALL_PROVIDER_LIST, ASSETS_INPUTS, PROVIDER_KEY } from "../Assets/AddAssets";
 export { ALL_PROVIDER_LIST, ASSETS_INPUTS, PROVIDER_KEY };
-import { getCloudScanDetails, getWebsiteDetails } from "@/lib/clientApi";
+import { getApplicationDetails, getCloudScanDetails, getWebsiteDetails } from "@/lib/clientApi";
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR } from "@/common/commonFunction";
 
@@ -23,16 +23,111 @@ export default function AddAssets({ resInventoryList }: any) {
 
     const { assets_type, assets_details, setAssetsDetails, setActiveTab, setLoader, resetInventory } = useInventoryStore();
     const router = useRouter();
-
-    const methods = useForm({ mode: "onBlur", });
+    const methods = useForm({
+        mode: "onSubmit", // Trigger validation only on submit
+        reValidateMode: "onChange" // Re-validate on change after first submission attempt
+    });
     const selectedProvider = methods.watch(ASSETS_INPUTS.PROVIDER.name);
 
     const [selectedOption, setSelectedOption] = useState<any>({});
 
+    //     const onSubmit = async (data: any) => {
+
+    //         setAssetsDetails({
+    //             value: data,
+    //             is_valid: true,
+    //         });
+
+    //         setLoader(true);
+
+    //         try {
+
+    //             if (assets_type?.value == ASSETS_KEYS?.cloud) {
+
+    //                 const provider = data[ASSETS_INPUTS.PROVIDER.name];
+    //                 let credentials: any = {};
+
+    //                 if (provider === PROVIDER_KEY.AWS) {
+    //                     credentials = {
+    //                         accessKeyId: data[ASSETS_INPUTS.ACCESS_KEY.name],
+    //                         secretAccessKey: data[ASSETS_INPUTS.SECRET_KEY.name],
+    //                         region: data[ASSETS_INPUTS.REGION.name]
+    //                     };
+    //                 }
+    //                 else if (provider === PROVIDER_KEY.AZURE) {
+    //                     credentials = {
+    //                         clientId: data[ASSETS_INPUTS.CLIENT_ID.name],
+    //                         clientSecret: data[ASSETS_INPUTS.CLIENT_SECRET.name],
+    //                         tenantId: data[ASSETS_INPUTS.TENANT_ID.name],
+    //                         subscriptionId: data[ASSETS_INPUTS.SUBSCRIPTION_ID.name]
+    //                     };
+    //                 }
+    //                 else if (provider === PROVIDER_KEY.GCP) {
+    //                     credentials = {
+    //                         projectId: data[ASSETS_INPUTS.PROJECT_ID.name],
+    //                         keyFilename: data[ASSETS_INPUTS.KEY_FILENAME.name]
+    //                     };
+    //                 }
+
+    //                 console.log('Cloud Payload 👉', {
+    //                     provider,
+    //                     assetId: data.inventory_id,
+    //                     credentials
+    //                 });
+
+    //                 const response = await getCloudScanDetails({
+    //                     provider,
+    //                     assetId: data.inventory_id,
+    //                     credentials
+    //                 });
+
+    //                 if (response?.code !== CODES?.SUCCESS) {
+    //                     throw new Error(response?.message || "Cloud scan failed");
+    //                 }
+
+    //             } else if (assets_type?.value == ASSETS_KEYS?.web) {
+    //                 const websiteUrl = data[ASSETS_INPUTS.WEBSITE_URL.name];
+
+    //                 const response = await getWebsiteDetails({
+    //                     url: websiteUrl,
+    //                     assetId: data.inventory_id,
+    //                 });
+
+    //                 if (response?.code !== CODES?.SUCCESS) {
+    //                     throw new Error(response?.message || "Website scan failed");
+    //                 }
+    //             } else if (assets_type?.value == ASSETS_KEYS?.app) {
+
+    //                 const response = await getApplicationDetails({
+    //                     assetId: data.inventory_id,
+    //                 });
+
+    //                 if (response?.code !== CODES?.SUCCESS) {
+    //                     throw new Error(response?.message || "Website scan failed");
+    //                 }
+    //             } else {
+    //                 console.log("Asset Type is required")
+    //                 console.log("assets_type?.value == ASSETS_KEYS?.app", assets_type?.value, 'ASSETS_KEYS?.app', ASSETS_KEYS?.app)
+    //                 TOAST_ERROR("Asset Type is required")
+    //             }
+    //             // router.push(`/scan`);
+
+    //   window.location.replace("/scan");
+    //             resetInventory();
+
+    //         } catch (error: any) {
+
+    //             console.error("Submit Error 👉", error);
+    //             TOAST_ERROR(error?.message || "Something went wrong. Please try again later.");
+
+    //         } finally {
+    //             setLoader(false); // ✅ Always stop loader
+    //         }
+    //     };
+
+
+
     const onSubmit = async (data: any) => {
-
-        console.log("FORM DATA 👉", data);
-
         setAssetsDetails({
             value: data,
             is_valid: true,
@@ -41,9 +136,9 @@ export default function AddAssets({ resInventoryList }: any) {
         setLoader(true);
 
         try {
+            let response;
 
-            if (assets_type?.value === ASSETS_KEYS?.cloud) {
-
+            if (assets_type?.value == ASSETS_KEYS?.cloud) {
                 const provider = data[ASSETS_INPUTS.PROVIDER.name];
                 let credentials: any = {};
 
@@ -53,64 +148,61 @@ export default function AddAssets({ resInventoryList }: any) {
                         secretAccessKey: data[ASSETS_INPUTS.SECRET_KEY.name],
                         region: data[ASSETS_INPUTS.REGION.name]
                     };
-                }
-                else if (provider === PROVIDER_KEY.AZURE) {
+                } else if (provider === PROVIDER_KEY.AZURE) {
                     credentials = {
                         clientId: data[ASSETS_INPUTS.CLIENT_ID.name],
                         clientSecret: data[ASSETS_INPUTS.CLIENT_SECRET.name],
                         tenantId: data[ASSETS_INPUTS.TENANT_ID.name],
                         subscriptionId: data[ASSETS_INPUTS.SUBSCRIPTION_ID.name]
                     };
-                }
-                else if (provider === PROVIDER_KEY.GCP) {
+                } else if (provider === PROVIDER_KEY.GCP) {
                     credentials = {
                         projectId: data[ASSETS_INPUTS.PROJECT_ID.name],
                         keyFilename: data[ASSETS_INPUTS.KEY_FILENAME.name]
                     };
                 }
 
-                console.log('Cloud Payload 👉', {
+                response = await getCloudScanDetails({
                     provider,
                     assetId: data.inventory_id,
                     credentials
                 });
 
-                const response = await getCloudScanDetails({
-                    provider,
+            } else if (assets_type?.value == ASSETS_KEYS?.web) {
+                response = await getWebsiteDetails({
+                    url: data[ASSETS_INPUTS.WEBSITE_URL.name],
                     assetId: data.inventory_id,
-                    credentials
                 });
 
-                if (response?.code !== CODES?.SUCCESS) {
-                    throw new Error(response?.message || "Cloud scan failed");
-                }
+            } else if (assets_type?.value == ASSETS_KEYS?.app) {
+                response = await getApplicationDetails({
+                    assetId: data.inventory_id,
+                });
 
             } else {
-
-                const websiteUrl = data[ASSETS_INPUTS.WEBSITE_URL.name];
-
-                const response = await getWebsiteDetails({
-                    url: websiteUrl,
-                    assetId: data.inventory_id,
-                });
-
-                if (response?.code !== CODES?.SUCCESS) {
-                    throw new Error(response?.message || "Website scan failed");
-                }
+                TOAST_ERROR("Asset Type is required");
+                return;
             }
 
-            // ✅ Common Success Flow
-            router.push(`/scan`);
-            resetInventory();
+            // ✅ Check response AFTER API complete
+            if (response?.code !== CODES?.SUCCESS) {
+                throw new Error(response?.message || "Scan failed");
+            }
+
+
+
+            // ✅ Small delay to ensure state update (important)
+            setTimeout(() => {
+                // ✅ Reset state first
+                resetInventory();
+                window.location.replace("/scan");
+            }, 100);
 
         } catch (error: any) {
-
             console.error("Submit Error 👉", error);
             TOAST_ERROR(error?.message || "Something went wrong. Please try again later.");
-
         } finally {
-
-            setLoader(false); // ✅ Always stop loader
+            setLoader(false);
         }
     };
 
@@ -139,11 +231,14 @@ export default function AddAssets({ resInventoryList }: any) {
                     inventory_id: item.id,
                     website_url: item.url,
                     label: item.name,
+                    status: item?.metadata?.upload_status,
                     full_data: item
                 })) || []
         );
 
     }, [assets_type?.value, resInventoryList]);
+
+    console.log("selectedOption 👉", selectedOption);
 
     return (<>
         <FormProvider {...methods}>

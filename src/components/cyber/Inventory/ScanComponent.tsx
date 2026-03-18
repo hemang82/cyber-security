@@ -57,7 +57,7 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
       render: (row: any) => (
         <div className="">
           <span className="inline-flex items-center justify-center rounded-full bg-brand-100 px-3 py-1 text-sm font-medium text-brand-600 dark:bg-gray-800 dark:text-gray-200">
-            {ASSETS.find((item) => item?.key === row?.asset_type)?.title || "Website"}
+            {safeText(ASSETS.find((item) => item?.key === row?.asset_type)?.title || "Website")}
           </span>
         </div>
       ),
@@ -72,7 +72,7 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
           <div className="flex flex-wrap gap-2">
             {vulnerabilities?.length > 0 ? vulnerabilities?.map((item: any, index: number) => (
               <Badge key={index} color={item?.color} classname="!text-xs ">
-                {item?.count}
+                {safeText(item?.count)}
               </Badge>
             )) : <> <Badge classname="!text-xs " color="red">0</Badge><Badge classname="!text-xs " color="orange">0</Badge><Badge classname="!text-xs " color="yellow">0</Badge><Badge classname="!text-xs " color="green">0</Badge><Badge classname="!text-xs " color="green">0</Badge></>}
           </div>
@@ -122,7 +122,8 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
       render: (row: any) => (
         <Link
           href={`/asset-view?id=${encodeURIComponent(row?.id)}&type=${row?.asset_type}`}
-          prefetch={true}
+          prefetch={false}
+          onClick={() => router.refresh()}
           className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
         >
           <GoEye size={18} />
@@ -150,11 +151,11 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
 
       {/* Pagination Info & Controls */}
       <div className="mt-4 flex flex-col items-center justify-between gap-4 md:flex-row">
+
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Showing {totalCount > 0 ? startIndex + 1 : 0} to{" "}
           {Math.min(startIndex + perPage, totalCount)} of {totalCount} entries
         </div>
-
 
         <Pagination
           currentPage={page}

@@ -36,9 +36,8 @@ export const DATE_TIME_FORMAT = {
     FULL_DATE_TIME_24H: "dddd, MMMM D, YYYY HH:mm",  // Tuesday, June 12, 2024 18:43
 };
 
-// ===============================
-
 // INPUT REGEX + VALIDATION MESSAGE
+
 export const INPUT_PATTERN = {
     CHAR_ONLY: {
         pattern: /^[A-Za-z\s]*$/,
@@ -58,7 +57,6 @@ export const INPUT_PATTERN = {
         pattern: /^[A-Z0-9a-z.@]+$/,
         message: "Invalid email characters",
     },
-
     MOBILE: {
         pattern: /^\d{10}$/,
         message: "Mobile number must be exactly 10 digits",
@@ -118,6 +116,7 @@ export const INPUT_TYPE = {
     HIDDEN: "hidden",
 
 } as const;
+
 
 export enum TAB_KEY {
     ASSETS_TYPE = "assets_type",

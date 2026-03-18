@@ -50,8 +50,8 @@ export default function DynamicTable<T>({ columns, data, className }: DynamicTab
                             {data.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        // colSpan={columns?.length || 0}
-                                        className="py-6 text-center text-gray-800"
+                                        colSpan={columns?.length || 0}
+                                        className="py-6 text-center text-gray-800 dark:text-gray-400"
                                     >
                                         No data found
                                     </TableCell>

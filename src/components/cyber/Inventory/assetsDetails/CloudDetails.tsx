@@ -24,7 +24,7 @@ import { RiShieldFlashLine, RiLockPasswordLine, RiSearchEyeLine, RiAlarmWarningF
 import { CloudReportPDF } from "../assetsReport/CloudReportPDF";
 
 const StatCard = ({ title, value, icon: Icon, colorClass, subValue, trend }: any) => (
-    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 flex flex-col justify-between h-full">
+    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 flex flex-col justify-between h-full">
         <div className="flex items-center justify-between mb-3">
             <div className={`p-3 rounded-xl ${colorClass} bg-opacity-10`}>
                 <Icon size={22} className={colorClass.replace('bg-', 'text-').replace('-50', '-600').replace('-100', '-600')} />
@@ -278,7 +278,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
 
         <div className="p-3">
             <div id="pdf-section-1">
-                <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-6 py-5 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
+                <div className="flex flex-col justify-between gap-6 rounded-xl border border-gray-200 bg-white px-6 py-5 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
                     {/* Header Details (Left) */}
                     <div className="flex flex-col gap-1 text-left">
                         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-400 font-bold uppercase tracking-widest text-[10px]">
@@ -362,7 +362,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
 
                         <div className="flex flex-col xl:flex-row items-center justify-around gap-10">
                             {/* Score & Grade Section */}
-                            <div className="flex flex-col items-center gap-8 sm:flex-row bg-gray-50 dark:bg-gray-800/50 p-6 rounded-3xl border border-gray-100 dark:border-gray-800">
+                            <div className="flex flex-col items-center gap-8 sm:flex-row bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
                                 <div className="relative">
                                     <div className={`flex h-36 w-36 items-center justify-center rounded-full border-[8px] ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'} bg-white dark:bg-gray-900 shadow-xl`}>
                                         <div className="flex flex-col items-center">
@@ -383,7 +383,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                                             </Badge>
                                         ))}
                                     </div>
-                                    <div className="mt-5 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+                                    <div className="mt-5 p-4 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Critical Insight</p>
                                         <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                                             Found <span className="text-red-600">{safeText(data?.critical_issues) || 0} Critical</span> architecture flaws that require immediate attention.
@@ -393,13 +393,13 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                             </div>
 
                             {/* Chart Section */}
-                            <div className="flex-1 w-full max-w-sm min-h-[250px] flex items-center justify-center bg-gray-50 dark:bg-gray-800/20 rounded-3xl p-4">
+                            <div className="flex-1 w-full max-w-sm min-h-[250px] flex items-center justify-center bg-gray-50 dark:bg-gray-800/20 rounded-2xl p-4">
                                 <VulnerabilityChart data={findingCounts || []} />
                             </div>
                         </div>
 
                         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="p-5 bg-blue-50/50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+                            <div className="p-5 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/30">
                                 <h3 className="text-sm font-bold text-blue-900 dark:text-blue-400 uppercase flex items-center gap-2 mb-2">
                                     <RiShieldCheckLine /> Strategic Overview
                                 </h3>
@@ -407,7 +407,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                                     Your cloud environment is currently at <b>{safeText(data?.risk_level)}</b>. The primary drivers of this risk are <b>{safeText(data?.findings?.[0]?.type)}</b> and exposed public services. Improving your IAM posture should be the #1 priority.
                                 </p>
                             </div>
-                            <div className="p-5 bg-orange-50/50 dark:bg-orange-900/10 rounded-2xl border border-orange-100 dark:border-orange-900/30">
+                            <div className="p-5 bg-orange-50/50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30">
                                 <h3 className="text-sm font-bold text-orange-900 dark:text-orange-400 uppercase flex items-center gap-2 mb-2">
                                     <RiLightbulbLine /> Immediate Action
                                 </h3>
@@ -554,25 +554,25 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
                                     <span className="text-gray-700 dark:text-gray-400">Cloud Provider</span>
                                     <span className={`px-2 py-1 rounded text-sm font-medium bg-blue-100 text-blue-700`}>
-                                        {data?.cloud_provider || "N/A"}
+                                        {safeText(data?.cloud_provider || "N/A")}
                                     </span>
                                 </li>
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
                                     <span className="text-gray-700 dark:text-gray-400">Scan Status</span>
                                     <span className="px-2 py-1 rounded text-sm font-medium bg-green-100 text-green-700">
-                                        {data?.scan_status || "Complete"}
+                                        {safeText(data?.scan_status || "Complete")}
                                     </span>
                                 </li>
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
                                     <span className="text-gray-700 dark:text-gray-400">Inventory Status</span>
                                     <span className="px-2 py-1 rounded text-sm font-medium bg-blue-100 text-blue-700">
-                                        {data?.inventory?.length || 0} Resources
+                                        {safeText(data?.inventory?.length || 0)} Resources
                                     </span>
                                 </li>
                                 <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-3">
                                     <span className="text-gray-700 dark:text-gray-400">Vulnerability Count</span>
                                     <span className="px-2 py-1 rounded text-sm font-medium bg-red-100 text-red-700">
-                                        {data?.findings?.length || 0} Issues
+                                        {safeText(data?.findings?.length || 0)} Issues
                                     </span>
                                 </li>
                             </ul>
@@ -582,8 +582,8 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                     <div className="mb-4">
                         <Card title={<div className="flex items-center gap-2"><RiLightbulbLine /> Recommendations</div>} tooltip="Suggested actions based on findings.">
                             <ul className="list-disc pl-5 space-y-2 text-gray-700 dark:text-gray-400">
-                                <li>Remediate <b>{data?.critical_issues || 0} Critical</b> security issues to improve posture score.</li>
-                                <li>Review <b>{data?.open_public_services || 0} Public Services</b> and ensure they are intended to be exposed.</li>
+                                <li>Remediate <b>{safeText(data?.critical_issues || 0)} Critical</b> security issues to improve posture score.</li>
+                                <li>Review <b>{safeText(data?.open_public_services || 0)} Public Services</b> and ensure they are intended to be exposed.</li>
                                 <li>Rotate <b>IAM Access Keys</b> older than 90 days.</li>
                                 <li>Enable <b>CloudTrail</b> and <b>GuardDuty</b> in all regions for continuous monitoring.</li>
                             </ul>
@@ -601,7 +601,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
         {/* {data?.findings?.length > 0 && <DynamicTable columns={columns2} data={data?.findings?.length > 0 ? data?.findings : []} className={"min-w-[600px]"} />} */}
 
         <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[800px] m-4">
-            <div className="relative w-full max-w-[800px] overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
+            <div className="relative w-full max-w-[800px] overflow-y-auto rounded-2xl bg-white p-6 dark:bg-gray-900 lg:p-10">
 
                 {/* HEADER */}
                 <div className="mb-6">
@@ -620,13 +620,13 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                     <div className={`rounded-xl border p-5 ${severityColor(modalData?.severity)} bg-opacity-10 border-opacity-30`}>
                         <div className="flex justify-between items-center">
                             <h5 className="text-lg font-semibold">
-                                {modalData?.type || "Vulnerability Details"}
+                                {safeText(modalData?.type || "Vulnerability Details")}
                             </h5>
-                            <Badge color={modalData?.severity}>{modalData?.severity || "Unknown Risk"}</Badge>
+                            <Badge color={modalData?.severity}>{safeText(modalData?.severity || "Unknown Risk")}</Badge>
                         </div>
 
                         <p className="mt-3 text-sm text-gray-700 dark:text-gray-300">
-                            {modalData?.detail || modalData?.key || "No details available."}
+                            {safeText(modalData?.detail || modalData?.key || "No details available.")}
                         </p>
 
                         {/* Impact */}
@@ -636,7 +636,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                                     ⚠️ Impact
                                 </h6>
                                 <p className="text-sm text-gray-700 dark:text-gray-400">
-                                    {modalData?.impact}
+                                    {safeText(modalData?.impact)}
                                 </p>
                             </div>
                         )}
@@ -650,12 +650,12 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                             {Array.isArray(modalData?.solution) ? (
                                 <ul className="mt-2 list-disc pl-5 text-sm text-gray-700 dark:text-gray-400 space-y-1">
                                     {modalData?.solution.map((sol: any, index: number) => (
-                                        <li key={index}>{sol}</li>
+                                        <li key={index}>{safeText(sol)}</li>
                                     ))}
                                 </ul>
                             ) : (
                                 <p className="mt-2 text-sm text-gray-700 dark:text-gray-400">
-                                    {modalData?.solution || "No specific solution provided."}
+                                    {safeText(modalData?.solution || "No specific solution provided.")}
                                 </p>
                             )}
                         </div>
@@ -670,7 +670,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                         {/* Evidence */}
                         {modalData?.evidence && (
                             <div className="mt-4 rounded-lg bg-gray-100 p-4 text-xs text-gray-700 overflow-x-auto dark:bg-gray-800 dark:text-gray-300">
-                                <strong>Evidence:</strong> {modalData?.evidence}
+                                <strong>Evidence:</strong> {safeText(modalData?.evidence)}
                             </div>
                         )}
                     </div>
