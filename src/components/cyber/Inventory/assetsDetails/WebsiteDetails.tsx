@@ -343,7 +343,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
         <>
             <div className="mx-auto max-w-[1800px] p-4 lg:p-6 space-y-6">
                 {/* HERO SECTION */}
-                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-white/3 border border-gray-200 dark:border-gray-800 p-6 lg:p-8 shadow-sm">
+                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-white/3 border border-gray-200 dark:border-gray-800 p-4 sm:p-6 lg:p-8 shadow-sm">
                     <div className="absolute right-0 top-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-brand-500/5 blur-3xl" />
                     <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex flex-col gap-4">
@@ -405,7 +405,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                     <div className="xl:col-span-8">
                         <Card title="Security Health Index">
 
-                            <div className="flex flex-col lg:flex-row gap-8">
+                            <div className="flex flex-col xl:flex-row gap-8">
 
                                 {/* LEFT SECTION */}
                                 {/* aspect-square flex items-center justify-center rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4 */}
@@ -489,7 +489,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
 
                                             return (
 
-                                                <div className="relative flex items-center justify-center h-60 w-40 sm:h-36 sm:w-36">
+                                                <div className="relative flex items-center justify-center h-32 w-32 sm:h-36 sm:w-36">
 
                                                     <svg
                                                         height={radius * 2}
@@ -575,9 +575,9 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
 
 
                                 {/* RIGHT SECTION - CHART */}
-                                <div className="flex justify-center lg:w-1/3">
+                                <div className="flex justify-center xl:w-1/3">
 
-                                    <div className="w-[150px] sm:w-[240px] aspect-square flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4">
+                                    <div className="w-full max-w-[240px] aspect-square flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4 min-h-[200px]">
                                         <VulnerabilityChart data={data?.finding_counts || []} />
                                     </div>
 
@@ -683,7 +683,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
 
                     {/* Compliance Glance */}
                     <Card title="Compliance Health">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                                 { label: 'SSL/TLS', state: data?.website_security?.ssl_certificate?.valid, active: 'Encrypted', inactive: 'No SSL' },
                                 { label: 'OWASP 10', state: true, active: 'Scanned', inactive: 'Pending' },
@@ -781,13 +781,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                 <DynamicTable
                                     columns={column4}
                                     data={data?.network_info?.findings || []}
-                                    // data={Object.entries(data?.network_info?.findings ?? {}).map(([key, value]: any) => ({
-                                    //     key: key.replaceAll("-", " "),
-                                    //     status: value?.status ?? "N/A",
-                                    //     severity: value?.severity ?? "Info",
-                                    //     solution: value?.solution ?? null
-                                    // })) || []}
-                                    className="min-w-full"
+                                    className="min-w-[600px] lg:min-w-full"
                                 />
                             </div>
                             }

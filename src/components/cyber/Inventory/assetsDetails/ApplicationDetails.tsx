@@ -209,7 +209,7 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
     return (
         <div className="p-4 lg:p-6" ref={pageRef}>
             {/* Header Section */}
-            <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-6 py-6 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3 shadow-sm mb-6 relative overflow-hidden">
+            <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-4 py-6 sm:px-6 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3 shadow-sm mb-6 relative overflow-hidden">
                 <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-brand-500/5 blur-3xl" />
 
                 <div className="flex flex-col gap-2 relative">
@@ -282,9 +282,9 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-6">
                 {/* Security Posture Analysis */}
                 <div className="xl:col-span-8">
-                    <Card title={<div className="flex items-center gap-2 uppercase tracking-tight font-bold"><RiPieChartLine className="text-brand-600" /> Security Posture</div>}>
-                        <div className="flex flex-col lg:flex-row items-center justify-around gap-10">
-                            <div className="flex flex-col items-center gap-6 sm:flex-row bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
+                    <Card title={<div className="flex items-center gap-2 uppercase tracking-tight font-bold text-sm sm:text-base"><RiPieChartLine className="text-brand-600" /> Security Posture</div>}>
+                        <div className="flex flex-col xl:flex-row items-center justify-around gap-6 lg:gap-10">
+                            <div className="flex flex-col items-center gap-6 sm:flex-row bg-gray-50 dark:bg-gray-800/50 p-4 sm:p-6 rounded-2xl border border-gray-100 dark:border-gray-800 w-full xl:w-auto">
                                 <div className="relative">
                                     {/* ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'} */}
                                     <div
@@ -318,7 +318,7 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
                                 </div>
                             </div>
 
-                            <div className="flex-1 w-full max-w-sm flex items-center justify-center bg-gray-50 dark:bg-gray-800/20 rounded-2xl p-4 min-h-[250px]">
+                            <div className="flex-1 w-full max-w-full sm:max-w-sm flex items-center justify-center bg-gray-50 dark:bg-gray-800/20 rounded-2xl p-4 min-h-[250px] lg:min-h-[300px]">
                                 <VulnerabilityChart data={findingCounts || []} />
                             </div>
                         </div>
@@ -361,25 +361,25 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
                             { label: 'Version', value: `${data?.app_info?.version_name} (${data?.app_info?.version_code})`, icon: RiInformation2Line, color: 'text-green-500' },
                             { label: 'Target SDK', value: data?.app_info?.target_sdk, icon: RiShieldCheckLine, color: 'text-orange-500' },
                             { label: 'Min SDK', value: data?.app_info?.min_sdk, icon: RiLockPasswordLine, color: 'text-red-500' },
-                            { label: 'Permissions Count', value: data?.app_info?.permissions_count, icon: RiLockPasswordLine, color: 'text-indigo-500' }
+                            { label: 'Permissions', value: data?.app_info?.permissions_count, icon: RiLockPasswordLine, color: 'text-indigo-500' }
                         ].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 dark:bg-white/3 border border-gray-100 dark:border-gray-800/50 hover:bg-white dark:hover:bg-white/5 transition-all shadow-sm group">
                                 <div className="flex items-center gap-3">
                                     <div className={`p-2 rounded-xl bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-110 transition-transform ${item.color}`}>
                                         <item.icon size={18} />
                                     </div>
-                                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{item.label}</span>
+                                    <span className="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{item.label}</span>
                                 </div>
-                                <span className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[180px]">{safeText(item.value) || 'N/A'}</span>
+                                <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[180px]">{safeText(item.value) || 'N/A'}</span>
                             </div>
                         ))}
                     </div>
                 </Card>
 
                 {/* Compliance Health */}
-                <Card title={<div className="flex items-center gap-2"><RiShieldCheckLine /> Compliance Health</div>}>
-                    <p className="text-sm text-gray-500 mb-6 font-medium">Quick audit of app environment against standard security benchmarks.</p>
-                    <div className="grid grid-cols-2 gap-4">
+                <Card title={<div className="flex items-center gap-2 uppercase tracking-tight font-bold text-sm sm:text-base"><RiShieldCheckLine /> Compliance Health</div>}>
+                    <p className="text-xs sm:text-sm text-gray-500 mb-6 font-medium">Quick audit of app environment against standard security benchmarks.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {[
                             { label: 'Platform SDK', state: (data?.app_info?.target_sdk || 0) >= 30, active: 'Modern', inactive: 'Legacy' },
                             { label: 'Permissions', state: (data?.app_info?.permissions_count || 0) < 20, active: 'Optimized', inactive: 'Excessive' },

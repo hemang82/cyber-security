@@ -99,8 +99,10 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
     };
 
     return (
-        <div className="flex items-center justify-center p-4">
-            <ReactApexChart options={options} series={series} type="polarArea" height={350} width={350} />
+        <div className="flex items-center justify-center p-2 w-full max-w-full overflow-hidden">
+            <div className="w-full max-w-[350px]">
+                <ReactApexChart options={options} series={series} type="polarArea" height="100%" width="100%" />
+            </div>
         </div>
     );
 };
