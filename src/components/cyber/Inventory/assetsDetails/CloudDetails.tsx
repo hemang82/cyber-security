@@ -540,6 +540,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
                         </Card>
                     </div>
                 </div>
+
             </div>
 
             <div id="pdf-section-2" className="hidden">

@@ -143,8 +143,6 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  console.log("ScanHistory", ScanHistory);
-
   return (
     <>
       <DynamicTable columns={columns} data={currentData} className="min-w-[1100px]" />

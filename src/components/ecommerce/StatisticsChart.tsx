@@ -1,5 +1,6 @@
 "use client";
 import { RiInformationLine, RiStockLine } from "react-icons/ri";
+import { formatDate } from "@/common/commonFunction";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { CyberDashboardProps } from "../cyber/Dashboard/CyberDashboard";
@@ -96,33 +97,37 @@ export default function StatisticsChart({ inventory = [], riskCounts }: CyberDas
   };
 
   // --- 3. New Chart: Asset Distribution (Total Inventory Style) ---
-  const assetCounts = { web_app: inventory?.length, api: 0, cloud: 0 };
+  const assetCounts = { web_app: 0, api: 0, cloud: 0, app: 0 };
   inventory.forEach((item: any) => {
-    if (item.type === "web_app") assetCounts.web_app++;
-    else if (item.type === "api") assetCounts.api++;
-    else if (item.type === "cloud") assetCounts.cloud++;
+    const type = (item.asset_type || item.type || "").toLowerCase();
+    if (type === "web_app") assetCounts.web_app++;
+    else if (type === "api") assetCounts.api++;
+    else if (type === "cloud") assetCounts.cloud++;
+    else if (type === "app") assetCounts.app++;
   });
 
-  const assetSeries = [{ name: "Count", data: [assetCounts.cloud, 0, assetCounts.api, assetCounts.web_app, 0, 0, 0] }]; // Match order: Cloud, Network, API, Web, Mobile, Desktop, SCR
+  const assetSeries = [{ name: "Count", data: [assetCounts.cloud, 0, assetCounts.api, assetCounts.web_app, assetCounts.app, 0, 0] }]; // Match order: Cloud, Network, API, Web, Mobile, Desktop, SCR
   const assetOptions: ApexOptions = {
     chart: { type: "bar", height: 350, toolbar: { show: false }, fontFamily: "Outfit, sans-serif" },
-    colors: ["#1e40af"], // Dark Blue for bars
+    colors: ["#3b82f6", "#ef4444", "#f97316", "#10b981", "#94a3b8", "#8b5cf6", "#94a3b8"], // Balanced palette
     plotOptions: {
       bar: {
         borderRadius: 2,
         horizontal: false,
-        columnWidth: "25%", // Thinner bars
-        distributed: false, // Single color
+        columnWidth: "40%", // Slightly wider since they are different colors
+        distributed: true, // Multi-color for each bar
       },
     },
     dataLabels: { enabled: true, offsetY: -20, style: { fontSize: '12px', colors: ["#374151"] } },
     xaxis: {
       categories: ["Cloud", "Network", "API", "Web", "Mobile", "Desktop", "SCR"],
+      title: { text: "Asset Category", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: { style: { fontSize: '12px', colors: "#6b7280" } }
     },
     yaxis: {
+      title: { text: "Asset Count", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
       show: true,
       labels: { style: { fontSize: '12px', colors: "#6b7280" } },
     },
@@ -139,19 +144,49 @@ export default function StatisticsChart({ inventory = [], riskCounts }: CyberDas
   };
 
   // --- 4. New Chart: Security Overview (Vulnerability Dynamics Style) ---
-  const totalAssets = inventory.length;
-  let criticalThreats = 0;
-  inventory.forEach((item: any) => {
-    const risk = item.risk_level?.toLowerCase();
-    if (risk === "critical" || risk === "high") criticalThreats++;
-  });
-  const safeAssets = totalAssets - criticalThreats;
+  const securityCounts = {
+    cloud: { fixed: 0, notFixed: 0 },
+    api: { fixed: 0, notFixed: 0 },
+    web_app: { fixed: 0, notFixed: 0 },
+    app: { fixed: 0, notFixed: 0 },
+  };
 
-  // Use dummy "Fixed" vs "Not Fixed" logic for visual match, or map real data if available.
-  // Mapping real data: Fixed (Safe), Not Fixed (Critical/High)
+  inventory.forEach((item: any) => {
+    const type = (item.asset_type || item.type || "").toLowerCase() as keyof typeof securityCounts;
+    const risk = (item.risk_level || "").toLowerCase();
+    const isFixed = risk.includes("safe") || risk.includes("low");
+
+    if (securityCounts[type]) {
+      if (isFixed) securityCounts[type].fixed++;
+      else securityCounts[type].notFixed++;
+    }
+  });
+
   const securitySeries = [
-    { name: "Fixed", data: [0, 0, 0, safeAssets, 0, 0, 0] }, // Green
-    { name: "Not Fixed", data: [0, 0, 0, criticalThreats, 0, 0, 0] } // Red
+    {
+      name: "Fixed",
+      data: [
+        securityCounts.cloud.fixed,
+        0, // Network
+        securityCounts.api.fixed,
+        securityCounts.web_app.fixed,
+        securityCounts.app.fixed,
+        0, // Desktop
+        0  // SCR
+      ]
+    },
+    {
+      name: "Not Fixed",
+      data: [
+        securityCounts.cloud.notFixed,
+        0, // Network
+        securityCounts.api.notFixed,
+        securityCounts.web_app.notFixed,
+        securityCounts.app.notFixed,
+        0, // Desktop
+        0  // SCR
+      ]
+    }
   ];
 
   const securityOptions: ApexOptions = {
@@ -167,41 +202,102 @@ export default function StatisticsChart({ inventory = [], riskCounts }: CyberDas
     dataLabels: { enabled: false },
     xaxis: {
       categories: ["Cloud", "Network", "API", "Web", "Mobile", "Desktop", "SCR"], // Match layout
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-      labels: { style: { fontSize: '12px', colors: "#6b7280" } }
-    },
-    yaxis: { show: true, labels: { style: { fontSize: '12px', colors: "#6b7280" } } },
-    grid: { show: true, borderColor: "#e5e7eb", yaxis: { lines: { show: true } } },
-    legend: { position: 'bottom', horizontalAlign: 'center', },
-    tooltip: { theme: "light" },
-  };
-
-  // --- 5. New Chart: Security Score Trend ---
-  const securityTrendSeries = [
-    { name: "Security Score", data: [75, 90, 65, 70, 80, 75, 68] }
-  ];
-  const securityTrendOptions: ApexOptions = {
-    chart: { type: "line", height: 350, toolbar: { show: false }, fontFamily: "Outfit, sans-serif", zoom: { enabled: false } },
-    colors: ["#2563eb"], // Blue
-    stroke: { curve: 'smooth', width: 3 },
-    markers: { size: 5, colors: ["#2563eb"], strokeColors: "#fff", strokeWidth: 2, hover: { size: 7 } },
-    dataLabels: { enabled: false },
-    xaxis: {
-      categories: ["02-10", "02-11", "02-12", "02-13", "02-14", "02-15", "02-16"],
+      title: { text: "Asset Type", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: { style: { fontSize: '12px', colors: "#6b7280" } }
     },
     yaxis: {
+      title: { text: "Findings Status Count", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
+      show: true,
+      labels: { style: { fontSize: '12px', colors: "#6b7280" } }
+    },
+    grid: { show: true, borderColor: "#e5e7eb", yaxis: { lines: { show: true } } },
+    legend: { position: 'bottom', horizontalAlign: 'center', },
+    tooltip: { theme: "light" },
+  };
+
+  // --- 5. Real Data Calculation: Security Score Trend ---
+  const trendMap: Record<string, { total: number; count: number; rawDate: string }> = {};
+
+  inventory.forEach((item: any) => {
+    const rawDate = item.scanned_at || item.created_at;
+    if (!rawDate) return;
+
+    // Grouping by YYYY-MM-DD for accurate sorting
+    const dateKey = formatDate(rawDate, "YYYY-MM-DD");
+    const score = Number(item?.security_score || item?.full_response?.security_score) || 0;
+
+    if (score > 0) {
+      if (!trendMap[dateKey]) trendMap[dateKey] = { total: 0, count: 0, rawDate };
+      trendMap[dateKey].total += score;
+      trendMap[dateKey].count++;
+    }
+  });
+
+  // Sort keys chronologically
+  const sortedKeys = Object.keys(trendMap).sort();
+  const trendData = sortedKeys.map(key => Math.round(trendMap[key].total / trendMap[key].count));
+  const displayDates = sortedKeys.map(key => formatDate(trendMap[key].rawDate, "MMM DD"));
+
+  const securityTrendSeries = [
+    { name: "Avg Security Score", data: trendData.length > 0 ? trendData : [0] }
+  ];
+
+  const securityTrendOptions: ApexOptions = {
+    chart: {
+      type: "area",
+      height: 350,
+      toolbar: { show: false },
+      fontFamily: "Outfit, sans-serif",
+      zoom: { enabled: false },
+      dropShadow: { enabled: true, top: 3, left: 2, blur: 4, opacity: 0.1 }
+    },
+    colors: ["#2563eb"],
+    stroke: { curve: 'smooth', width: 3 },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.45,
+        opacityTo: 0.05,
+        stops: [20, 100]
+      }
+    },
+    markers: {
+      size: 5,
+      colors: ["#2563eb"],
+      strokeColors: "#fff",
+      strokeWidth: 2,
+      hover: { size: 7 }
+    },
+    dataLabels: {
+      enabled: true,
+      style: { fontSize: '10px', fontWeight: 600, colors: ["#2563eb"] },
+      background: { enabled: true, foreColor: '#fff', borderRadius: 2, padding: 4, opacity: 0.9, borderWidth: 0 },
+      offsetY: -10
+    },
+    xaxis: {
+      categories: displayDates.length > 0 ? displayDates : ["N/A"],
+      title: { text: "Scan Date", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      labels: { style: { fontSize: '12px', colors: "#6b7280" } }
+    },
+    yaxis: {
+      title: { text: "Security Score (%)", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
       min: 0,
       max: 100,
-      tickAmount: 4,
+      tickAmount: 5,
       labels: { style: { fontSize: '12px', colors: "#6b7280" }, formatter: (val) => val.toFixed(0) },
     },
-    grid: { show: true, borderColor: "#e5e7eb", strokeDashArray: 4, xaxis: { lines: { show: true } }, yaxis: { lines: { show: true } } },
+    grid: { show: true, borderColor: "#f1f5f9", strokeDashArray: 4, xaxis: { lines: { show: true } }, yaxis: { lines: { show: true } } },
     legend: { show: true, position: 'top', horizontalAlign: 'left', },
-    tooltip: { theme: "light", y: { formatter: (val) => `${val}%` } },
+    tooltip: {
+      theme: "light",
+      y: { formatter: (val) => `${val}%` },
+      marker: { show: true }
+    },
   };
 
 
