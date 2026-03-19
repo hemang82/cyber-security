@@ -89,15 +89,16 @@ const severityColorMap: Record<string, string> = {
     ["safe"]: "bg-green-50 text-green-600 border-green-100",
     ["high risk"]: "bg-red-50 text-red-600 border-red-100",
     ["medium risk"]: "bg-orange-50 text-orange-600 border-orange-100",
-    ["low risk"]: "bg-yellow-50 text-yellow-600 border-yellow-100"
+    ["low risk"]: "bg-yellow-50 text-yellow-600 border-yellow-100",
+    ["High Risk"]: "bg-red-50 text-red-600 border-red-100",
 };
 
 export const severityColor = (severity: any) => {
-    if (!severity) return "bg-blue-50 text-blue-500";
+    if (!severity) return "bg-blue-50 text-blue-500 border-blue-100";
 
     return (
         severityColorMap[String(severity).toLowerCase()] ||
-        "bg-blue-50 text-blue-500"
+        "bg-blue-50 text-blue-500 border-blue-100"
     );
 };
 
@@ -173,7 +174,6 @@ const StatCard = ({ label, value, icon, trend, subValue }: any) => (
 
 
 export default function WebsiteDetails({ resAssetsDetails }: any) {
-
 
     const { setLoader, resetInventory } = useInventoryStore();
     const [isClient, setIsClient] = useState(false);

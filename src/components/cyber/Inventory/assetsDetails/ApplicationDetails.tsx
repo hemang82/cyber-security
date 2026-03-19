@@ -24,7 +24,7 @@ import { HiDownload } from "react-icons/hi";
 import { toPng } from "html-to-image";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
-import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
+import { FINDINGS_COLORS, VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
 import { GoEye } from "react-icons/go";
 import CountUp from "react-countup";
 import { pdf } from "@react-pdf/renderer";
@@ -200,6 +200,12 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
         color: f.color
     })) || [];
 
+
+    console.log("data?.risk_level", data?.risk_level);
+
+
+    const progressColor = FINDINGS_COLORS[data?.risk_level as keyof typeof FINDINGS_COLORS] || "#22c55e";
+
     return (
         <div className="p-4 lg:p-6" ref={pageRef}>
             {/* Header Section */}
@@ -228,7 +234,7 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
                         <button
                             onClick={handlePdfDownload}
                             disabled={isGenerating}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-red-700 active:scale-95 disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-brand-700 active:scale-95 disabled:opacity-50"
                         >
                             <HiDownload size={20} />
                             {isGenerating ? "Generating..." : "Download PDF"}
@@ -280,7 +286,11 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
                         <div className="flex flex-col lg:flex-row items-center justify-around gap-10">
                             <div className="flex flex-col items-center gap-6 sm:flex-row bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
                                 <div className="relative">
-                                    <div className={`flex h-36 w-36 items-center justify-center rounded-full border-[10px] ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'} bg-white dark:bg-gray-900 shadow-xl`}>
+                                    {/* ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'} */}
+                                    <div
+                                        className="flex h-36 w-36 items-center justify-center rounded-full border-[10px] bg-white dark:bg-gray-900 shadow-xl"
+                                        style={{ borderColor: progressColor }}
+                                    >
                                         <div className="flex flex-col items-center">
                                             <span className="text-5xl font-bold text-gray-900 dark:text-white leading-none">
                                                 <CountUp end={Number(data?.security_score) || 0} duration={2} />
