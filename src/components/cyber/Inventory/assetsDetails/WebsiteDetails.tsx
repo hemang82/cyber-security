@@ -582,9 +582,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                     </div>
 
                                 </div>
-
                             </div>
-
                         </Card>
                     </div>
 
