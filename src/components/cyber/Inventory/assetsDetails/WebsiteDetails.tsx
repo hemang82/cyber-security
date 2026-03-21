@@ -12,13 +12,14 @@ import { toPng } from "html-to-image";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { PerformanceChart } from "@/components/charts/circular/PerformanceChart";
-import { FINDINGS_COLORS, VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
+import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
 
 import { GoEye } from "react-icons/go";
 import CountUp from "react-countup";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Drawer from "@/components/ui/drawer/Drawer";
 import { PDFDocument } from "../assetsReport/CyberSecurityPDF";
+import { ASSETS, FINDINGS_COLORS } from "../Assets/AssetsTypes";
 
 
 export const Card = ({ title, tooltip, children, className = "" }: any) => {
@@ -317,26 +318,81 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
             key: "type",
             title: "Type",
             render: (row: any) => (
-                <span className="text-base">{safeText(row?.type)}</span>
+                <span className="text-base font-medium">{safeText(row?.type)}</span>
             ),
         },
         {
             key: "detail",
             title: "Description",
             render: (row: any) => (
-                <span className="text-base">{safeText(row?.detail) || 0}</span>
+                <span className="text-sm text-gray-500">{safeText(row?.detail) || 0}</span>
             ),
         },
         {
             key: "severity",
             title: "Severity",
             render: (row: any) => (
-                <span
-                    className={`rounded-full px-2 py-0.5 text-base font-medium ${severityColor(row?.severity || "Info")}`} >
+                <span className={`rounded-full px-2 py-0.5 text-xs font-bold uppercase ${severityColor(row?.severity || "Info")}`} >
                     {safeText(row?.severity) || "Info"}
                 </span>
             ),
         },
+    ];
+
+    const column5 = [
+        {
+            key: "owasp",
+            title: "OWASP",
+            className: "min-w-[150px]",
+            render: (row: any) => (
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    {safeText(row?.owasp) || "General"}
+                </span>
+            ),
+        },
+        {
+            key: "type",
+            title: "Type",
+            className: "min-w-[200px]",
+            render: (row: any) => (
+                <span className="text-sm font-bold text-gray-900 dark:text-white">
+                    {safeText(row?.type)}
+                </span>
+            ),
+        },
+        {
+            key: "severity",
+            title: "Severity",
+            className: "min-w-[100px]",
+            render: (row: any) => (
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${severityColor(row?.severity)}`}>
+                    {safeText(row?.severity)}
+                </span>
+            ),
+        },
+        {
+            key: "detail",
+            title: "Description",
+            className: "min-w-[300px]",
+            render: (row: any) => (
+                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1" title={row?.detail}>
+                    {safeText(row?.detail)}
+                </p>
+            ),
+        },
+        {
+            key: "action",
+            title: "Action",
+            className: "min-w-[80px]",
+            render: (row: any) => (
+                <button
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brand-200 text-brand-600 hover:bg-brand-50 dark:border-gray-700 dark:text-brand-400 dark:hover:bg-white/5"
+                    onClick={() => openModal(row)}
+                >
+                    <GoEye size={16} />
+                </button>
+            ),
+        }
     ];
 
     return (
@@ -662,10 +718,10 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                     <Card title="Audit Context">
                         <div className="space-y-4">
                             {[
-                                { label: 'Asset Name', value: data?.scan_context, icon: <RiGlobalLine /> },
-                                { label: 'Asset Type', value: 'Web Site', icon: <RiFileList3Line /> },
-                                { label: 'Risk State', value: data?.summary?.risk_level, colorAttr: data?.risk_color },
-                                { label: 'Audit Timestamp', value: scanDate, icon: <RiClipboardLine /> }
+                                { label: 'Asset Name', value: safeText(data?.asset_name), icon: <RiGlobalLine /> },
+                                { label: 'Asset Type', value: safeText(ASSETS.find((item) => item?.key === data?.asset_type)?.title || "-"), icon: <RiFileList3Line /> },
+                                { label: 'Risk State', value: safeText(data?.summary?.risk_level), colorAttr: data?.risk_color },
+                                { label: 'Audit Timestamp', value: safeText(scanDate), icon: <RiClipboardLine /> }
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center justify-between border-b border-gray-50 dark:border-gray-800 pb-3 last:border-0 last:pb-0">
                                     <div className="flex items-center gap-3 text-sm font-semibold text-gray-500">
@@ -789,6 +845,16 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
 
                 {/* FULL WIDTH TECHNICAL TABLES */}
                 <div className="space-y-6">
+                    <Card title="Vulnerability Findings" tooltip="Complete list of security vulnerabilities, categorized by OWASP and severity.">
+                        <div className="overflow-x-auto">
+                            <DynamicTable
+                                columns={column5}
+                                data={data?.findings || []}
+                                className="min-w-full"
+                            />
+                        </div>
+                    </Card>
+
                     <Card title="Security Header Analysis" tooltip="Browser-level security policies discovered in HTTP responses.">
                         <div className="overflow-x-auto">
                             <DynamicTable

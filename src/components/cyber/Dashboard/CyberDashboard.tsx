@@ -19,6 +19,8 @@ import { GoEye } from "react-icons/go";
 export interface CyberDashboardProps {
     inventory: any[];
     riskCounts: any;
+    allScans?: any[];
+    domains?: any[];
 }
 
 const COLORS = {
@@ -31,11 +33,32 @@ const COLORS = {
     Unknown: "#9CA3AF"   // Gray
 };
 
-export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) {
+export default function CyberDashboard({ inventory = [], domains = [] }: CyberDashboardProps) {
     const router = useRouter();
 
-    // --- Statistics Calculations ---
-    const totalAssets = inventory.length;
+    // --- Unique Assets Filter (Fix for 3 vs 5 data issue) ---
+    // Dashboard should reflect unique assets, not total scan history entries.
+    const uniqueAssetsMap = new Map();
+    inventory.forEach(item => {
+        // Use a persistent identifier like target, asset_name, or name (to distinguish between multiple scans of same asset)
+        const id = item?.asset_id || item?.target || item?.asset_name || item?.name;
+        const currentTS = new Date(item.scanned_at || item.created_at).getTime();
+
+        if (!uniqueAssetsMap.has(id)) {
+            uniqueAssetsMap.set(id, item);
+        } else {
+            const existing = uniqueAssetsMap.get(id);
+            const existingTS = new Date(existing.scanned_at || existing.created_at).getTime();
+            if (currentTS > existingTS) {
+                uniqueAssetsMap.set(id, item);
+            }
+        }
+    });
+    const uniqueAssets = Array.from(uniqueAssetsMap.values());
+
+    // --- Statistics Calculations based on UNIQUE assets ---
+    const totalAssets = uniqueAssets.length;
+    const totalScans = inventory.length;
 
     const riskCounts = {
         Critical: 0,
@@ -49,7 +72,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
     let totalScore = 0;
     let scoredAssets = 0;
 
-    inventory.forEach(item => {
+    uniqueAssets.forEach(item => {
         const riskLevel = item?.risk_level || "Unknown";
         // Use security_score if available, fallback to 0
         const score = Number(item?.security_score || item?.full_response?.security_score) || 0;
@@ -162,7 +185,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             title: "Action",
             render: (row: any) => (
                 <Link
-                    href={`/Inventory-view?id=${encodeURIComponent(row?.id)}`}
+                    href={`/inventory-view?id=${encodeURIComponent(row?.id)}`}
                     prefetch={false}
                     onClick={() => router.refresh()}
                     className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400"
@@ -171,17 +194,6 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                 </Link>
             )
         }
-    ];
-
-    const checkFeatures = [
-        { icon: <RiLock2Line size={24} />, title: "SSL/TLS Security", desc: "Certificate validity & configuration", color: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400" },
-        { icon: <RiGlobalLine size={24} />, title: "DNS Health", desc: "SPF, DMARC, and record analysis", color: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400" },
-        { icon: <RiServerLine size={24} />, title: "Server Headers", desc: "Security headers & exposing info", color: "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400" },
-        { icon: <RiSpyLine size={24} />, title: "Open Ports", desc: "Scanning for vulnerable ports", color: "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400" },
-        { icon: <RiBugLine size={24} />, title: "OWASP Top 10", desc: "Common web vulnerability checks", color: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" },
-        { icon: <RiCodeLine size={24} />, title: "Code Analysis", desc: "JS libraries & deprecated code", color: "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400" },
-        { icon: <RiEarthLine size={24} />, title: "Domain Info", desc: "Whois & Registrar details", color: "bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400" },
-        { icon: <RiShieldFlashLine size={24} />, title: "Dark Web", desc: "Breach monitoring (Basic)", color: "bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400" },
     ];
 
     console.log("recentScans", recentScans);
@@ -200,9 +212,9 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
 
-                {/* Total Assets */}
+                {/* Total Assets (Unique) */}
                 <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 transition-all hover:shadow-md">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="p-2 bg-blue-50 text-blue-600 rounded-lg dark:bg-blue-900/20 dark:text-blue-400">
@@ -215,7 +227,25 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                             <CountUp end={totalAssets} duration={2} />
                         </h3>
                         <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full dark:bg-green-900/20 dark:text-green-400">
-                            All Active
+                            Unique
+                        </span>
+                    </div>
+                </div>
+
+                {/* Total Scans (All History) */}
+                <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 transition-all hover:shadow-md">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg dark:bg-indigo-900/20 dark:text-indigo-400">
+                            <RiSpeedUpLine size={24} />
+                        </div>
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Scans</span>
+                    </div>
+                    <div className="flex items-end justify-between">
+                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                            <CountUp end={totalScans} duration={2} />
+                        </h3>
+                        <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full dark:bg-indigo-900/20 dark:text-indigo-400">
+                            History
                         </span>
                     </div>
                 </div>
@@ -226,7 +256,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                         <div className="p-2 bg-purple-50 text-purple-600 rounded-lg dark:bg-purple-900/20 dark:text-purple-400">
                             <RiShieldCheckLine size={24} />
                         </div>
-                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Avg Security Score</span>
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Security Score</span>
                     </div>
                     <div className="flex items-baseline gap-2">
                         <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
@@ -249,7 +279,7 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                             <CountUp end={riskCounts.Critical} duration={2} />
                         </h3>
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${riskCounts.Critical > 0 ? 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400' : 'bg-gray-100 text-gray-500'}`}>
-                            {riskCounts.Critical > 0 ? 'Action Required' : 'Secure'}
+                            {riskCounts.Critical > 0 ? 'Action' : 'Secure'}
                         </span>
                     </div>
                 </div>
@@ -260,14 +290,14 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                         <div className="p-2 bg-green-50 text-green-600 rounded-lg dark:bg-green-900/20 dark:text-green-400">
                             <RiCheckDoubleLine size={24} />
                         </div>
-                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Safe Assets</span>
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Healthy Assets</span>
                     </div>
                     <div className="flex items-end justify-between">
                         <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
                             <CountUp end={riskCounts.Safe + riskCounts.Low} duration={2} />
                         </h3>
                         <span className="text-xs font-medium text-gray-500">
-                            Low Risk
+                            Safe/Low
                         </span>
                     </div>
                 </div>
@@ -397,26 +427,8 @@ export default function CyberDashboard({ inventory = [] }: CyberDashboardProps) 
                 </div>
             </div>
 
-            <StatisticsChart inventory={inventory} riskCounts={riskCounts} />
+            <StatisticsChart inventory={uniqueAssets} allScans={inventory} riskCounts={riskCounts} domains={domains} />
 
-            {/* Security Coverage Section (What We Check) */}
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                {/* <EcommerceMetrics /> */}
-                <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-6 text-center">
-                    Comprehensive Security Coverage
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {checkFeatures.map((feature, idx) => (
-                        <div key={idx} className="flex flex-col items-center text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
-                            <div className={`p-3 rounded-full mb-3 ${feature.color}`}>
-                                {feature.icon}
-                            </div>
-                            <h4 className="font-semibold text-gray-800 dark:text-white mb-1">{feature.title}</h4>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{feature.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
         </div>
     );
 }

@@ -7,10 +7,21 @@
 
 import { CODES, TEMP_URL } from "@/common/constant";
 import { fetcher } from "@/lib/fetcher";
-import { headers } from "next/headers";
 import { apiLogger } from "../logger";
+import { cookies } from "next/headers";
+import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 
 const BASE_EXTERNAL_URL = "https://cyberapi.ipotrending.com";
+
+async function getAuthHeaders() {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE)?.value;
+    
+    return {
+        "Content-Type": "application/json",
+        ...(token ? { "Authorization": `Bearer ${token}` } : {}),
+    };
+}
 
 type InventoryResponse = {
     code?: any
@@ -24,9 +35,7 @@ export async function getInventoryList(data: Record<string, any> = {}) {
         const resList = await fetch(url, {
             method: "POST",
             cache: "no-store", // Direct real-time fetch
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getAuthHeaders(),
             body: JSON.stringify(data),
             next: { revalidate: 0 } 
         });
@@ -51,9 +60,7 @@ export async function getScanList(data: Record<string, any> = {}) {
         const resList = await fetch(url, {
             method: "POST",
             cache: "no-store", // Real-time scan history
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getAuthHeaders(),
             body: JSON.stringify(data),
             next: { revalidate: 0 }
         });
@@ -79,9 +86,7 @@ export async function listDomain(data: Record<string, any> = {}) {
         const resList = await fetch(finalUrl, {
             method: "GET",
             cache: "no-store",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getAuthHeaders(),
         });
 
         apiLogger(finalUrl, "GET", null, resList.status);
@@ -104,9 +109,7 @@ export async function listVulnerability(data: Record<string, any> = {}) {
         const resList = await fetch(url, {
             method: "POST",
             cache: "no-store", // Real-time vulnerability list
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getAuthHeaders(),
             body: JSON.stringify(data),
             next: { revalidate: 0 }
         });
@@ -131,9 +134,7 @@ export async function getInventoryDetails(data: Record<string, any> = {}) {
         const resList = await fetch(url, {
             method: "POST",
             cache: "no-store",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getAuthHeaders(),
             body: JSON.stringify(data),
         });
 
@@ -156,9 +157,7 @@ export async function getInventoryView(data: Record<string, any> = {}) {
         const resList = await fetch(url, {
             method: "POST",
             cache: "no-store",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getAuthHeaders(),
             body: JSON.stringify(data),
         });
 
@@ -181,9 +180,7 @@ export async function getCloudScanDetails(data: Record<string, any> = {}) {
         const resList = await fetch(url, {
             method: "POST",
             cache: "no-store",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getAuthHeaders(),
             body: JSON.stringify(data),
         });
 

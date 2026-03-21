@@ -18,7 +18,6 @@ const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const { is_loading } = useInventoryStore();
 
-
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const handleToggle = () => {

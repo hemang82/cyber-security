@@ -12,8 +12,8 @@ let iconClass = 'text-gray-800 size-6 dark:text-white/90'
 
 export const ASSETS_KEYS = {
     web: "web_app",
-    cloud: "cloud",
     app: "app",
+    cloud: "cloud",
     api: "api",
 }
 
@@ -24,20 +24,21 @@ export const ASSETS = [
         key: ASSETS_KEYS.web,
         description: "Scan browser-based application hosted online",
         is_show: true
-    }, {
-        image: <IoCloudOutline className={iconClass} />,
-        title: "Cloud",
-        key: ASSETS_KEYS.cloud,
-        description: "Scan browser-based application hosted online",
-        is_show: true
     },
     {
         image: <IoPhonePortraitOutline className={iconClass} />,
         title: "Application",
         key: ASSETS_KEYS.app,
-        description: "Scan Android and iOS mobile applications",
+        description: "Scan Android mobile applications",
         is_show: true
-    }
+    },
+    {
+        image: <IoCloudOutline className={iconClass} />,
+        title: "Cloud",
+        key: ASSETS_KEYS.cloud,
+        description: "Scan cloud based application hosted online",
+        is_show: true
+    },
     // {
     //     image: <LuFileCode2 className={iconClass} />,
     //     title: "API",
@@ -46,6 +47,27 @@ export const ASSETS = [
     //     is_show: false
     // }
 ]
+
+export const FINDINGS_COLORS = {
+    [ASSETS_KEYS.web]: "#10b981ce", // red
+    [ASSETS_KEYS.app]: "#3b83f6bd",   // yellow
+    [ASSETS_KEYS.cloud]: "#94a3b8",     // orange
+    [ASSETS_KEYS.api]: "#10b981ce",      // blue
+    Critical: "#ef4444d2", // red
+    High: "#f97416d3",     // orange
+    Medium: "#eab20896",   // yellow
+    Low: "#10b981ce",      // blue
+    Info: "#3b83f6bd",     // gray
+    Unknown: "#94a3b8",  // gray (fallback)
+    ["critical risk"]: "#ef4444d2",
+    ["high risk"]: "#f97416d3",
+    ["safe"]: "#10b981ce",
+    ["medium risk"]: "#eab20896",
+    ["low risk"]: "#3b83f6bd",
+    ["High Risk"]: "#ef4444d2",
+    ["Low Risk"]: "#3b83f6bd",
+    ["Medium Risk"]: "#eab20896",
+};
 
 export default function AssetsType() {
 

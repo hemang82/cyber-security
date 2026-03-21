@@ -37,7 +37,7 @@ export default function UserDropdown() {
 
   const handleLogout = async () => {
     try {
-      const data = await fetch("/api/logout", {
+      const data = await fetch("/api/auth/logout", {
         method: "POST",
       });
       clearUserAuth(); // zustand clear
@@ -53,7 +53,7 @@ export default function UserDropdown() {
     // Handle save logic here
     console.log("Saving changes...");
     try {
-      const res = await fetch("/api/logout", {
+      const res = await fetch("/api/auth/logout", {
         method: "POST",
       });
       const { code, message, data } = await res.json();

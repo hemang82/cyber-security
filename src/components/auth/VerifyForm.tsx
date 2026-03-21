@@ -72,7 +72,7 @@ export default function VerifyForm() {
         }
         setLoader(true);
         try {
-            const res = await fetch("/api/signup", {
+            const res = await fetch("/api/auth/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ...temLogin, otp: finalOtp }),
@@ -83,7 +83,7 @@ export default function VerifyForm() {
             if (responseData.code === CODES?.SUCCESS) {
                 TOAST_SUCCESS(responseData.message);
 
-                const templogout = await fetch("/api/logout", {
+                const templogout = await fetch("/api/auth/logout", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                 });
@@ -107,7 +107,7 @@ export default function VerifyForm() {
     const handleResend = async () => {
         setLoader(true);
         try {
-            const res = await fetch("/api/verify", {
+            const res = await fetch("/api/auth/verify", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: temLogin?.email }),

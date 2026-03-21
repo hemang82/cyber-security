@@ -26,7 +26,7 @@ export async function clientFetcher(url: string, options: any = {}) {
 export async function getCloudScanDetails(data: Record<string, any>) {
     try {
 
-        const res = await clientFetcher("/api/cloudScanDetails", {
+        const res = await clientFetcher("/api/scan/cloud", {
             method: "POST",
             body: data
         });
@@ -42,7 +42,7 @@ export async function getCloudScanDetails(data: Record<string, any>) {
 export async function getWebsiteDetails(data: Record<string, any>) {
     try {
 
-        const res = await clientFetcher("/api/inventoryDetails", {
+        const res = await clientFetcher("/api/scan/website", {
             method: "POST",
             body: data
         });
@@ -55,7 +55,7 @@ export async function getWebsiteDetails(data: Record<string, any>) {
 
 export async function getApplicationDetails(data: Record<string, any>) {
     try {
-        const res = await clientFetcher("/api/applicationScanDetails", {
+        const res = await clientFetcher("/api/scan/mobile", {
             method: "POST",
             body: data
         });

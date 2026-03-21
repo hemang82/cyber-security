@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
-import { formatDate, safeText } from "@/common/commonFunction";
+import { formatDate, normalizeStatus, safeText } from "@/common/commonFunction";
 import { DATE_FORMAT } from "@/common/commonVariable";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInventoryStore } from "@/store";
@@ -109,26 +109,42 @@ export default function ScanComponent({ ScanHistory, resInventoryList }: any) {
     {
       key: "status", title: "Status",
       className: "min-w-[150px]",
-      render: (row: any) => (
-        <span
-          className={`rounded-md px-2 py-0.5 text-sm border font-medium ${CyberColorClass[row?.status as keyof typeof CyberColorClass]} `} >
-          {safeText(row?.status) || "Info"}
-        </span>
-      ),
+      render: (row: any) => {
+        const status = normalizeStatus(row?.status);
+        const isActive = status === "IN_PROGRESS";
+        return (
+          <span
+            className={`rounded-md px-2 py-0.5 text-sm border font-medium flex items-center gap-2 w-fit ${CyberColorClass[status as keyof typeof CyberColorClass]} `} >
+            {isActive && (
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
+            )}
+            {safeText(status?.replace("_", " ")) || "Info"}
+          </span>
+        );
+      },
     },
     {
       key: "action", title: "Action",
       className: "min-w-[100px]",
-      render: (row: any) => (
-        <Link
-          href={`/asset-view?id=${encodeURIComponent(row?.id)}&type=${row?.asset_type}`}
-          prefetch={false}
-          onClick={() => router.refresh()}
-          className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-        >
-          <GoEye size={18} />
-        </Link>
-      ),
+      render: (row: any) => {
+        const rawStatus = (row?.status || "").toUpperCase();
+        const status = normalizeStatus(rawStatus);
+        const isInProgress = status === "IN_PROGRESS" || rawStatus === "PENDING" || rawStatus === "IN PROGRESS" || rawStatus === "PROCESSING" || rawStatus === "QUEUED" || rawStatus === "INITIALIZING" || rawStatus === "WAITING";
+        const targetPath = isInProgress ? "/scan-progress" : "/asset-view";
+        return (
+          <Link
+            href={`${targetPath}?id=${encodeURIComponent(row?.id)}&type=${row?.asset_type}`}
+            prefetch={false}
+            onClick={() => router.refresh()}
+            className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 shadow-theme-xs inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+          >
+            <GoEye size={18} />
+          </Link>
+        );
+      },
     },
   ];
 

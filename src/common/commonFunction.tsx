@@ -168,3 +168,10 @@ export const storage = (key: string, value?: any, expireMinutes?: number): any =
         return null;
     }
 };
+export const normalizeStatus = (status: string) => {
+    if (!status) return "Info";
+    // For UI purposes, we consider PENDING as IN_PROGRESS
+    const s = status.toUpperCase();
+    if (s === "PENDING") return "IN_PROGRESS";
+    return s;
+};

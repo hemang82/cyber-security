@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const url = "https://cyberapi.ipotrending.com/api/assets/list";
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/assets/list`;
 
     const response = await fetch(url,
       {
@@ -20,6 +20,7 @@ export async function POST(req: Request) {
     );
 
     apiLogger(url, "POST", body, response.status);
+    
     const responseData = await response.json();
 
     return NextResponse.json({

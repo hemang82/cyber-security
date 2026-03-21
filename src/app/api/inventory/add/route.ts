@@ -153,7 +153,7 @@ export async function POST(req: Request) {
             };
         }
 
-        const response = await fetch("https://cyberapi.ipotrending.com/api/assets/", fetchOptions!);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/assets/`, fetchOptions!);
         const data = await response.json();
 
         revalidatePath("/inventory", "page");

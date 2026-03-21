@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const baseUrl = "https://cyberapi.ipotrending.com/api/verification-history";
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/verification-history`;
     const queryString = body ? new URLSearchParams(Object.entries(body).map(([k, v]) => [k, String(v)])).toString() : "";
     const finalUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 

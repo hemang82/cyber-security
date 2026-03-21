@@ -1,0 +1,67 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { getScanList, listDomain } from "@/lib/server/ServerApiCall";
+import CyberDashboard from "@/components/cyber/Dashboard/CyberDashboard";
+import { TableSkeleton } from "@/components/common/Skeleton";
+
+export const metadata: Metadata = {
+  title: "CyberSafe Dashboard | Security Insights & Threat Monitoring",
+  description: "Comprehensive dashboard for real-time security monitoring, vulnerability scores, and critical threat alerts for your digital assets.",
+  keywords: ["CyberSecurity Dashboard", "Threat Monitoring", "Vulnerability Management", "Security Insights", "Real-time Security Alerts"],
+};
+
+export const dynamic = "force-dynamic";
+
+async function DashboardContent() {
+  const [InventoryData, DomainData] = await Promise.all([
+    getScanList({ page: "1", page_size: "25" }),
+    listDomain({ page: "1", page_size: "5" })
+  ]);
+
+  const scans = InventoryData?.scans || (Array.isArray(InventoryData) ? InventoryData : []);
+  const domains = Array.isArray(DomainData) ? DomainData : (DomainData?.data || []);
+
+  // Calculate risk counts
+  const riskCounts: any = {
+    Critical: 0,
+    High: 0,
+    Medium: 0,
+    Low: 0,
+    Safe: 0,
+    Info: 0
+  };
+
+  if (Array.isArray(scans)) {
+    scans.forEach((item: any) => {
+      const risk = (item?.risk_level || "").toLowerCase();
+      if (risk.includes("critical")) riskCounts.Critical++;
+      else if (risk.includes("high")) riskCounts.High++;
+      else if (risk.includes("medium")) riskCounts.Medium++;
+      else if (risk.includes("low")) riskCounts.Low++;
+      else if (risk.includes("safe")) riskCounts.Safe++;
+      else riskCounts.Info++;
+    });
+  }
+
+  return (
+    <CyberDashboard
+      inventory={scans}
+      riskCounts={riskCounts}
+      domains={domains}
+    />
+  );
+}
+
+import { DashboardSkeleton } from "@/components/common/Skeleton";
+
+export default function Page() {
+  return (
+    <div className="grid grid-cols-12 gap-4 md:gap-4">
+      <div className="col-span-12 font-outfit">
+        <Suspense fallback={<DashboardSkeleton />}>
+          <DashboardContent />
+        </Suspense>
+      </div>
+    </div>
+  );
+}

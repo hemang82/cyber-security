@@ -1,11 +1,17 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { useInventoryStore } from "@/store";
 import { BiPurchaseTag } from "react-icons/bi";
+import { RiHandbagLine, RiGlobalLine, RiShieldCheckLine, RiAlertLine, RiCheckDoubleLine, RiFileList3Line, RiShieldFlashLine, RiLock2Line, RiServerLine, RiSpyLine, RiCodeLine, RiBugLine, RiEarthLine, RiSpeedUpLine, RiEyeLine, RiApps2Line, RiCloudLine, RiSmartphoneLine, RiLogoutBoxLine } from "react-icons/ri";
+import { Modal } from "@/components/ui/modal";
+import { useModal } from "@/hooks/useModal";
+import { WarningModel } from "@/components/ui/modal/WarningModel";
+import { TOAST_SUCCESS } from "@/common/commonFunction";
 import {
   CalenderIcon,
   ChevronDownIcon,
@@ -17,7 +23,6 @@ import {
 } from "../icons/index";
 
 import { ImLink } from "react-icons/im";
-import { RiHandbagLine } from "react-icons/ri";
 import { LuLink } from "react-icons/lu";
 import { FaRegLightbulb } from "react-icons/fa6";
 import { PiBank } from "react-icons/pi";
@@ -56,6 +61,11 @@ const navItems: NavItem[] = [
     icon: <TbInfoTriangleFilled size={25} />,
     name: "Vulnerability",
     path: "/vulnerability",
+  },
+  {
+    icon: <RiShieldCheckLine size={25} />,
+    name: "Security Coverage",
+    path: "/security-coverage",
   },
 
   // {
@@ -150,6 +160,25 @@ const AppSidebar: React.FC = () => {
   const [pendingNavPath, setPendingNavPath] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const { isOpen, openModal, closeModal } = useModal();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (response.ok) {
+        router.push("/signin");
+        router.refresh();
+        TOAST_SUCCESS("Logout Successfully");
+      }
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      setIsLoggingOut(false);
+      closeModal();
+    }
+  };
 
   const handleNav = (path: string) => {
     if (path === pathname) {
@@ -205,15 +234,9 @@ const AppSidebar: React.FC = () => {
                 href={nav.path}
                 prefetch={true}
                 onClick={() => handleNav(nav.path!)}
-                className={`menu-item group ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                  }`}
+                className={`menu-item group ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
               >
-                <span
-                  className={`${isActive(nav.path)
-                    ? "menu-item-icon-active"
-                    : "menu-item-icon-inactive"
-                    }`}
-                >
+                <span className={`${isActive(nav.path) ? "menu-item-icon-active" : "menu-item-icon-inactive"}`} >
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
@@ -291,7 +314,7 @@ const AppSidebar: React.FC = () => {
 
     // Logic for Inventory sub-routes
     if (path === "/inventory") {
-      const inventorySubRoutes = ["/Inventory-view", "/add-inventory", "/Inventory-details", "/inventory-report"];
+      const inventorySubRoutes = ["/inventory-view", "/add-inventory", "/inventory-details", "/inventory-report"];
       return inventorySubRoutes.some(subPath => currentPath.toLowerCase().startsWith(subPath.toLowerCase()));
     }
 
@@ -423,11 +446,32 @@ const AppSidebar: React.FC = () => {
               </h2> */}
               {renderMenuItems(othersItems, "others")}
             </div>
-
           </div>
         </nav>
-        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
+
+      {/* Logout Section - Fixed at the very bottom */}
+      <div className="pb-8 px-4 mt-auto">
+        <button onClick={openModal} className={`flex items-center gap-3 p-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 transition-all shadow-sm border border-red-100 dark:border-red-900/20 w-full ${!isExpanded && !isHovered ? "justify-center" : "justify-start"}`} title="Logout" >
+          <RiLogoutBoxLine size={24} className="flex-shrink-0" />
+          {(isExpanded || isHovered || isMobileOpen) && (
+            <span className="font-bold text-sm uppercase tracking-wider">Logout</span>
+          )}
+        </button>
+      </div>
+
+      {/* Logout Confirmation Modal - Rendered via Portal to ensure screen-centering */}
+      {typeof document !== "undefined" && isOpen && createPortal(
+        <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[600px] m-4">
+          <WarningModel
+            title="Confirm Logout"
+            description="Are you sure you want to log out? You’ll need to sign in again to access your account."
+            onClose={closeModal}
+            handleModelSave={handleLogout}
+          />
+        </Modal>,
+        document.body
+      )}
 
     </aside>
   );

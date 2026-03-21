@@ -41,7 +41,7 @@ export default function SignUpForm() {
         company_name: data[ASSETS_INPUTS.COMPANY_NAME.name],
       };
 
-      const res = await fetch("/api/verify", {
+      const res = await fetch("/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: data[ASSETS_INPUTS.EMAIL.name] }),
@@ -66,7 +66,6 @@ export default function SignUpForm() {
       setLoader(false); // ✅ always stop loader
     }
   };
-
 
   return (<>
     {is_loading && <Spinner isActive={is_loading} />}
@@ -249,4 +248,5 @@ export default function SignUpForm() {
   </>
 
   );
+
 }

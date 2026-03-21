@@ -24,12 +24,13 @@ import { HiDownload } from "react-icons/hi";
 import { toPng } from "html-to-image";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
-import { FINDINGS_COLORS, VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
+import { VulnerabilityChart } from "@/components/charts/circular/VulnerabilityChart";
 import { GoEye } from "react-icons/go";
 import CountUp from "react-countup";
 import { pdf } from "@react-pdf/renderer";
 import { ApplicationReportPDF } from "../assetsReport/ApplicationReportPDF";
 import { Badge, Card, CyberColorClass, severityColor } from "./WebsiteDetails";
+import { ASSETS, FINDINGS_COLORS } from "../Assets/AssetsTypes";
 
 const StatCard = ({ title, value, icon: Icon, colorClass, subValue, trend }: any) => (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 flex flex-col justify-between h-full hover:shadow-md transition-shadow">

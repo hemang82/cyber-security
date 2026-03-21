@@ -92,7 +92,7 @@ export default function PreviewPage({ resDomainList }: any) {
                         setLoading(true); // Keep loading state until file is uploaded
 
                         try {
-                            const uploadRes = await fetch("https://cyberapi.ipotrending.com/api/assets/upload-file", {
+                            const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/assets/upload-file`, {
                                 method: "POST",
                                 body: uploadFormData,
                             });
@@ -107,7 +107,6 @@ export default function PreviewPage({ resDomainList }: any) {
                 TOAST_SUCCESS(res?.message || "Asset added successfully");
 
                 // Now safely reset and redirect
-                resetInventory();
                 window.location.replace("/inventory");
             } else {
                 TOAST_ERROR(res?.message || "Failed to add asset");
@@ -141,7 +140,7 @@ export default function PreviewPage({ resDomainList }: any) {
                                     <h5 className="text-sm font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4 border-b border-gray-100 dark:border-gray-800 pb-2">
                                         Asset Information
                                     </h5>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className={`grid grid-cols-1 md:grid-cols-2 ${assets_type?.value === ASSETS_KEYS?.app ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-6`}>
                                         <div>
                                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Asset Type</p>
                                             <p className="text-md font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
@@ -166,18 +165,31 @@ export default function PreviewPage({ resDomainList }: any) {
                                             </div>
                                         )}
                                         {assets_type?.value === ASSETS_KEYS?.app && (
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">App File</p>
-                                                <p className="text-md font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
-                                                    {(() => {
-                                                        const fileData = assets_details?.value?.[ASSETS_INPUTS.APP_FILE.name];
-                                                        if (fileData instanceof FileList) {
-                                                            return fileData[0]?.name || "N/A";
-                                                        }
-                                                        return fileData?.name || "N/A";
-                                                    })()}
-                                                </p>
-                                            </div>
+                                            <>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Platform</p>
+                                                    <p className="text-md font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800 capitalize flex items-center gap-2">
+                                                        {assets_details?.value?.platform === 'android' ? (
+                                                            <svg viewBox="0 0 512 512" height="16" width="16" className="text-brand-600"><path fill="currentColor" d="M176.4 468.1h-43.2l-.2-65.7h43.4v65.7zm159.2 0h-43.2l-.2-65.7h43.4v65.7zM89.1 213.6c-23.9 0-43.2 19.3-43.2 43.1v100.8c0 23.9 19.3 43.1 43.2 43.1s43.2-19.3 43.2-43.1V256.7c0-23.8-19.3-43.1-43.2-43.1zm333.8 0c-23.9 0-43.2 19.3-43.2 43.1v100.8c0 23.9 19.3 43.1 43.2 43.1s43.2-19.3 43.2-43.1V256.7c0-23.8-19.3-43.1-43.2-43.1zM113.3 170.4h285.4v187.7c0 23.9-19.3 43.1-43.2 43.1H156.5c-23.9 0-43.2-19.3-43.2-43.1V170.4zm228-76.3l31.5-39.3c5.3-6.6 4.3-16.3-2.3-21.6-6.6-5.3-16.3-4.3-21.6 2.3l-34.5 43c-18.7-7.8-39.4-12.1-61.2-12.1s-42.5 4.3-61.2 12.1l-34.5-43c-5.3-6.6-15-7.6-21.6-2.3-6.6 5.3-7.6 15-2.3 21.6l31.5 39.3c-28.5 17.1-48.4 46.5-52.6 81.1h281.3c-4.1-34.5-24-64-52.5-81.1z" /></svg>
+                                                        ) : (
+                                                            <svg viewBox="0 0 384 512" height="16" width="16" className="text-black"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" /></svg>
+                                                        )}
+                                                        {assets_details?.value?.platform || "N/A"}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">App File</p>
+                                                    <p className="text-md font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
+                                                        {(() => {
+                                                            const fileData = assets_details?.value?.[ASSETS_INPUTS.APP_FILE.name];
+                                                            if (fileData instanceof FileList) {
+                                                                return fileData[0]?.name || "N/A";
+                                                            }
+                                                            return fileData?.name || "N/A";
+                                                        })()}
+                                                    </p>
+                                                </div>
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -270,7 +282,7 @@ export default function PreviewPage({ resDomainList }: any) {
                                     <h5 className="text-sm font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4 border-b border-gray-100 dark:border-gray-800 pb-2">
                                         Contact & Ownership
                                     </h5>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    <div className={`grid grid-cols-1 md:grid-cols-2 ${assets_type?.value === ASSETS_KEYS?.app ? 'lg:grid-cols-2' : 'lg:grid-cols-4'} gap-6`}>
                                         <div>
                                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Contact Name</p>
                                             <p className="text-md font-semibold text-gray-800 dark:text-white">

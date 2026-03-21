@@ -54,7 +54,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
 
     <div className={`rounded-2xl ${'border-b border-gray-200 '}  bg-white dark:bg-white/[0.03] ${className}`} >
 
-      {<div className={`flex flex-col justify-between gap-5 ${'border-b border-gray-200'} px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800`}>
+      {<div className={`flex flex-col justify-between gap-5 ${title || desc && 'border-b border-gray-200'} px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800`}>
         {title || desc && <div>
 
           <h3 className="text-base font-medium text-gray-800 dark:text-white/90">
@@ -97,6 +97,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
           )}
 
         </div>
+
       </div>
       }
       {/* Card Body */}
