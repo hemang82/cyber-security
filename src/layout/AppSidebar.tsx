@@ -62,6 +62,11 @@ const navItems: NavItem[] = [
     name: "Vulnerability",
     path: "/vulnerability",
   },
+  // {
+  //   icon: <UserCircleIcon size={25} />,
+  //   name: "User",
+  //   path: "/user",
+  // },
   {
     icon: <RiShieldCheckLine size={25} />,
     name: "Security Coverage",
@@ -328,12 +333,18 @@ const AppSidebar: React.FC = () => {
       return currentPath.startsWith("/vulnerability");
     }
 
+    // Logic for User sub-routes
+    // if (path === "/user") {
+    //   const userSubRoutes = ["/user-view", "/add-user", "/user-details"];
+    //   return userSubRoutes.some(subPath => currentPath.toLowerCase().startsWith(subPath.toLowerCase()));
+    // }
+
     // Default check: if the path is a prefix of the pathname
     return path !== "/" && currentPath.startsWith(path);
   }, [pathname, pendingNavPath]);
+
   const matchedSubmenu = useMemo(() => {
     let result: { type: "main" | "others"; index: number } | null = null;
-
     (["main", "others"] as const).forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
 
@@ -345,7 +356,6 @@ const AppSidebar: React.FC = () => {
         });
       });
     });
-
     return result;
   }, [isActive]);
 

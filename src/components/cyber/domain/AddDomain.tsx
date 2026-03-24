@@ -1,24 +1,14 @@
 "use client"
 
 import Input from "@/components/form/input/InputField";
-import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
-import { ASSETS_INPUTS } from "../Inventory/Assets/AddAssets";
 import { useRouter } from "next/navigation";
-
 import { CODES } from "@/common/constant";
 import { TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
-import { useInventoryStore } from "@/store";
-
-type Product = {
-    name: string;
-    price: number;
-    quantity: number;
-    discount: number;
-};
+import { Skeleton } from "@/components/common/Skeleton";
 
 export const DOMAIN_INPUTS = {
     DOMAIN_URL: {
@@ -26,22 +16,15 @@ export const DOMAIN_INPUTS = {
         name: "domain_url",
         validation: "Enter domain url.",
     },
-    TXT_RECORD: {
-        placeholder: "Enter TXT Record",
-        name: "txt_record",
-        validation: "Enter TXT Record.",
-    }
 }
 
-export default function AddDomain() {
+export default function AddDomain({ onSuccess }: { onSuccess?: () => void }) {
     const router = useRouter();
-
-    const { setLoader } = useInventoryStore();
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const methods = useForm({ mode: "onBlur" });
 
     const onSubmit = async (data: any) => {
-        setLoader(true);
+        setIsSubmitting(true);
         try {
             const response = await fetch("/api/domain/add", {
                 method: "POST",
@@ -53,7 +36,6 @@ export default function AddDomain() {
                 }),
             });
 
-            // Optional: check HTTP status first
             if (!response.ok) {
                 throw new Error(`HTTP error ${response.status}`);
             }
@@ -62,8 +44,10 @@ export default function AddDomain() {
 
             if (res?.code === CODES?.SUCCESS) {
                 TOAST_SUCCESS("Domain added successfully");
-                // router.push(`/domain`);
-                window.location.replace(`/domain`);
+                if (onSuccess) {
+                    onSuccess();
+                }
+                router.refresh();
             } else {
                 TOAST_ERROR(res?.message || "Something went wrong");
             }
@@ -72,20 +56,33 @@ export default function AddDomain() {
             console.error("Add domain error:", error);
             TOAST_ERROR(error?.message || "Request failed");
         } finally {
-            setLoader(false);
+            setIsSubmitting(false);
         }
     };
 
+    if (isSubmitting) {
+        return (
+            <div className="space-y-6 animate-in fade-in duration-500">
+                <div className="space-y-3">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-12 w-full rounded-xl" />
+                </div>
+                <div className="flex justify-center mt-10">
+                    <button type="submit" className="px-10 py-3 bg-brand-500 hover:bg-brand-600 active:scale-95 text-white rounded-xl text-sm font-bold shadow-xl shadow-brand-500/20 transition-all flex items-center gap-2" >
+                        Submit
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-    return (<>
+    return (
         <FormProvider {...methods}>
             <form className=" " onSubmit={methods.handleSubmit(onSubmit)}>
-                <div className="p-2 sm:p-4 dark:border-gray-800 bg-white  ">
-                    {/* <form className="space-y-6"> */}
-                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                        {/* Assets Name */}
+                <div className=" dark:border-gray-800 bg-white  ">
+                    <div className="grid grid-cols-1 gap-5 ">
                         <div>
-                            <Label>Add Domain</Label>
+                            <Label>Add Domain <span className="text-red-500">*</span></Label>
                             <Input
                                 type={INPUT_TYPE.TEXT}
                                 placeholder={DOMAIN_INPUTS.DOMAIN_URL.placeholder}
@@ -99,33 +96,15 @@ export default function AddDomain() {
                                 }}
                             />
                         </div>
-
-                        {/* Web URL */}
-                        {/* <div>
-                            <Label>TXT Record (Auto Genrate)</Label>
-                            <Input
-                                type={INPUT_TYPE?.TEXT}
-                                placeholder={DOMIN_INPUTS?.TXT_RECORD?.placeholder}
-                                name={DOMIN_INPUTS.TXT_RECORD.name}
-                                defaultValue={"asfghjkl1234567890qwertyuiop"}
-                                rules={{
-                                    required: DOMIN_INPUTS.TXT_RECORD.validation,
-                                }}
-                                disabled={true}
-                            />
-                        </div> */}
-
                     </div>
-                    {/* </form> */}
                 </div >
 
-                <div className="flex justify-center m-4">
-                    <button type="submit" className="bg-blue-600 hover:bg-blue-800 text-white rounded px-6 py-2" >
+                <div className="flex justify-center mt-10">
+                    <button type="submit" className="px-10 py-3 bg-brand-500 hover:bg-brand-600 active:scale-95 text-white rounded-xl text-sm font-bold shadow-xl shadow-brand-500/20 transition-all flex items-center gap-2" >
                         Submit
                     </button>
                 </div>
-
             </form>
-        </FormProvider>
-    </>)
+        </FormProvider >
+    );
 }

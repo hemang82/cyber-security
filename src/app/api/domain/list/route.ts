@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { CODES } from "@/common/constant";
+import { CODES, BACKEND_STATUS } from "@/common/constant";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
+import { handleBackendResponse } from "@/common/api-handler";
 
 export const runtime = "nodejs";
 
@@ -16,28 +17,22 @@ export async function POST(req: Request) {
 
     console.log("External Backend Call:", { url: finalUrl, method: "GET" });
 
+    const cookieStore = await cookies();
+    const token = cookieStore.get(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE)?.value;
+
     const response = await fetch(finalUrl,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         cache: "no-store",
       }
     );
 
-    if (!response.ok) {
-      throw new Error("External API failed");
-    }
-
     const responseData = await response.json();
-
-    return NextResponse.json({
-      code: CODES?.SUCCESS,
-      message: responseData?.message,
-      success: true,
-      data: responseData?.data || responseData,
-    });
+    return handleBackendResponse(responseData, { defaultErrorMsg: "Failed to fetch verification history" });
 
   } catch (error) {
     console.error("Domain list API Error:", error);

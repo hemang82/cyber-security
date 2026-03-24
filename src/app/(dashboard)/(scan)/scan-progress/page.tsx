@@ -10,18 +10,18 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function ScanProgressPage({ searchParams, }: { searchParams: Promise<{ id?: string }> }) {
+export default async function ScanProgressPage({ searchParams, }: { searchParams: Promise<{ id?: string; name?: string; type?: string }> }) {
     const params = await searchParams;
     const resAssetsDetails = await getInventoryView({ id: params.id });
     const scanData = resAssetsDetails?.data || resAssetsDetails;
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-50/50 dark:bg-gray-900/50">
-            <PageBreadcrumb pageTitle="Analysis in Progress" />
-            <div className="p-4 lg:p-10">
-                <ScanInProgress 
-                    assetName={scanData?.asset_name || scanData?.target || "your asset"} 
-                    assetType={scanData?.asset_type || ""}
+            <div className="">
+                <PageBreadcrumb pageTitle="Analysis in Progress" parentName="Scans" parentPath="/scan" />
+                <ScanInProgress
+                    assetName={scanData?.asset_name || scanData?.target || params.name || "your asset"}
+                    assetType={scanData?.asset_type || params.type || ""}
                 />
             </div>
         </div>

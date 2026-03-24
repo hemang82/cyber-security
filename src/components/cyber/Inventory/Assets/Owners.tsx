@@ -10,11 +10,18 @@ import { ASSETS_INPUTS } from "./AddAssets";
 import { INPUT_PATTERN, TAB_KEY } from "@/common/commonVariable";
 import { useInventoryStore } from "@/store";
 import { useEffect } from "react";
+import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
+import { useAuthStore } from "@/store/authStore";
 
 
 export default function Owners() {
 
     const { owners, setOwners, setActiveTab } = useInventoryStore();
+    const authData = useAuthStore((state) => state.authData);
+    const { is_login, role, user } = authData ?? { is_login: false, role: "", user: null };
+
+    console.log("authData", user);
+
 
     const methods = useForm({
         mode: "onSubmit", // Trigger validation only on submit
@@ -56,7 +63,7 @@ export default function Owners() {
                                 <Select
                                     {...field}
                                     options={[
-                                        { value: "admin", label: "Admin" },
+                                        { value: user?.id, label: user?.name },
                                     ]}
                                     placeholder="Select Option"
                                 />
@@ -76,8 +83,8 @@ export default function Owners() {
                             rules={{
                                 required: ASSETS_INPUTS.OWNER.validation,
                             }}
-
                         /> */}
+
                         <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
                             <ChevronDownIcon />
                         </span>

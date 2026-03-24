@@ -122,7 +122,7 @@ export const GridSkeleton: React.FC = () => {
 
 export const DetailsSkeleton: React.FC = () => {
   return (
-    <div className="mx-auto max-w-[1800px] p-4 lg:p-6 space-y-6">
+    <div className="mx-auto max-w-[1800px] p-2 lg:p-4 space-y-6">
       {/* Hero Skeleton */}
       <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 p-8 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -285,6 +285,101 @@ export const DashboardSkeleton: React.FC = () => {
               style={{ height: `${20 + Math.random() * 70}%` }}
             />
           ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ScanSkeleton: React.FC = () => {
+  return (
+    <div className="mx-auto max-w-4xl p-0 lg:p-4 space-y-10 flex flex-col items-center">
+      <div className="relative mb-4">
+        <div className="h-40 w-40 rounded-full animate-pulse bg-gray-200 dark:bg-gray-800" />
+      </div>
+      <div className="w-full space-y-4 text-center">
+        <div className="flex justify-center">
+          <Skeleton className="h-10 w-64 lg:w-96" />
+        </div>
+        <div className="flex justify-center">
+          <Skeleton className="h-6 w-48 lg:w-80" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div key={i} className="p-6 rounded-3xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-white/[0.03] flex items-center gap-5">
+            <Skeleton className="h-16 w-16 rounded-2xl shrink-0" />
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-5 w-full" />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-full p-8 rounded-3xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-white/[0.03] space-y-8">
+        <div className="flex justify-start">
+           <Skeleton className="h-4 w-48 mb-6" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="space-y-6">
+              <div className="flex gap-4">
+                <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-full" />
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-full" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const AddScanSkeleton: React.FC = () => {
+  return (
+    <div className="mx-auto space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-10">
+        <div className="flex flex-col gap-2">
+           <Skeleton className="h-8 w-48 rounded-lg" />
+        </div>
+        <Skeleton className="h-4 w-64 rounded-lg" />
+      </div>
+
+      <div className="rounded-2xl border-b border-gray-200 bg-white dark:bg-white/[0.03]">
+        <div className="p-4 sm:p-6">
+          <div className="rounded-xl border border-gray-200 p-6 dark:border-gray-800 space-y-6">
+            <div className="border-b border-gray-200 dark:border-gray-800 pb-px">
+              <div className="flex space-x-2">
+                <Skeleton className="h-10 w-16 !border-b-2 border-transparent" />
+                <Skeleton className="h-10 w-16 !border-b-2 border-transparent" />
+                <Skeleton className="h-10 w-16 !border-b-2 border-transparent" />
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="rounded-2xl border border-gray-200 p-5 dark:border-gray-800 dark:bg-white/[0.03] space-y-4">
+                    <Skeleton className="w-12 h-12 rounded-xl" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

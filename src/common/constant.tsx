@@ -30,6 +30,37 @@ export const TEMP_URL = PRODUCTION ? "https://cyber-security-rust.vercel.app" : 
 
 // # ----------------------------- API Codes --------------------------------------
 
+export const SCAN_STATUS = {
+    // Backend/Flow Statuses
+    IN_PROGRESS: "IN_PROGRESS",
+    PENDING: "PENDING", // Maps to IN_PROGRESS in UI
+    PROCESSING: "PROCESSING",
+    QUEUED: "QUEUED",
+    INITIALIZING: "INITIALIZING",
+    WAITING: "WAITING",
+    SCHEDULED: "SCHEDULED",
+    COMPLETED: "COMPLETED",
+    SUCCESS: "SUCCESS",
+    FAILED: "FAILED",
+    ERROR: "ERROR",
+
+    // UI/Result Statuses (Severity/Colors)
+    GREEN: "Green",
+    BLUE: "Blue",
+    ORANGE: "Orange",
+    RED: "Red",
+    DARK_RED: "DarkRed",
+    YELLOW: "Yellow",
+    INFO: "Info",
+    CRITICAL: "Critical",
+    HIGH: "High",
+    MEDIUM: "Medium",
+    LOW: "Low",
+    PASS: "PASS",
+    FAIL: "FAIL",
+    WARN: "WARN"
+} as const;
+
 export const CODES = {
     SUCCESS: 200,
     ERROR: 550,
@@ -41,6 +72,13 @@ export const CODES = {
     UNAUTHORIZED: 401,
     REFRESH_TOKEN_EXPIRED: 410,
     CREATED: 201
+} as const;
+
+export const BACKEND_STATUS = {
+    SUCCESS: 1,
+    ERROR: 0,
+    NOT_FOUND: 2,
+    UNAUTHORIZED: -1,
 } as const;
 
 export default CONSTENT;

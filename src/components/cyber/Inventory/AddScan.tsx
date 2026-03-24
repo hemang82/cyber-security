@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import AssetsType from "./Assets/AssetsTypes";
 import Credentials from "./Assets/Credentials";
 import Owners from "./Assets/Owners";
-import PreviewPage from "./Assets/PreviewPage";
+import PreviewPage from "./AssetsScan/PreviewPage";
 import { useInventoryStore } from "@/store";
 import { TAB_KEY } from "@/common/commonVariable";
 import AddAssets from "./AssetsScan/AddAssets";
@@ -57,9 +57,9 @@ export default function AddScan({ resInventoryList, resDomainList }: any) {
                             {/* <button className={tabClass(TAB_KEY.OWNERS, owners)} onClick={() => { owners?.is_valid && setActiveTab(TAB_KEY.OWNERS) }}>
                                 Owners
                             </button> */}
-                            {/* <button className={tabClass(TAB_KEY.PREVIEW, final_validate_data)} onClick={() => { final_validate_data?.is_valid && setActiveTab(TAB_KEY.PREVIEW) }}>
+                            <button className={tabClass(TAB_KEY.PREVIEW, final_validate_data)} onClick={() => { final_validate_data?.is_valid && setActiveTab(TAB_KEY.PREVIEW) }}>
                                 Preview
-                            </button> */}
+                            </button>
                         </nav>
                     </div>
 

@@ -182,7 +182,7 @@ export default function VerifyForm() {
                                     </div>
 
                                     <div>
-                                        <Button type="submit" className="w-full" size="sm">
+                                        <Button type="submit" className="w-full" size="sm" loading={is_loading}>
                                             Verify OTP
                                         </Button>
                                     </div>

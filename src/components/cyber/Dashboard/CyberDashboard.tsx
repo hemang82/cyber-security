@@ -309,95 +309,93 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
 
                 {/* Left Column: Charts & Domain Info */}
                 <div className="space-y-6 lg:col-span-1">
-
-
                     {/* Domain Information Card */}
-                    {latestAsset && (
-                        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                                {(latestAsset?.asset_type === 'app' || latestAsset?.type === 'app') ? <RiSmartphoneLine className="text-brand-500" /> : (latestAsset?.asset_type === 'cloud' || latestAsset?.type === 'cloud') ? <RiCloudLine className="text-blue-500" /> : <RiEarthLine className="text-blue-500" />}
-                                Latest Asset Insight
-                            </h3>
-                            <div className="space-y-4">
-                                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold">Asset</p>
-                                    <p className="font-medium text-gray-800 dark:text-white truncate">{safeText(latestAsset?.name || latestAsset?.asset_name || latestAsset?.name || latestAsset?.target)}</p>
-                                </div>
+                    {/* {latestAsset && ( */}
+                    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                            {(latestAsset?.asset_type === 'app' || latestAsset?.type === 'app') ? <RiSmartphoneLine className="text-brand-500" /> : (latestAsset?.asset_type === 'cloud' || latestAsset?.type === 'cloud') ? <RiCloudLine className="text-blue-500" /> : <RiEarthLine className="text-blue-500" />}
+                            Latest Asset Insight
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <p className="text-xs text-gray-500 uppercase font-semibold">Asset</p>
+                                <p className="font-medium text-gray-800 dark:text-white truncate">{safeText(latestAsset?.name || latestAsset?.asset_name || latestAsset?.name || latestAsset?.target)}</p>
+                            </div>
 
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">Score</p>
-                                        <div className="flex items-center gap-2">
-                                            <span className={`text-sm font-bold`}>
-                                                {Number(latestAsset?.security_score || latestAsset?.full_response?.security_score) || 0} / 100
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">Risk Level</p>
-                                        <span className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium ${CyberColorClass[latestAsset?.risk_color as keyof typeof CyberColorClass]}`}>
-                                            {safeText(latestAsset?.risk_level) || "Unknown"}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold">Score</p>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`text-sm font-bold`}>
+                                            {Number(latestAsset?.security_score || latestAsset?.full_response?.security_score) || 0} 
                                         </span>
                                     </div>
                                 </div>
-
-                                {/* Type Specific Data */}
-                                {(latestAsset?.asset_type === 'app' || latestAsset?.type === 'app') ? (
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold">Findings</p>
-                                            <p className="font-medium text-gray-800 dark:text-white">
-                                                {latestAsset?.full_response?.app_info?.permissions_count || latestAsset?.finding_count || '0'}
-                                            </p>
-                                        </div>
-                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold">Platform</p>
-                                            <p className="font-medium text-gray-800 dark:text-white">
-                                                {latestAsset?.full_response?.app_info?.platform || (latestAsset?.type === 'app' ? 'Android' : 'N/A')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ) : (latestAsset?.asset_type === 'cloud' || latestAsset?.type === 'cloud') ? (
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold">Provider</p>
-                                            <p className="font-medium text-gray-800 dark:text-white">
-                                                {latestAsset?.full_response?.cloud_provider || latestAsset?.cloud_provider || 'N/A'}
-                                            </p>
-                                        </div>
-                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold">Resources</p>
-                                            <p className="font-medium text-gray-800 dark:text-white">
-                                                {latestAsset?.full_response?.summary?.resources_scanned || 'N/A'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold">SSL Valid</p>
-                                            <p className={`font-medium ${sslInfo?.valid ? 'text-green-600' : 'text-red-500'}`}>
-                                                {sslInfo?.valid ? 'Yes' : 'No'}
-                                            </p>
-                                        </div>
-                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold">Days Left</p>
-                                            <p className="font-medium text-gray-800 dark:text-white">
-                                                {sslInfo?.days_remaining || 'N/A'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
                                 <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold">Scan Date</p>
-                                    <p className="font-medium text-gray-800 dark:text-white truncate">
-                                        {formatDate(latestAsset?.scanned_at || latestAsset?.created_at, DATE_FORMAT.FULL_DAY_MONTH_YEAR)}
-                                    </p>
+                                    <p className="text-xs text-gray-500 uppercase font-semibold">Risk Level</p>
+                                    <span className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium ${CyberColorClass[latestAsset?.risk_color as keyof typeof CyberColorClass]}`}>
+                                        {safeText(latestAsset?.risk_level) || "Unknown"}
+                                    </span>
                                 </div>
                             </div>
+
+                            {/* Type Specific Data */}
+                            {(latestAsset?.asset_type === 'app' || latestAsset?.type === 'app') ? (
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p className="text-xs text-gray-500 uppercase font-semibold">Findings</p>
+                                        <p className="font-medium text-gray-800 dark:text-white">
+                                            {latestAsset?.full_response?.app_info?.permissions_count || latestAsset?.finding_count || '0'}
+                                        </p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p className="text-xs text-gray-500 uppercase font-semibold">Platform</p>
+                                        <p className="font-medium text-gray-800 dark:text-white">
+                                            {latestAsset?.full_response?.app_info?.platform || (latestAsset?.type === 'app' ? 'Android' : 'N/A')}
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (latestAsset?.asset_type === 'cloud' || latestAsset?.type === 'cloud') ? (
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p className="text-xs text-gray-500 uppercase font-semibold">Provider</p>
+                                        <p className="font-medium text-gray-800 dark:text-white">
+                                            {latestAsset?.full_response?.cloud_provider || latestAsset?.cloud_provider || 'N/A'}
+                                        </p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p className="text-xs text-gray-500 uppercase font-semibold">Resources</p>
+                                        <p className="font-medium text-gray-800 dark:text-white">
+                                            {latestAsset?.full_response?.summary?.resources_scanned || 'N/A'}
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p className="text-xs text-gray-500 uppercase font-semibold">SSL Valid</p>
+                                        <p className={`font-medium ${sslInfo?.valid ? 'text-green-600' : 'text-red-500'}`}>
+                                            {sslInfo?.valid ? 'Yes' : 'No'}
+                                        </p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p className="text-xs text-gray-500 uppercase font-semibold">Days Left</p>
+                                        <p className="font-medium text-gray-800 dark:text-white">
+                                            {sslInfo?.days_remaining || 'N/A'}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <p className="text-xs text-gray-500 uppercase font-semibold">Scan Date</p>
+                                <p className="font-medium text-gray-800 dark:text-white truncate">
+                                    {formatDate(latestAsset?.scanned_at || latestAsset?.created_at, DATE_FORMAT.FULL_DAY_MONTH_YEAR)}
+                                </p>
+                            </div>
                         </div>
-                    )}
+                    </div>
+                    {/* )} */}
                 </div>
 
                 {/* Right Column: Recent Scans Table */}

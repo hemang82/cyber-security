@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 export async function POST(req: Request) {
     try {
         const cookieStore = await cookies();
+        const token = cookieStore.get(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE)?.value;
         const contentType = req.headers.get("content-type") || "";
         let newItem: any;
 
@@ -96,7 +97,10 @@ export async function POST(req: Request) {
             };
             fetchOptions = {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(response2),
                 cache: "no-store",
             };
@@ -111,7 +115,10 @@ export async function POST(req: Request) {
             };
             fetchOptions = {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(response2),
                 cache: "no-store",
             };
@@ -124,7 +131,9 @@ export async function POST(req: Request) {
             formData.append("name", baseFields.name ?? "");
             formData.append("type", baseFields.type ?? "");
             formData.append("description", baseFields.description ?? "");
-            formData.append("tags", baseFields.tags ?? "");
+            // formData.append("tags", baseFields.tags ?? "");
+            formData.append("tags", newItem?.assets_details?.value?.platform ?? "");
+            formData.append("platform", newItem?.assets_details?.value?.platform ?? "");
             formData.append("contact_name", baseFields.contact_name ?? "");
             formData.append("contact_email", baseFields.contact_email ?? "");
             formData.append("contact_phone", baseFields.contact_phone ?? "");
@@ -136,6 +145,9 @@ export async function POST(req: Request) {
 
             fetchOptions = {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
                 // ⚠️ Content-Type set nahi karva — browser automatically set karse boundary sathe
                 body: formData,
                 cache: "no-store",
@@ -147,7 +159,10 @@ export async function POST(req: Request) {
             response2 = { ...baseFields };
             fetchOptions = {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(response2),
                 cache: "no-store",
             };

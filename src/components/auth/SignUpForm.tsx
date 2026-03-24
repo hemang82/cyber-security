@@ -23,7 +23,11 @@ export default function SignUpForm() {
 
   const [is_loading, setLoader] = useState(false);
 
-  const methods = useForm({ mode: "onBlur" });
+  const methods = useForm({
+    mode: "onSubmit", // Trigger validation only on submit
+    reValidateMode: "onChange" // Re-validate on change after first submission attempt
+  });
+  
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -221,8 +225,8 @@ export default function SignUpForm() {
                   {/* </div> */}
 
                   <div>
-                    <Button type={'submit'} className="w-full" size="sm" >
-                      Sign in
+                    <Button type={'submit'} className="w-full" size="sm" loading={is_loading}>
+                      Sign Up
                     </Button>
                   </div>
 

@@ -1,0 +1,69 @@
+﻿src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(49,44): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(names: readonly ("purpose" | "scan_type" | "time_slot")[], defaultValue?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): readonly string[]', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'readonly ("purpose" | "scan_type" | "time_slot")[]'.
+  Overload 2 of 4, '(name: "purpose" | "scan_type" | "time_slot", defaultValue?: string | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+  Overload 3 of 4, '(callback: WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>, defaultValues?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): Subscription', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(137,26): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(145,26): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(200,45): error TS2322: Type 'string' is not assignable to type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(213,78): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(214,78): error TS2345: Argument of type '"inventory_id"' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(218,78): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(221,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(222,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(223,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(225,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(226,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(227,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(228,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(230,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(231,82): error TS2345: Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(252,97): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(names: readonly ("purpose" | "scan_type" | "time_slot")[], defaultValue?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): readonly string[]', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'readonly ("purpose" | "scan_type" | "time_slot")[]'.
+  Overload 2 of 4, '(name: "purpose" | "scan_type" | "time_slot", defaultValue?: string | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+  Overload 3 of 4, '(callback: WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>, defaultValues?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): Subscription', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(257,49): error TS2322: Type 'string' is not assignable to type '"purpose" | "scan_type" | "time_slot"'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(273,42): error TS2367: This comparison appears to be unintentional because the types 'readonly string[]' and 'PROVIDER_KEY' have no overlap.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(277,147): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(names: readonly ("purpose" | "scan_type" | "time_slot")[], defaultValue?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): readonly string[]', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'readonly ("purpose" | "scan_type" | "time_slot")[]'.
+  Overload 2 of 4, '(name: "purpose" | "scan_type" | "time_slot", defaultValue?: string | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+  Overload 3 of 4, '(callback: WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>, defaultValues?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): Subscription', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(281,138): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(names: readonly ("purpose" | "scan_type" | "time_slot")[], defaultValue?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): readonly string[]', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'readonly ("purpose" | "scan_type" | "time_slot")[]'.
+  Overload 2 of 4, '(name: "purpose" | "scan_type" | "time_slot", defaultValue?: string | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+  Overload 3 of 4, '(callback: WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>, defaultValues?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): Subscription', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(285,42): error TS2367: This comparison appears to be unintentional because the types 'readonly string[]' and 'PROVIDER_KEY' have no overlap.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(289,147): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(names: readonly ("purpose" | "scan_type" | "time_slot")[], defaultValue?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): readonly string[]', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'readonly ("purpose" | "scan_type" | "time_slot")[]'.
+  Overload 2 of 4, '(name: "purpose" | "scan_type" | "time_slot", defaultValue?: string | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+  Overload 3 of 4, '(callback: WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>, defaultValues?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): Subscription', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(293,147): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(names: readonly ("purpose" | "scan_type" | "time_slot")[], defaultValue?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): readonly string[]', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'readonly ("purpose" | "scan_type" | "time_slot")[]'.
+  Overload 2 of 4, '(name: "purpose" | "scan_type" | "time_slot", defaultValue?: string | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+  Overload 3 of 4, '(callback: WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>, defaultValues?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): Subscription', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>'.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(297,42): error TS2367: This comparison appears to be unintentional because the types 'readonly string[]' and 'PROVIDER_KEY' have no overlap.
+src/components/cyber/Inventory/AssetsScan/AddAssets.tsx(300,134): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(names: readonly ("purpose" | "scan_type" | "time_slot")[], defaultValue?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): readonly string[]', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'readonly ("purpose" | "scan_type" | "time_slot")[]'.
+  Overload 2 of 4, '(name: "purpose" | "scan_type" | "time_slot", defaultValue?: string | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '"purpose" | "scan_type" | "time_slot"'.
+  Overload 3 of 4, '(callback: WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>, defaultValues?: { purpose?: string | undefined; scan_type?: string | undefined; time_slot?: string | undefined; } | undefined): Subscription', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'WatchObserver<{ purpose: string; scan_type: string; time_slot: string; }>'.
+

@@ -1,3 +1,4 @@
+"use client";
 import { useModal } from "@/hooks/useModal";
 import Link from "next/link";
 import React from "react";

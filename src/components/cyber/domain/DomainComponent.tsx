@@ -10,6 +10,10 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMdRefresh } from "react-icons/io";
 import { IoCopyOutline, IoCheckmarkSharp } from "react-icons/io5";
+import ComponentCard from "@/components/common/ComponentCard";
+import { Modal } from "@/components/ui/modal";
+import { useModal } from "@/hooks/useModal";
+import AddDomain from "./AddDomain";
 
 export default function DomainComponent({ resDomainList }: any) {
     const list = Array.isArray(resDomainList?.domains) ? resDomainList.domains : (Array.isArray(resDomainList?.data) ? resDomainList.data : (Array.isArray(resDomainList) ? resDomainList : []));
@@ -20,6 +24,7 @@ export default function DomainComponent({ resDomainList }: any) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
 
+    const { isOpen, openModal, closeModal } = useModal();
     const [refreshingId, setRefreshingId] = useState<number | null>(null);
     const [copiedId, setCopiedId] = useState<number | null>(null);
 
@@ -169,19 +174,19 @@ export default function DomainComponent({ resDomainList }: any) {
 
             const res: any = await response.json();
 
-            if (res?.code == CODES?.SUCCESS) {
-                // Update the specific domain's status in the local state
-                setDomains((prev: any[]) =>
-                    prev.map(item =>
-                        item.id === row.id
-                            ? { ...item, status: res?.data?.status }
-                            : item
-                    )
-                );
-                TOAST_SUCCESS("Status refresh successfully");
-            } else {
-                TOAST_ERROR("Something went wrong")
-            }
+            // if (res?.code == CODES?.SUCCESS) {
+            // Update the specific domain's status in the local state
+            setDomains((prev: any[]) =>
+                prev.map(item =>
+                    item.id === row.id
+                        ? { ...item, status: res?.data?.status }
+                        : item
+                )
+            );
+            TOAST_SUCCESS("Status refresh successfully");
+            // } else {
+            //     TOAST_ERROR("Something went wrong")
+            // }
         } catch (error: any) {
             TOAST_ERROR(error.message || "Something went wrong");
         } finally {
@@ -198,28 +203,51 @@ export default function DomainComponent({ resDomainList }: any) {
 
     return (
         <>
+            <ComponentCard
+                title="All Domains"
+                desc="Note: TXT records may take some time to appear. Please click the refresh button after a few minutes."
+                buttonName={"Add Domain"}
+                onClick={openModal}
+            >
 
-            <DynamicTable columns={columns} data={currentData} className="min-w-[1000px]" />
+                <DynamicTable columns={columns} data={currentData} className="min-w-[1000px]" />
 
-            <div className="mt-4 flex flex-col items-center justify-between gap-4 md:flex-row">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Showing {totalCount > 0 ? startIndex + 1 : 0} to{" "}
-                    {Math.min(startIndex + perPage, totalCount)} of {totalCount} entries
+                <div className="mt-4 flex flex-col items-center justify-between gap-4 md:flex-row">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Showing {totalCount > 0 ? startIndex + 1 : 0} to{" "}
+                        {Math.min(startIndex + perPage, totalCount)} of {totalCount} entries
+                    </div>
+
+                    <Pagination
+                        currentPage={page}
+                        perPage={perPage}
+                        totalCount={totalCount}
+                        onChange={(newPage, newPerPage) => {
+                            const params = new URLSearchParams(searchParams);
+                            params.set("page", newPage.toString());
+                            params.set("page_size", newPerPage.toString());
+                            router.push(`${pathname}?${params.toString()}`);
+                        }}
+                    />
                 </div>
+            </ComponentCard>
 
-                <Pagination
-                    currentPage={page}
-                    perPage={perPage}
-                    totalCount={totalCount}
-                    onChange={(newPage, newPerPage) => {
-                        const params = new URLSearchParams(searchParams);
-                        params.set("page", newPage.toString());
-                        params.set("page_size", newPerPage.toString());
-                        router.push(`${pathname}?${params.toString()}`);
-                    }}
-                />
-            </div>
-
+            <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[800px] m-4">
+                <div className="relative w-full  overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-10">
+                    <div className="mb-6">
+                        <h4 className="text-2xl font-semibold text-gray-900 dark:text-white/90">
+                            🌐 Add New Domain
+                        </h4>
+                        <p className="mt-2 text-sm text-gray-700 dark:text-gray-400">
+                            Enter the domain URL you want to verify and manage.
+                        </p>
+                    </div>
+                    <AddDomain onSuccess={() => {
+                        closeModal();
+                        // Optional: refresh data?
+                    }} />
+                </div>
+            </Modal>
         </>
     );
 }

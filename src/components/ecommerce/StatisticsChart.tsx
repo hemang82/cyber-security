@@ -18,6 +18,8 @@ type VulnerabilityItem = {
 
 export default function StatisticsChart({ inventory = [], allScans = [], riskCounts, domains = [] }: CyberDashboardProps) {
 
+  console.log("allScans", allScans);
+
   // --- 1. Old Chart: Vulnerability Distribution Data ---
   // Using static data as requested, matching the screenshot style roughly
   // Ensure riskCounts has default values to prevent undefined errors
@@ -58,9 +60,9 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
   };
 
   allScans?.forEach((item: any) => {
-    // We check for 'manual' trigger or source to distinguish.
-    // If no field is present, we'll assume a 70/30 split for demo purposes or keep as 0 if empty.
-    const isManual = item.trigger?.toLowerCase() === 'manual' || item.source?.toLowerCase() === 'manual' || item.asset_type === 'manual';
+    // Identify manual scans based on the 'scan_purpose' key
+    const isManual = item?.scan_purpose === 'manual_scan' || item?.scan_purpose?.toLowerCase() === 'manual_scan';
+
     if (isManual) {
       scanTypeCounts.manual++;
     } else {
@@ -68,9 +70,8 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
     }
   });
 
-  // Strictly use actual counts even if manual is 0
-  const displayAutomated = scanTypeCounts.automated || (allScans?.length || 0);
-  const displayManual = scanTypeCounts.manual || 0;
+  const displayAutomated = scanTypeCounts.automated;
+  const displayManual = scanTypeCounts.manual;
 
   const automatedScanSeries = [displayAutomated, displayManual];
 
@@ -194,46 +195,42 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
     tooltip: { theme: "light" },
   };
 
-  // --- 4. New Chart: Security Overview (Vulnerability Dynamics Style) ---
-  const securityCounts: Record<string, { fixed: number; notFixed: number }> = {};
-  ASSETS.forEach(asset => (securityCounts[asset.key] = { fixed: 0, notFixed: 0 }));
+  // --- 4. New Chart: Vulnerability Dynamics (Total Finding Counts) ---
+  const vulnerabilityCounts: Record<string, number> = {};
+  ASSETS.forEach(asset => (vulnerabilityCounts[asset.key] = 0));
 
   inventory.forEach((item: any) => {
     let type = (item.asset_type || item.type || "").toLowerCase();
     if (type === "website" || type === "web") type = "web_app";
     else if (type === "mobile") type = "app";
 
-    const risk = (item.risk_level || "").toLowerCase();
-    const isFixed = risk.includes("safe") || risk.includes("low");
+    // Use finding_count or equivalent field to get raw vulnerability counts
+    const findings = Number(item?.finding_count || item?.full_response?.app_info?.permissions_count || 0);
 
-    if (securityCounts[type]) {
-      if (isFixed) securityCounts[type].fixed++;
-      else securityCounts[type].notFixed++;
+    if (vulnerabilityCounts.hasOwnProperty(type)) {
+      vulnerabilityCounts[type] += findings;
     }
   });
 
   const securitySeries = [
     {
-      name: "Fixed",
-      data: ASSETS.map(asset => securityCounts[asset.key].fixed)
-    },
-    {
-      name: "Not Fixed",
-      data: ASSETS.map(asset => securityCounts[asset.key].notFixed)
+      name: "Total Findings",
+      data: ASSETS.map(asset => vulnerabilityCounts[asset.key])
     }
   ];
 
   const securityOptions: ApexOptions = {
-    chart: { type: "bar", height: 350, toolbar: { show: false }, fontFamily: "Outfit, sans-serif", stacked: false },
-    colors: [FINDINGS_COLORS.Low, FINDINGS_COLORS.Critical],
+    chart: { type: "bar", height: 350, toolbar: { show: false }, fontFamily: "Outfit, sans-serif" },
+    colors: ASSETS.map(asset => (FINDINGS_COLORS as any)[asset.key] || "#94a3b8"),
     plotOptions: {
       bar: {
         borderRadius: 2,
         horizontal: false,
-        columnWidth: "25%",
+        columnWidth: "20%",
+        distributed: true,
       },
     },
-    dataLabels: { enabled: false },
+    dataLabels: { enabled: true, offsetY: -20, style: { fontSize: '11px', colors: ["#374151"] } },
 
     xaxis: {
       categories: ASSETS.map(asset => asset.title),
@@ -244,12 +241,12 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
       labels: { style: { fontSize: '12px', colors: "#6b7280" } }
     },
     yaxis: {
-      title: { text: "Asset Count", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
+      title: { text: "Finding Count", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
       show: true,
       labels: { style: { fontSize: '12px', colors: "#6b7280" } }
     },
-    grid: { show: true, borderColor: "#e5e7eb", yaxis: { lines: { show: true } } },
-    legend: { position: 'bottom', horizontalAlign: 'center', },
+    grid: { show: true, borderColor: "#f1f5f9", yaxis: { lines: { show: true } } },
+    legend: { show: false },
     tooltip: { theme: "light" },
   };
 
@@ -301,7 +298,10 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
       fontFamily: "Outfit, sans-serif",
       zoom: { enabled: false },
     },
-    colors: ["#2563eb", "#10b981", "#f59e0b", "#6366f1"], // Different colors for types
+    colors: Object.keys(typeTrendMap).map(type => {
+      const key = type === "Web" ? "web_app" : type === "Mobile" ? "app" : type === "Cloud" ? "cloud" : "api";
+      return (FINDINGS_COLORS as any)[key] || "#6366f1";
+    }),
     stroke: { curve: 'smooth', width: 3 },
     markers: {
       size: 4,

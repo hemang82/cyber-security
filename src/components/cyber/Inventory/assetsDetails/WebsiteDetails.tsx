@@ -20,6 +20,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import Drawer from "@/components/ui/drawer/Drawer";
 import { PDFDocument } from "../assetsReport/CyberSecurityPDF";
 import { ASSETS, FINDINGS_COLORS } from "../Assets/AssetsTypes";
+import { SCAN_STATUS } from "@/common/constant";
 
 
 export const Card = ({ title, tooltip, children, className = "" }: any) => {
@@ -105,39 +106,19 @@ export const severityColor = (severity: any) => {
 
 /* ---------- Page ---------- */
 
-export enum CyberColor {
-    GREEN = "Green",
-    BLUE = "Blue",
-    ORANGE = "Orange",
-    RED = "Red",
-    DARK_RED = "DarkRed",
-    YELLOW = "Yellow",
-    PENDING = "PENDING",
-    IN_PROGRESS = "IN_PROGRESS",
-    COMPLETED = "COMPLETED",
-    FAILED = "FAILED",
-}
-
-export const CyberColorClass: Record<CyberColor, string> = {
-    [CyberColor.GREEN]: "bg-green-50 text-green-700 border-green-200",
-
-    [CyberColor.BLUE]: "bg-blue-50 text-blue-700 border-blue-200",
-
-    [CyberColor.ORANGE]: "bg-orange-50 text-orange-700 border-orange-200",
-
-    [CyberColor.RED]: "bg-red-50 text-red-700 border-red-200",
-
-    [CyberColor.DARK_RED]: "bg-red-100 text-red-900 border-red-300",
-
-    [CyberColor.YELLOW]: "bg-yellow-50 text-yellow-700 border-yellow-200",
-
-    [CyberColor.PENDING]: "bg-yellow-50 text-yellow-700 border-yellow-200",
-
-    [CyberColor.IN_PROGRESS]: "bg-blue-50 text-blue-700 border-blue-200",
-
-    [CyberColor.COMPLETED]: "bg-green-50 text-green-700 border-green-200",
-
-    [CyberColor.FAILED]: "bg-red-50 text-red-700 border-red-200",
+export const CyberColorClass: Record<string, string> = {
+    [SCAN_STATUS.GREEN]: "bg-green-50 text-green-700 border-green-200",
+    [SCAN_STATUS.BLUE]: "bg-blue-50 text-blue-700 border-blue-200",
+    [SCAN_STATUS.ORANGE]: "bg-orange-50 text-orange-700 border-orange-200",
+    [SCAN_STATUS.RED]: "bg-red-50 text-red-700 border-red-200",
+    [SCAN_STATUS.DARK_RED]: "bg-red-100 text-red-900 border-red-300",
+    [SCAN_STATUS.YELLOW]: "bg-yellow-50 text-yellow-700 border-yellow-200",
+    [SCAN_STATUS.PENDING]: "bg-yellow-50 text-yellow-700 border-yellow-200",
+    [SCAN_STATUS.IN_PROGRESS]: "bg-blue-50 text-blue-700 border-blue-200",
+    [SCAN_STATUS.COMPLETED]: "bg-green-50 text-green-700 border-green-200",
+    [SCAN_STATUS.SUCCESS]: "bg-green-50 text-green-700 border-green-200",
+    [SCAN_STATUS.FAILED]: "bg-red-50 text-red-700 border-red-200",
+    [SCAN_STATUS.ERROR]: "bg-red-50 text-red-700 border-red-200",
 };
 
 /* ---------- UI Helpers ---------- */
@@ -397,7 +378,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
 
     return (
         <>
-            <div className="mx-auto max-w-[1800px] p-4 lg:p-6 space-y-6">
+            <div className="mx-auto max-w-[1800px] p-2 lg:p-4 space-y-6">
                 {/* HERO SECTION */}
                 <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-white/3 border border-gray-200 dark:border-gray-800 p-4 sm:p-6 lg:p-8 shadow-sm">
                     <div className="absolute right-0 top-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-brand-500/5 blur-3xl" />

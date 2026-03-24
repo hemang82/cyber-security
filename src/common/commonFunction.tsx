@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import moment from "moment";
 
 
-import CONSTENT from './constant';
+import CONSTENT, { SCAN_STATUS } from './constant';
 import { MIDDLEWARE_COOKIE_KEYS } from "./middleware.constants";
 
 // const KEY = CryptoJS.enc.Utf8.parse(CONSTENT.KEY );
@@ -13,11 +13,15 @@ import { MIDDLEWARE_COOKIE_KEYS } from "./middleware.constants";
 // ------------------------------------------------------- Authentication Function ---------------------------------------------------------------------------
 
 export const loginRedirection = (data: any) => {
-    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, 'false');
-    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE, data?.token?.access_token)
-    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.REFRESH_TOKEN_KEY_COOKIE, data?.token?.refresh_token)
-    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, JSON.stringify(data))
-    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, data?.user?.role)
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, 'true');
+    const accessToken = typeof data?.token === 'string' ? data.token : (data?.token?.access_token || data?.access_token);
+    const refreshToken = typeof data?.token === 'string' ? null : (data?.token?.refresh_token || data?.refresh_token);
+    
+    if (accessToken) localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE, accessToken);
+    if (refreshToken) localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.REFRESH_TOKEN_KEY_COOKIE, refreshToken);
+    
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, JSON.stringify(data?.user || data));
+    localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, data?.user?.role || data?.role);
 }
 
 export const logoutRedirection = () => {
@@ -172,6 +176,6 @@ export const normalizeStatus = (status: string) => {
     if (!status) return "Info";
     // For UI purposes, we consider PENDING as IN_PROGRESS
     const s = status.toUpperCase();
-    if (s === "PENDING") return "IN_PROGRESS";
+    if (s === SCAN_STATUS.PENDING || s === "IN PROGRESS") return SCAN_STATUS.IN_PROGRESS;
     return s;
 };

@@ -1,5 +1,5 @@
 "use client";
-import { storage, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
+import { loginRedirection, storage, TOAST_ERROR, TOAST_SUCCESS } from "@/common/commonFunction";
 import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
 import CONSTENT, { CODES } from "@/common/constant";
 import Checkbox from "@/components/form/input/Checkbox";
@@ -50,6 +50,7 @@ export default function SignInForm() {
       const responseData = await res.json();
 
       if (responseData.code == CODES?.SUCCESS) {
+        loginRedirection(responseData.data);
         router.replace("/");
         window.location.reload();
       } else {
@@ -165,7 +166,7 @@ export default function SignInForm() {
                   </div>
 
                   <div>
-                    <Button type={'submit'} className="w-full" size="sm" >
+                    <Button type={'submit'} className="w-full" size="sm" loading={is_loading}>
                       Sign in
                     </Button>
                   </div>

@@ -275,8 +275,7 @@ export default function CloudDetails({ resAssetsDetails }: any) {
     const findingCounts = getFindingCounts();
 
     return (<>
-
-        <div className="p-3">
+        <div className="p-2 lg:p-4">
             <div id="pdf-section-1">
                 <div className="flex flex-col justify-between gap-6 rounded-xl border border-gray-200 bg-white px-6 py-5 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3">
                     {/* Header Details (Left) */}

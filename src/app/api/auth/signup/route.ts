@@ -1,4 +1,5 @@
-import { CODES } from "@/common/constant";
+import { CODES, BACKEND_STATUS } from "@/common/constant";
+import { handleBackendResponse } from "@/common/api-handler";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { setCookie } from "@/common/middleware.function";
 import { NextResponse } from "next/server";
@@ -61,38 +62,8 @@ export async function POST(req: Request) {
     );
 
 
-    // if (!response.ok) {
-    //   throw new Error("External API failed");
-    // }
-
     const data = await response.json();
-
-    let updatedRes;
-    if (data?.code == '1') {
-
-      updatedRes = NextResponse.json({
-        code: CODES?.SUCCESS,
-        message: data?.message,
-        success: true,
-        data: data?.data,
-      });
-
-      // setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, true)
-      // setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, data?.data)
-      // setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, DefaultUser?.role)
-
-    } else {
-
-      updatedRes = NextResponse.json({
-        code: CODES?.ERROR,
-        message: data?.message,
-        success: true,
-        data: data?.data,
-      });
-
-    }
-
-    return updatedRes
+    return handleBackendResponse(data, { defaultErrorMsg: "Registration failed" });
 
   } catch (error) {
 

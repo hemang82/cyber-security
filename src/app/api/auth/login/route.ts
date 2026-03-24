@@ -1,4 +1,5 @@
-import { CODES } from "@/common/constant";
+import { CODES, BACKEND_STATUS } from "@/common/constant";
+import { handleBackendResponse } from "@/common/api-handler";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { setCookie } from "@/common/middleware.function";
 import { NextResponse } from "next/server";
@@ -32,36 +33,15 @@ export async function POST(req: Request) {
 
     console.log('response', body);
 
-    // if (!response.ok) {
-    //   throw new Error("External API failed");
-    // }
-
     const data = await response.json();
+    const updatedRes = handleBackendResponse(data, { defaultErrorMsg: "Login failed" });
 
-    let updatedRes;
-    if (data?.code == 1) {
-
-      updatedRes = NextResponse.json({
-        code: CODES?.SUCCESS,
-        message: data?.message,
-        success: true,
-        data: data?.data,
-      });
-
+    if (Number(data?.code) === BACKEND_STATUS.SUCCESS) {
       const cookieStore = await cookies();
       cookieStore.set(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, "true", { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
       cookieStore.set(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, JSON.stringify(data?.data?.user), { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
       cookieStore.set(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE, data?.data?.token, { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
       cookieStore.set(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, JSON.stringify(DefaultUser?.role), { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
-
-    } else {
-
-      updatedRes = NextResponse.json({
-        code: CODES?.ERROR,
-        message: data?.message,
-        success: false,
-        data: data?.data,
-      });
     }
 
     return updatedRes;

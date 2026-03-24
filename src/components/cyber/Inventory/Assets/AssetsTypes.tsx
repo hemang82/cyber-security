@@ -63,6 +63,7 @@ export const FINDINGS_COLORS = {
     ["high risk"]: "#f97416d3",
     ["safe"]: "#10b981ce",
     ["medium risk"]: "#eab20896",
+    ["Critical Risk"]: "#ef4444d2",
     ["low risk"]: "#3b83f6bd",
     ["High Risk"]: "#ef4444d2",
     ["Low Risk"]: "#3b83f6bd",

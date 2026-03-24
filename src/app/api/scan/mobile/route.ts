@@ -1,7 +1,10 @@
-import { CODES } from "@/common/constant";
+import { CODES, BACKEND_STATUS } from "@/common/constant";
+import { handleBackendResponse } from "@/common/api-handler";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { apiLogger } from "@/lib/logger";
+import { cookies } from "next/headers";
+import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 
 /**
  * This API is STATIC
@@ -18,32 +21,29 @@ export async function POST(req: Request) {
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/scan/mobile`;
 
+    const cookieStore = await cookies();
+    const token = cookieStore.get(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE)?.value;
+
     const response = await fetch(url,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(body), // 👈 DIRECT PASS
+        body: JSON.stringify(body),
         cache: "no-store",
       }
     );
 
-    if (!response.ok) {
-      throw new Error("External API failed");
+    const data = await response.json();
+    const result = handleBackendResponse(data, { defaultErrorMsg: "Failed to initiate mobile scan" });
+
+    if (Number(data?.code) === BACKEND_STATUS.SUCCESS) {
+      revalidatePath("/scan");
     }
 
-    apiLogger(url, "POST", body, response.status);
-    const data = await response.json();
-
-    revalidatePath("/scan");
-
-    return NextResponse.json({
-      code: CODES?.SUCCESS,
-      message: data?.message,
-      success: true,
-      data: data?.data,
-    });
+    return result;
 
   } catch (error) {
 
@@ -53,8 +53,7 @@ export async function POST(req: Request) {
         success: false,
         message: "Something went wrong while scanning website",
       },
-      { status: 500 }
-    );
+      { status: 500 });
   }
 }
 

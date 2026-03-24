@@ -26,7 +26,7 @@ export default function AdminLayout({ children, }: {
         <AuthProvider >
           <AppHeader />
           {/* Page Content */}
-          <div className="p-4 mx-auto max-w-(--breakpoint-3xl) md:p-6">{children}</div>
+          <div className="p-4 mx-auto max-w-(--breakpoint-3xl) md:p-4">{children}</div>
         </AuthProvider >
       </div>
     </div>

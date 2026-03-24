@@ -49,7 +49,7 @@ export default function ScanInProgress({ assetName, assetType }: { assetName: st
                 {/* Visual Status Indicator */}
                 <div className="relative mb-8 ">
                     <div className="absolute inset-0 rounded-full bg-brand-500/10 animate-ping scale-[2.2] opacity-30"></div>
-                    <div className="relative z-10 w-36 h-36 rounded-full bg-white dark:bg-gray-800 border-4 border-brand-500/10 flex items-center justify-center shadow-2xl">
+                    <div className="relative z-10 w-36 h-36 rounded-full bg-white dark:bg-gray-800 border-4 border-brand-500/10 flex items-center justify-center shadow-md">
                         <div className="relative flex items-center justify-center w-28 h-28 rounded-full border-2 border-brand-500/20 animate-pulse bg-brand-50/50 dark:bg-brand-900/10">
                             {getAssetIcon()}
                         </div>
@@ -61,7 +61,7 @@ export default function ScanInProgress({ assetName, assetType }: { assetName: st
                         Scan <span className="text-brand-600">In Progress</span>
                     </h2>
                     <p className="text-base lg:text-lg font-bold text-gray-500 dark:text-gray-400 mb-10">
-                        Analyzing: <span className="text-gray-900 dark:text-white underline underline-offset-8 decoration-brand-500/30 font-black">{assetName || "Current Asset"}</span>
+                        Analyzing Asset : <span className="text-brand-600 dark:text-white underline underline-offset-8 decoration-brand-500/30 ">{assetName || "Current Asset"}</span>
                     </p>
 
                     {/* Progress & Operation Bar */}
@@ -100,7 +100,7 @@ export default function ScanInProgress({ assetName, assetType }: { assetName: st
                                 <div className="flex gap-4">
                                     <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center text-xs font-black text-brand-600 shadow-sm border border-gray-100 dark:border-gray-700">01</span>
                                     <p className="text-[13px] font-bold text-gray-600 dark:text-gray-400 leading-relaxed uppercase tracking-wide">
-                                        Audit engine for <span className="text-gray-900 dark:text-white font-black italic">{safeText(ASSETS.find((item) => item?.key == assetType)?.title || "Website")}</span> .
+                                        Audit engine for <span className="text-brand-600 dark:text-white font-black ">{safeText(ASSETS.find((item) => item?.key == assetType)?.title || "Website")}</span> .
                                     </p>
                                 </div>
                                 <div className="flex gap-4">

@@ -1,4 +1,4 @@
-import { CODES } from "@/common/constant";
+import { logoutRedirection, TOAST_ERROR } from "@/common/commonFunction";
 
 /**
  * Universal fetcher for client-side API calls
@@ -6,15 +6,28 @@ import { CODES } from "@/common/constant";
 export async function clientFetcher(url: string, options: any = {}) {
     const { method = "GET", body, headers: customHeaders } = options;
 
+    // Get token from localStorage (client-side only)
+    const token = typeof window !== "undefined" ? localStorage.getItem("CYBER_access_token") : null;
+
     console.log("Backend Call:", { url, method, body });
     const response = await fetch(url, {
         method,
         headers: {
             "Content-Type": "application/json",
+            ...(token ? { "Authorization": `Bearer ${token}` } : {}),
             ...customHeaders,
         },
         ...(body ? { body: JSON.stringify(body) } : {}),
     });
+
+    if (response.status === 401) {
+        TOAST_ERROR("Session expired. Please login again.");
+        logoutRedirection();
+        if (typeof window !== "undefined") {
+            window.location.href = "/signin";
+        }
+        throw new Error("Unauthorized");
+    }
 
     if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
@@ -37,7 +50,6 @@ export async function getCloudScanDetails(data: Record<string, any>) {
         return [];
     }
 }
-
 
 export async function getWebsiteDetails(data: Record<string, any>) {
     try {

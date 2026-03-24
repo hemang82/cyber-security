@@ -33,16 +33,9 @@ export default function Page({ searchParams }: any) {
     <div>
       <PageBreadcrumb pageTitle="All Domains" />
       <div className="space-y-6">
-        <ComponentCard
-          title="All Domains"
-          desc="Note: TXT records may take some time to appear. Please click the refresh button after a few minutes."
-          buttonName={"Add Domain"}
-          navigation={"/add-domain"}
-        >
           <Suspense fallback={<TableSkeleton />}>
             <DomainContent searchParams={searchParams} />
           </Suspense>
-        </ComponentCard>
       </div>
     </div>
   );

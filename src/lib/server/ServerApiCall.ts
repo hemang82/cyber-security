@@ -16,7 +16,7 @@ const BASE_EXTERNAL_URL = "https://cyberapi.ipotrending.com";
 async function getAuthHeaders() {
     const cookieStore = await cookies();
     const token = cookieStore.get(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE)?.value;
-    
+
     return {
         "Content-Type": "application/json",
         ...(token ? { "Authorization": `Bearer ${token}` } : {}),
@@ -37,7 +37,7 @@ export async function getInventoryList(data: Record<string, any> = {}) {
             cache: "no-store", // Direct real-time fetch
             headers: await getAuthHeaders(),
             body: JSON.stringify(data),
-            next: { revalidate: 0 } 
+            next: { revalidate: 0 }
         });
 
         apiLogger(url, "POST", data, resList.status);
@@ -200,6 +200,30 @@ export async function getCloudScanDetails(data: Record<string, any> = {}) {
 export async function addDomainDetails(data: Record<string, any>) {
     try {
         const response = await fetch("/api/domain/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        apiLogger("/api/domain/add", "POST", data, response.status);
+        const res: InventoryResponse = await response.json();
+
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
+            return res;
+        }
+
+        return null; // or throw an error if preferred
+    } catch (err: any) {
+        console.error("addDomainDetails error:", err.message);
+        return null;
+    }
+}
+
+export async function getUserList(data: Record<string, any>) {
+    try {
+        const response = await fetch("/api/user/list", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -11,13 +11,13 @@ import { TAB_KEY } from "@/common/commonVariable";
 
 /* Reusable content component */
 export function TabContent({ title, children }: {
-    title: string; children: React.ReactNode;
+    title?: string; children: React.ReactNode;
 }) {
     return (
         <div className="space-y-4">
-            <h3 className="text-xl font-medium text-gray-800 dark:text-white/90 border-b border-gray-300 pb-2">
+            {title && <h3 className="text-xl font-medium text-gray-800 dark:text-white/90 border-b border-gray-300 pb-2">
                 {title}
-            </h3>
+            </h3>}
 
             {/* IMPORTANT FIX */}
             <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -76,7 +76,7 @@ export default function AddInventory({ resDomainList }: any) {
                         {active_tab === TAB_KEY.ASSETS_DETAILS && (
                             <AddAssets resDomainList={resDomainList} />
                         )}
-                        
+
 
                         {active_tab === TAB_KEY.CREDENTIALS && (
                             <Credentials />

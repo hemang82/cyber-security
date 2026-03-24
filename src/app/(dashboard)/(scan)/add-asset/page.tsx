@@ -41,19 +41,19 @@ export default async function AddAssetPage() {
             {/* Breadcrumb for easy navigation */}
             <PageBreadcrumb pageTitle="Scan Assets" parentName="Scan History" parentPath="/scan" />
 
-            <div className="mt-6 space-y-6">
-                <ComponentCard>
-                    {/* 
+            {/* <div className="mt-6 space-y-6"> */}
+            <ComponentCard>
+                {/* 
                         AddScan is a Client Component that orchestrates the multi-step scan creation process.
                         Passing fetched data as props minimizes client-side data fetching overhead.
                     */}
-                    <AddScan
-                        resInventoryList={resInventoryList || []}
-                        resDomainList={resDomainList || []}
-                    />
+                <AddScan
+                    resInventoryList={resInventoryList || []}
+                    resDomainList={resDomainList || []}
+                />
 
-                </ComponentCard>
-            </div>
+            </ComponentCard>
+            {/* </div> */}
         </div>
     );
 }

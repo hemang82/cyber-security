@@ -21,6 +21,7 @@ interface ComponentCardProps {
   desc?: string; // Description text
   buttonName?: string;
   navigation?: string;
+  onClick?: () => void;
   excel?: boolean;
   extraHeader?: React.ReactNode;
 }
@@ -31,16 +32,19 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   className = "",
   desc = "",
   buttonName = null,
-  navigation = "/",
+  navigation = null,
+  onClick = null,
   excel = false,
   extraHeader = null
 }) => {
 
   const router = useRouter()
-  const { isOpen, openModal, closeModal } = useModal();
+  const { openModal } = useModal();
 
-  const handleSelect = () => {
-    if (typeof navigation === "string") {
+  const handleButtonClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (navigation && typeof navigation === "string") {
       router.push(navigation);
     } else {
       openModal();
@@ -78,22 +82,12 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
           </button>}
 
           {buttonName && (
-            navigation && typeof navigation === "string" ? (
-              <Link
-                href={navigation}
-                prefetch={true}
-                className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition cursor-pointer"
-              >
-                <RiAddLargeFill /> {buttonName}
-              </Link>
-            ) : (
-              <div
-                className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition cursor-pointer"
-                onClick={openModal}
-              >
-                <RiAddLargeFill /> {buttonName}
-              </div>
-            )
+            <div
+              className="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition cursor-pointer"
+              onClick={handleButtonClick}
+            >
+              <RiAddLargeFill /> {buttonName}
+            </div>
           )}
 
         </div>

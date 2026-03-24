@@ -43,7 +43,7 @@ const StatCard = ({ title, value, icon: Icon, colorClass, subValue, trend }: any
         <div>
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{title}</p>
             <div className="flex items-baseline gap-2 mt-1">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-none">{value}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-none capitalize">{value}</h3>
                 {subValue && <span className="text-xs text-gray-400 font-medium">/ {subValue}</span>}
             </div>
         </div>
@@ -208,7 +208,7 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
     const progressColor = FINDINGS_COLORS[data?.risk_level as keyof typeof FINDINGS_COLORS] || "#22c55e";
 
     return (
-        <div className="p-4 lg:p-6" ref={pageRef}>
+        <div className="p-2 lg:p-4" ref={pageRef}>
             {/* Header Section */}
             <div className="flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white px-4 py-6 sm:px-6 sm:flex-row sm:items-center dark:border-gray-800 dark:bg-white/3 shadow-sm mb-6 relative overflow-hidden">
                 <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-brand-500/5 blur-3xl" />
@@ -225,7 +225,7 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
                         <Badge color={data?.risk_color || "Blue"}>{safeText(data?.risk_level || "Unknown")}</Badge>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-gray-500 font-medium">
-                        <span className="flex items-center gap-1"><RiApps2Line /> {safeText(data?.app_info?.package_name || "N/A")}</span>
+                        <span className="flex items-center gap-1"><RiApps2Line /> {safeText(data?.app_info?.package_name || data?.app_info?.bundle_id || "N/A")}</span>
                         <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-[10px] font-bold">v{safeText(data?.app_info?.version_name || "1.0")}</span>
                     </div>
                 </div>
@@ -289,7 +289,7 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
                                 <div className="relative">
                                     {/* ${data?.security_score >= 80 ? 'border-green-500' : data?.security_score >= 60 ? 'border-yellow-400' : 'border-red-500'} */}
                                     <div
-                                        className="flex h-36 w-36 items-center justify-center rounded-full border-[10px] bg-white dark:bg-gray-900 shadow-xl"
+                                        className="flex h-36 w-36 items-center justify-center rounded-full border-[10px] bg-white dark:bg-gray-900 shadow-sm"
                                         style={{ borderColor: progressColor }}
                                     >
                                         <div className="flex flex-col items-center">
@@ -358,22 +358,25 @@ export default function ApplicationDetails({ resAssetsDetails }: any) {
                     <div className="space-y-4">
                         {[
                             { label: 'App Name', value: data?.app_info?.app_name, icon: RiSmartphoneLine, color: 'text-blue-500' },
-                            { label: 'Package ID', value: data?.app_info?.package_name, icon: RiApps2Line, color: 'text-purple-500' },
-                            { label: 'Version', value: `${data?.app_info?.version_name} (${data?.app_info?.version_code})`, icon: RiInformation2Line, color: 'text-green-500' },
+                            { label: 'Package ID', value: data?.app_info?.package_name || data?.app_info?.bundle_id, icon: RiApps2Line, color: 'text-purple-500' },
+                            { label: 'Version', value: `${data?.app_info?.version_name} ${data?.app_info?.version_code ? `(${data?.app_info?.version_code})` : ''}`, icon: RiInformation2Line, color: 'text-green-500' },
                             { label: 'Target SDK', value: data?.app_info?.target_sdk, icon: RiShieldCheckLine, color: 'text-orange-500' },
-                            { label: 'Min SDK', value: data?.app_info?.min_sdk, icon: RiLockPasswordLine, color: 'text-red-500' },
-                            { label: 'Permissions', value: data?.app_info?.permissions_count, icon: RiLockPasswordLine, color: 'text-indigo-500' }
-                        ].map((item, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 dark:bg-white/3 border border-gray-100 dark:border-gray-800/50 hover:bg-white dark:hover:bg-white/5 transition-all shadow-sm group">
-                                <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-xl bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-110 transition-transform ${item.color}`}>
-                                        <item.icon size={18} />
+                            { label: 'Min SDK', value: data?.app_info?.min_sdk || data?.app_info?.min_os, icon: RiLockPasswordLine, color: 'text-red-500' },
+                            { label: 'Permissions', value: data?.app_info?.permissions_count || data?.app_info?.supported_platforms, icon: RiLockPasswordLine, color: 'text-indigo-500' }
+                        ].map((item, idx) => (<>
+                            {
+                                item.value &&
+                                <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 dark:bg-white/3 border border-gray-100 dark:border-gray-800/50 hover:bg-white dark:hover:bg-white/5 transition-all shadow-sm group">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-xl bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 group-hover:scale-110 transition-transform ${item.color}`}>
+                                            <item.icon size={18} />
+                                        </div>
+                                        <span className="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{item.label}</span>
                                     </div>
-                                    <span className="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{item.label}</span>
+                                    <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[180px]">{safeText(item.value) || 'N/A'}</span>
                                 </div>
-                                <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[180px]">{safeText(item.value) || 'N/A'}</span>
-                            </div>
-                        ))}
+                            }
+                        </>))}
                     </div>
                 </Card>
 
