@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     if (Number(data?.code) === BACKEND_STATUS.SUCCESS) {
       setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, true)
       setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, data?.data?.user)
-      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, DefaultUser?.role)
+      setCookie(updatedRes, MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, data?.data?.user?.role || DefaultUser?.role)
     }
 
     return updatedRes

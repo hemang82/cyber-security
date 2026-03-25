@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       cookieStore.set(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, "true", { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
       cookieStore.set(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, JSON.stringify(data?.data?.user), { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
       cookieStore.set(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE, data?.data?.token, { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
-      cookieStore.set(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, JSON.stringify(DefaultUser?.role), { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
+      cookieStore.set(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, data?.data?.user?.role || DefaultUser.role, { path: "/", httpOnly: true, maxAge: 60 * 60 * 24 * 2 });
     }
 
     return updatedRes;

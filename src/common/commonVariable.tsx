@@ -88,6 +88,10 @@ export const INPUT_PATTERN = {
         pattern: /^(https?:\/\/)(([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:\d{1,5})?(\/.*)?$/,
         message: "URL must start with http:// or https://",
     },
+    LIMIT_100: {
+        pattern: /^(?:[1-9][0-9]?|100)$/,
+        message: "Please enter a value between 1 and 100"
+    },
 };
 
 // INPUT TYPES (HTML)
@@ -117,7 +121,6 @@ export const INPUT_TYPE = {
 
 } as const;
 
-
 export enum TAB_KEY {
     ASSETS_TYPE = "assets_type",
     ASSETS_DETAILS = "assets_details",
@@ -125,3 +128,8 @@ export enum TAB_KEY {
     OWNERS = "owners",
     PREVIEW = "preview",
 }
+
+export const USER_ROLE = {
+    ADMIN: "admin",
+    USER: "user",
+} as const;

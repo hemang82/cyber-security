@@ -4,17 +4,27 @@ import React, { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import { INPUT_PATTERN, INPUT_TYPE } from "@/common/commonVariable";
+import { INPUT_PATTERN, INPUT_TYPE, USER_ROLE } from "@/common/commonVariable";
 import { TOAST_SUCCESS, TOAST_ERROR } from "@/common/commonFunction";
 import { useRouter, useSearchParams } from "next/navigation";
 import Select from "@/components/form/Select";
+import Switch from "@/components/form/switch/Switch";
 import { BoltIcon, InfoIcon, UserIcon } from "@/icons";
+import { ASSETS_INPUTS } from "../Inventory/Assets/AddAssets";
+import { CODES } from "@/common/constant";
 
 export default function AddUser() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const userId = searchParams.get("id");
     const [loading, setLoading] = useState(false);
+
+    // ✅ Track custom limit status for each asset type
+    const [isCustom, setIsCustom] = useState<Record<string, boolean>>({
+        website_limit: false,
+        app_limit: false,
+        cloud_limit: false
+    });
 
     const methods = useForm({
         mode: "onBlur"
@@ -27,9 +37,19 @@ export default function AddUser() {
                 try {
                     const res = await fetch(`/api/user/details?id=${userId}`);
                     const result = await res.json();
-                    if (result.success) {
+                    if (result.code === CODES?.SUCCESS) {
                         methods.reset(result.data);
+                        // ✅ Auto-enable customize toggle if limits > 5
+                        const limits = {
+                            website_limit: Number(result.data[ASSETS_INPUTS.WEBSITE_LIMIT.name]) > 5,
+                            app_limit: Number(result.data[ASSETS_INPUTS.APP_LIMIT.name]) > 5,
+                            cloud_limit: Number(result.data[ASSETS_INPUTS.CLOUD_LIMIT.name]) > 5,
+                        };
+                        setIsCustom(limits);
+                    } else {
+                        TOAST_ERROR(result.message || "Failed to fetch user details");
                     }
+
                 } catch (err) {
                     TOAST_ERROR("Failed to fetch user details");
                 }
@@ -39,6 +59,7 @@ export default function AddUser() {
     }, [userId, methods]);
 
     const onSubmit = async (data: any) => {
+        console.log("USER FORM DATA 👉", data);
         setLoading(true);
         try {
             const endpoint = userId ? "/api/user/update" : "/api/user/add";
@@ -48,7 +69,7 @@ export default function AddUser() {
             });
             const result = await res.json();
 
-            if (result.success) {
+            if (result.code === CODES?.SUCCESS) {
                 TOAST_SUCCESS(userId ? "User updated successfully" : "User added successfully");
                 router.push("/user");
                 router.refresh();
@@ -83,7 +104,7 @@ export default function AddUser() {
                         </div>
                     </div>
 
-                    <div className="p-8 space-y-10">
+                    <div className="m-4 p-8 space-y-10">
                         {/* Section 1: Basic Information */}
                         <div className="space-y-6">
                             <div className="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
@@ -93,51 +114,60 @@ export default function AddUser() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-semibold">Full Name <span className="text-red-500">*</span></Label>
+                                    <Label className="text-sm font-semibold">Name <span className="text-red-500">*</span></Label>
                                     <Input
-                                        name="name"
-                                        placeholder="e.g. John Doe"
+                                        name={ASSETS_INPUTS.NAME.name}
+                                        placeholder={ASSETS_INPUTS.NAME.placeholder}
                                         rules={{
-                                            required: "Name is required",
-                                            pattern: { value: INPUT_PATTERN.NAME.pattern, message: INPUT_PATTERN.NAME.message }
+                                            required: ASSETS_INPUTS.NAME.validation,
+                                            pattern: ASSETS_INPUTS.NAME.pattern
                                         }}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-semibold">Email Address <span className="text-red-500">*</span></Label>
+                                    <Label className="text-sm font-semibold">Email <span className="text-red-500">*</span></Label>
                                     <Input
-                                        name="email"
-                                        placeholder="john@example.com"
+                                        name={ASSETS_INPUTS.EMAIL.name}
+                                        placeholder={ASSETS_INPUTS.EMAIL.placeholder}
                                         rules={{
-                                            required: "Email is required",
-                                            pattern: { value: INPUT_PATTERN.EMAIL.pattern, message: INPUT_PATTERN.EMAIL.message }
+                                            required: ASSETS_INPUTS.EMAIL.validation,
+                                            pattern: ASSETS_INPUTS.EMAIL.pattern
                                         }}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-semibold">Phone Number</Label>
+                                    <Label className="text-sm font-semibold">Password <span className="text-red-500">*</span></Label>
                                     <Input
-                                        name="phone_number"
-                                        placeholder="1234567890"
+                                        name={ASSETS_INPUTS.PASSWORD.name}
+                                        type={INPUT_TYPE.PASSWORD}
+                                        placeholder={ASSETS_INPUTS.PASSWORD.placeholder}
                                         rules={{
-                                            pattern: { value: INPUT_PATTERN.MOBILE.pattern, message: INPUT_PATTERN.MOBILE.message }
+                                            required: !userId ? ASSETS_INPUTS.PASSWORD.validation : false,
+                                            pattern: ASSETS_INPUTS.PASSWORD.pattern
                                         }}
                                     />
                                 </div>
-                                {!userId && (
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-semibold">Password <span className="text-red-500">*</span></Label>
-                                        <Input
-                                            name="password"
-                                            type={INPUT_TYPE.PASSWORD}
-                                            placeholder="••••••••"
-                                            rules={{
-                                                required: "Password is required",
-                                                pattern: { value: INPUT_PATTERN.PASSWORD.pattern, message: INPUT_PATTERN.PASSWORD.message }
-                                            }}
-                                        />
-                                    </div>
-                                )}
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-semibold">Phone Number <span className="text-red-500">*</span></Label>
+                                    <Input
+                                        name={ASSETS_INPUTS.PHONE_NUMBER.name}
+                                        placeholder={ASSETS_INPUTS.PHONE_NUMBER.placeholder}
+                                        rules={{
+                                            required: ASSETS_INPUTS.PHONE_NUMBER.validation,
+                                            pattern: ASSETS_INPUTS.PHONE_NUMBER.pattern
+                                        }}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-semibold">Company Name <span className="text-red-500">*</span></Label>
+                                    <Input
+                                        name={ASSETS_INPUTS.COMPANY_NAME.name}
+                                        placeholder={ASSETS_INPUTS.COMPANY_NAME.placeholder}
+                                        rules={{
+                                            required: ASSETS_INPUTS.COMPANY_NAME.validation
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -148,35 +178,98 @@ export default function AddUser() {
                                 <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400">Permissions & Status</h4>
                             </div>
 
-                            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <Label className="text-sm font-semibold">User Role <span className="text-red-500">*</span></Label>
                                     <Select
-                                        name="role"
-                                        rules={{ required: "Role is required" }}
+                                        name={ASSETS_INPUTS.ROLE.name}
+                                        rules={{ required: ASSETS_INPUTS.ROLE.validation }}
                                         options={[
-                                            { value: "admin", label: "Administrator" },
-                                            { value: "user", label: "Standard User" }
+                                            { value: USER_ROLE.ADMIN, label: "Admin" },
+                                            { value: USER_ROLE.USER, label: "User" }
                                         ]}
+                                        onChange={(e) => console.log(e)}
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-sm font-semibold">Account Status</Label>
                                     <Select
-                                        name="status"
+                                        name={ASSETS_INPUTS.STATUS.name}
                                         defaultValue="active"
                                         options={[
                                             { value: "active", label: "Active" },
                                             { value: "inactive", label: "Inactive" }
                                         ]}
+                                        onChange={(e) => console.log(e)}
                                     />
                                 </div>
-                            </div> */}
+                            </div>
+                        </div>
+
+                        {/* Section 3: Asset Permissions */}
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
+                                <div className="p-1 text-brand-600">
+                                    <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="18" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+                                </div>
+                                <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400">Asset Permissions</h4>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                {[
+                                    { input: ASSETS_INPUTS.WEBSITE_LIMIT, label: 'Website Limit' },
+                                    { input: ASSETS_INPUTS.APP_LIMIT, label: 'Application Limit' },
+                                    { input: ASSETS_INPUTS.CLOUD_LIMIT, label: 'Cloud Limit' }
+                                ].map(({ input, label }) => (
+                                    <div key={input.name} className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <Label className="text-sm font-semibold">{label} <span className="text-red-500">*</span></Label>
+                                            <Switch
+                                                label="Customize"
+                                                defaultChecked={isCustom[input.name]}
+                                                onChange={(checked) => {
+                                                    setIsCustom(prev => ({ ...prev, [input.name]: checked }));
+                                                    methods.setValue(input.name, "0"); // Reset when switching
+                                                }}
+                                            />
+                                        </div>
+
+                                        {isCustom[input.name] ? (
+                                            <Input
+                                                name={input.name}
+                                                type={INPUT_TYPE.TEXT}
+                                                placeholder={input.placeholder}
+                                                rules={{
+                                                    required: input.validation,
+                                                    pattern: input.pattern,
+                                                    maxLength: { value: 3, message: "Maximum 3 digits" }
+                                                }}
+                                            />
+                                        ) : (
+                                            <Select
+                                                name={input.name}
+                                                defaultValue="0"
+                                                rules={{ required: input.validation }}
+                                                options={[
+                                                    { value: "0", label: "0" },
+                                                    { value: "1", label: "1" },
+                                                    { value: "2", label: "2" },
+                                                    { value: "3", label: "3" },
+                                                    { value: "4", label: "4" },
+                                                    { value: "5", label: "5" },
+                                                    { value: "unlimited", label: "No Limit" },
+                                                ]}
+                                                onChange={(e) => console.log(e)}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
                     {/* Footer / Submit Section */}
-                    <div className="p-8 bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-4">
+                    <div className="p-8 bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-800 flex justify-center gap-4">
                         <button
                             type="button"
                             onClick={() => router.back()}

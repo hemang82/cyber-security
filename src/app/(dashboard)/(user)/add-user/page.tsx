@@ -9,10 +9,9 @@ export const metadata: Metadata = {
 
 export default function AddUserPage() {
   return (
-    <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8">
-      <PageBreadcrumb pageTitle="User Registration" />
-      
-      <div className="max-w-4xl mx-auto">
+    <div className="">
+      <PageBreadcrumb pageTitle="User Registration" parentName="User Directory" parentPath="/user" />
+      <div className="mx-auto">
         <AddUser />
       </div>
     </div>

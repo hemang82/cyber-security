@@ -16,10 +16,10 @@ export const loginRedirection = (data: any) => {
     localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.LOGIN_KEY_COOKIE, 'true');
     const accessToken = typeof data?.token === 'string' ? data.token : (data?.token?.access_token || data?.access_token);
     const refreshToken = typeof data?.token === 'string' ? null : (data?.token?.refresh_token || data?.refresh_token);
-    
+
     if (accessToken) localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE, accessToken);
     if (refreshToken) localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.REFRESH_TOKEN_KEY_COOKIE, refreshToken);
-    
+
     localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.AUTH_KEY_COOKIE, JSON.stringify(data?.user || data));
     localStorage.setItem(MIDDLEWARE_COOKIE_KEYS.ROLE_KEY_COOKIE, data?.user?.role || data?.role);
 }

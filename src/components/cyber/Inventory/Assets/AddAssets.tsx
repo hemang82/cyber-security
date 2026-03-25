@@ -32,6 +32,7 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter website URL",
         name: "website_url",
         validation: "Enter website URL.",
+        pattern: INPUT_PATTERN.WEBSITE
     },
     DESCRIPTION: {
         placeholder: "Enter description",
@@ -42,6 +43,7 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter name",
         name: "name",
         validation: "Enter name.",
+        pattern: INPUT_PATTERN.NAME
     },
     COMPANY_NAME: {
         placeholder: "Enter company name",
@@ -52,11 +54,13 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter email",
         name: "email",
         validation: "Enter email.",
+        pattern: INPUT_PATTERN.EMAIL
     },
     PHONE_NUMBER: {
         placeholder: "Enter phone number",
         name: "phone_number",
         validation: "Enter phone number.",
+        pattern: INPUT_PATTERN.MOBILE
     },
     OWNER: {
         placeholder: "Enter owner",
@@ -67,6 +71,7 @@ export const ASSETS_INPUTS = {
         placeholder: "Enter password",
         name: "password",
         validation: "Enter password.",
+        pattern: INPUT_PATTERN.PASSWORD
     },
     PROVIDER: {
         placeholder: "Enter provider",
@@ -122,6 +127,34 @@ export const ASSETS_INPUTS = {
         placeholder: "Upload app file (.apk, .ipa)",
         name: "app_file",
         validation: "Upload app file.",
+    },
+    ROLE: {
+        placeholder: "Select role",
+        name: "role",
+        validation: "Role is required.",
+    },
+    STATUS: {
+        placeholder: "Select status",
+        name: "status",
+        validation: "Status is required.",
+    },
+    WEBSITE_LIMIT: {
+        placeholder: "Range 1-100",
+        name: "website_limit",
+        validation: "Website limit is required.",
+        pattern: INPUT_PATTERN.LIMIT_100
+    },
+    APP_LIMIT: {
+        placeholder: "Range 1-100",
+        name: "app_limit",
+        validation: "App limit is required.",
+        pattern: INPUT_PATTERN.LIMIT_100
+    },
+    CLOUD_LIMIT: {
+        placeholder: "Range 1-100",
+        name: "cloud_limit",
+        validation: "Cloud limit is required.",
+        pattern: INPUT_PATTERN.LIMIT_100
     },
 }
 

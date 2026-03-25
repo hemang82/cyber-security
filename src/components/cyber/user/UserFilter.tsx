@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { FiSearch, FiFilter } from "react-icons/fi";
+import { USER_ROLE } from "@/common/commonVariable";
 
 export default function UserFilter() {
     const router = useRouter();
@@ -29,8 +30,8 @@ export default function UserFilter() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <form onSubmit={handleSearch} className="flex-1 relative">
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
+            <form onSubmit={handleSearch} className="w-full lg:flex-1 relative">
                 <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                     <FiSearch size={18} />
                 </div>
@@ -39,22 +40,22 @@ export default function UserFilter() {
                     placeholder="Search by name or email..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm outline-none"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm outline-none shadow-sm"
                 />
             </form>
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
                 <select
                     value={role}
                     onChange={(e) => {
                         setRole(e.target.value);
                         updateFilters({ role: e.target.value });
                     }}
-                    className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500/20 transition-all select-none min-w-[120px]"
+                    className="flex-1 sm:flex-none px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500/20 transition-all select-none min-w-[130px] shadow-sm"
                 >
                     <option value="">All Roles</option>
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
+                    <option value={USER_ROLE.ADMIN}>Admin</option>
+                    <option value={USER_ROLE.USER}>User</option>
                 </select>
 
                 <select
@@ -63,7 +64,7 @@ export default function UserFilter() {
                         setStatus(e.target.value);
                         updateFilters({ status: e.target.value });
                     }}
-                    className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500/20 transition-all select-none min-w-[120px]"
+                    className="flex-1 sm:flex-none px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500/20 transition-all select-none min-w-[130px] shadow-sm"
                 >
                     <option value="">All Status</option>
                     <option value="active">Active</option>
@@ -77,7 +78,7 @@ export default function UserFilter() {
                         setStatus("");
                         router.push(pathname);
                     }}
-                    className="px-4 py-2 text-sm text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 font-medium transition-colors"
+                    className="px-4 py-2 text-sm text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 font-bold transition-colors"
                 >
                     Reset
                 </button>

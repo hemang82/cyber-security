@@ -221,29 +221,31 @@ export async function addDomainDetails(data: Record<string, any>) {
     }
 }
 
-export async function getUserList(data: Record<string, any>) {
+export async function getUserList(data: Record<string, any> = {}) {
     try {
-        const response = await fetch("/api/user/list", {
+        const url = `${BASE_EXTERNAL_URL}/api/assets/list`;
+        const resList = await fetch(url, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            cache: "no-store", // Direct real-time fetch
+            headers: await getAuthHeaders(),
             body: JSON.stringify(data),
+            next: { revalidate: 0 }
         });
 
-        apiLogger("/api/domain/add", "POST", data, response.status);
-        const res: InventoryResponse = await response.json();
+        apiLogger(url, "POST", data, resList.status);
+        const res = await resList.json();
 
         if (res?.code === CODES?.SUCCESS || res?.code === 1) {
-            return res;
+            return res.data;
         }
 
-        return null; // or throw an error if preferred
+        return [];
+
     } catch (err: any) {
-        console.error("addDomainDetails error:", err.message);
-        return null;
+        return [];
     }
 }
+
 
 // export async function addInventoryDetails(data: Record<string, any>) {
 //     try {

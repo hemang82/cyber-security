@@ -23,21 +23,16 @@ async function UserContent({ searchParams }: { searchParams: any }) {
   const status = params?.status || "";
 
   // ✅ Fetch user list with filters (server-side)
-  const userData = await getUserList({
-    page,
-    page_size: pageSize,
-    search,
-    role,
-    status
-  });
-
+  const userData = await getUserList({ page, page_size: pageSize, search, role, status });
+  console.log("userData", userData);
   return <UserComponent userData={userData} />;
+
 }
 
 export default function UserPage({ searchParams }: any) {
   return (
-    <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8">
-      <PageBreadcrumb pageTitle="User Management" />
+    <div className="  ">
+      <PageBreadcrumb pageTitle="User Management" parentName="Dashboard" parentPath="/" />
 
       <div className="grid gap-8">
         <ComponentCard
