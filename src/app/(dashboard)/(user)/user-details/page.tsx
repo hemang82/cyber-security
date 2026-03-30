@@ -11,7 +11,7 @@ export default function UserDetailsPage() {
   return (
     <div className="my-4">
       <PageBreadcrumb
-        pageTitle="User Profile Details"
+        pageTitle="User Details"
         parentName="User Directory"
         parentPath="/user"
       />

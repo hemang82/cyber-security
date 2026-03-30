@@ -8,15 +8,27 @@ interface WarningProps {
     description: string;
     onClose: () => void;
     handleModelSave: () => void;
+    loading?: boolean;
+    variant?: "warning" | "danger";
 }
 
-export const WarningModel: React.FC<WarningProps> = ({ title = "Warning !", description = "No Description", onClose, handleModelSave }) => {
+export const WarningModel: React.FC<WarningProps> = ({ 
+    title = "Warning !", 
+    description = "No Description", 
+    onClose, 
+    handleModelSave,
+    loading = false,
+    variant = "warning"
+}) => {
+
+    const iconColor = variant === "danger" ? "text-red-500" : "text-warning-300";
+    const buttonBg = variant === "danger" ? "bg-red-600 hover:bg-red-700" : "bg-brand-500 hover:bg-brand-600";
 
     return (
         <div className="no-scrollbar relative w-full max-w-[600px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <div className="text-center">
                 <div className="relative flex items-center justify-center z-1 mb-7">
-                    <IoMdInformationCircleOutline className="text-warning-300 text-6xl" />
+                    <IoMdInformationCircleOutline className={`${iconColor} text-6xl`} />
                 </div>
                 <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
                     {title}
@@ -25,11 +37,16 @@ export const WarningModel: React.FC<WarningProps> = ({ title = "Warning !", desc
                     {description}
                 </p>
                 <div className="flex items-center gap-3 px-2 mt-6 justify-center">
-                    <Button size="sm" variant="outline" onClick={onClose}>
-                        Close
+                    <Button size="sm" variant="outline" onClick={onClose} disabled={loading}>
+                        Cancel
                     </Button>
-                    <Button size="sm" className={"bg-[#465fff] hover:bg-[#3641f5]"} onClick={handleModelSave}>
-                        Okay, Got It
+                    <Button 
+                        size="sm" 
+                        className={buttonBg} 
+                        onClick={handleModelSave}
+                        loading={loading}
+                    >
+                        Confirm
                     </Button>
                 </div>
             </div>

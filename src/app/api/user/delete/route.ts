@@ -7,7 +7,8 @@ import { handleBackendResponse } from "@/common/api-handler";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/delete`;
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/api$/, "") || "";
+    const url = `${baseUrl}/api/users/delete`;
 
     const cookieStore = await cookies();
     const token = cookieStore.get(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE)?.value;
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
     return handleBackendResponse(data, { defaultErrorMsg: "Failed to delete user" });
 
   } catch (error) {
+    console.error("Delete User API Error:", error);
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
 }

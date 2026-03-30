@@ -37,7 +37,7 @@ export default function UserFilter() {
                 </div>
                 <input
                     type="text"
-                    placeholder="Search by name or email..."
+                    placeholder="Search by name..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm outline-none shadow-sm"
@@ -45,7 +45,7 @@ export default function UserFilter() {
             </form>
 
             <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
-                <select
+                {/* <select
                     value={role}
                     onChange={(e) => {
                         setRole(e.target.value);
@@ -56,9 +56,9 @@ export default function UserFilter() {
                     <option value="">All Roles</option>
                     <option value={USER_ROLE.ADMIN}>Admin</option>
                     <option value={USER_ROLE.USER}>User</option>
-                </select>
+                </select> */}
 
-                <select
+                {/* <select
                     value={status}
                     onChange={(e) => {
                         setStatus(e.target.value);
@@ -69,9 +69,9 @@ export default function UserFilter() {
                     <option value="">All Status</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
-                </select>
-                
-                <button
+                </select> */}
+
+                {/* <button
                     onClick={() => {
                         setSearchTerm("");
                         setRole("");
@@ -81,7 +81,7 @@ export default function UserFilter() {
                     className="px-4 py-2 text-sm text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 font-bold transition-colors"
                 >
                     Reset
-                </button>
+                </button> */}
             </div>
         </div>
     );

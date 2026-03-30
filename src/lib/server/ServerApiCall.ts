@@ -141,7 +141,7 @@ export async function getInventoryDetails(data: Record<string, any> = {}) {
         apiLogger(url, "POST", data, resList.status);
         const res = await resList.json();
 
-        if (res?.code == CODES?.SUCCESS || res?.code === 1) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res?.data;
         } else {
             return [];
@@ -164,7 +164,7 @@ export async function getInventoryView(data: Record<string, any> = {}) {
         apiLogger(url, "POST", data, resList.status);
         const res = await resList.json();
 
-        if (res?.code == CODES?.SUCCESS || res?.code === 1) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res?.data;
         } else {
             return {};
@@ -187,7 +187,7 @@ export async function getCloudScanDetails(data: Record<string, any> = {}) {
         apiLogger(url, "POST", data, resList.status);
         const res = await resList.json();
 
-        if (res?.code == CODES?.SUCCESS || res?.code === 1) {
+        if (res?.code === CODES?.SUCCESS || res?.code === 1) {
             return res?.data;
         } else {
             return [];
@@ -223,7 +223,7 @@ export async function addDomainDetails(data: Record<string, any>) {
 
 export async function getUserList(data: Record<string, any> = {}) {
     try {
-        const url = `${BASE_EXTERNAL_URL}/api/assets/list`;
+        const url = `${BASE_EXTERNAL_URL}/api/users/list`;
         const resList = await fetch(url, {
             method: "POST",
             cache: "no-store", // Direct real-time fetch
@@ -245,18 +245,3 @@ export async function getUserList(data: Record<string, any> = {}) {
         return [];
     }
 }
-
-
-// export async function addInventoryDetails(data: Record<string, any>) {
-//     try {
-
-//         const res: InventoryResponse = await fetcher("/api/addInventory", { method: "POST", body: data });
-//         if (res?.code == CODES?.SUCCESS) {
-//             return res;
-//         } else {
-//             return [];
-//         }
-//     } catch (err: any) {
-//         console.log(err.message); // user-friendly message
-//     }
-// }

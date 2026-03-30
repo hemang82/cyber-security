@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import DynamicTable from "@/components/tables/DynamicTable";
 import Pagination from "@/components/tables/Pagination";
 import { formatDate, safeText, TOAST_SUCCESS, TOAST_ERROR } from "@/common/commonFunction";
-import { DATE_FORMAT, USER_ROLE, INPUT_TYPE } from "@/common/commonVariable";
+import { DATE_FORMAT, USER_ROLE, INPUT_TYPE, USER_ROLE_ARRAY } from "@/common/commonVariable";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { GoEye } from "react-icons/go";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
@@ -17,6 +17,7 @@ import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import { FormProvider, useForm } from "react-hook-form";
 import { MdSecurity } from "react-icons/md";
+import { WarningModel } from "@/components/ui/modal/WarningModel";
 
 interface User {
     id: string;
@@ -25,13 +26,13 @@ interface User {
     role: string;
     status: string;
     created_at: string;
-    website_limit: string | number;
-    app_limit: string | number;
+    web_limit: string | number;
+    mobile_limit: string | number;
     cloud_limit: string | number;
 }
 
 export default function UserComponent({ userData }: { userData: any }) {
-    const list = Array.isArray(userData?.assets) ? userData.assets : (Array.isArray(userData) ? userData : []);
+    const list = Array.isArray(userData?.users) ? userData.users : (Array.isArray(userData) ? userData : []);
     const totalCount = userData?.total_count || list.length;
 
     const router = useRouter();
@@ -42,10 +43,15 @@ export default function UserComponent({ userData }: { userData: any }) {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [loadingPerm, setLoadingPerm] = useState(false);
     const [isCustom, setIsCustom] = useState<Record<string, boolean>>({
-        website_limit: false,
-        app_limit: false,
+        web_limit: false,
+        mobile_limit: false,
         cloud_limit: false
     });
+    const [initialLimits, setInitialLimits] = useState<Record<string, string | number>>({});
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [userToDeleteId, setUserToDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const methods = useForm({ mode: "onBlur" });
 
@@ -57,9 +63,14 @@ export default function UserComponent({ userData }: { userData: any }) {
         methods.reset(user);
         // ✅ Pre-detect if current limits are > 5 to toggle custom mode
         setIsCustom({
-            website_limit: Number(user.website_limit) > 5,
-            app_limit: Number(user.app_limit) > 5,
+            web_limit: Number(user.web_limit) > 5,
+            mobile_limit: Number(user.mobile_limit) > 5,
             cloud_limit: Number(user.cloud_limit) > 5,
+        });
+        setInitialLimits({
+            web_limit: user.web_limit,
+            mobile_limit: user.mobile_limit,
+            cloud_limit: user.cloud_limit,
         });
         setIsPermissionModalOpen(true);
     };
@@ -86,23 +97,32 @@ export default function UserComponent({ userData }: { userData: any }) {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (window.confirm("Are you sure you want to delete this user?")) {
-            try {
-                const res = await fetch(`/api/user/delete`, {
-                    method: "POST",
-                    body: JSON.stringify({ id })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    TOAST_SUCCESS("User deleted successfully");
-                    router.refresh();
-                } else {
-                    TOAST_ERROR(data.message || "Failed to delete user");
-                }
-            } catch (err) {
-                TOAST_ERROR("Something went wrong");
+    const handleDelete = (id: string) => {
+        setUserToDeleteId(id);
+        setIsDeleteModalOpen(true);
+    }
+
+    const confirmDelete = async () => {
+        if (!userToDeleteId) return;
+        setIsDeleting(true);
+        try {
+            const res = await fetch(`/api/user/delete`, {
+                method: "POST",
+                body: JSON.stringify({ id: userToDeleteId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                TOAST_SUCCESS("User deleted successfully");
+                setIsDeleteModalOpen(false);
+                router.refresh();
+            } else {
+                TOAST_ERROR(data.message || "Failed to delete user");
             }
+        } catch (err) {
+            TOAST_ERROR("Something went wrong");
+        } finally {
+            setIsDeleting(false);
+            setUserToDeleteId(null);
         }
     }
 
@@ -142,30 +162,27 @@ export default function UserComponent({ userData }: { userData: any }) {
             title: "Role",
             className: "min-w-[100px]",
             render: (row: User) => (
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${row.role === USER_ROLE.ADMIN
-                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                    }`}>
-                    {safeText(row?.role || "User")}
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${USER_ROLE_ARRAY.find((item) => item.key == row?.role)?.color}`}>
+                    {safeText(USER_ROLE_ARRAY.find((item) => item.key == row?.role)?.label || "User")}
                 </span>
             ),
         },
-        {
-            key: "status",
-            title: "Status",
-            className: "min-w-[100px]",
-            render: (row: User) => (
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${row.status === 'active'
-                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 '
-                    }`}>
-                    {safeText(row?.status || "active")}
-                </span>
-            ),
-        },
+        // {
+        //     key: "status",
+        //     title: "Status",
+        //     className: "min-w-[100px]",
+        //     render: (row: User) => (
+        //         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium capitalize ${row.status === 'active'
+        //             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+        //             : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 '
+        //             }`}>
+        //             {safeText(row?.status || "active")}
+        //         </span>
+        //     ),
+        // },
         {
             key: "created_at",
-            title: "Date Joined",
+            title: "Registration Date",
             className: "min-w-[120px]",
             render: (row: User) => (
                 <span className="text-gray-500 dark:text-gray-400">
@@ -210,19 +227,20 @@ export default function UserComponent({ userData }: { userData: any }) {
                         <FiEdit size={16} />
                     </Link>
                     <button
-                        onClick={() => handleDelete(row.id)}
-                        className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                        title="Delete User"
-                    >
-                        <FiTrash2 size={16} />
-                    </button>
-                    <button
                         onClick={() => handleOpenPermissions(row)}
                         className="p-1.5 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                         title="Asset Permissions"
                     >
                         <MdSecurity size={18} />
                     </button>
+                    <button
+                        onClick={() => handleDelete(row.id)}
+                        className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                        title="Delete User"
+                    >
+                        <FiTrash2 size={16} />
+                    </button>
+
                 </div>
             ),
         },
@@ -296,8 +314,8 @@ export default function UserComponent({ userData }: { userData: any }) {
                         <form onSubmit={methods.handleSubmit(handleSavePermissions)} className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {[
-                                    { name: "website_limit", label: "Website Limit" },
-                                    { name: "app_limit", label: "Application Limit" },
+                                    { name: "web_limit", label: "Website Limit" },
+                                    { name: "mobile_limit", label: "Application Limit" },
                                     { name: "cloud_limit", label: "Cloud Limit" }
                                 ].map((asset) => (
                                     <div key={asset.name} className="space-y-4">
@@ -308,7 +326,14 @@ export default function UserComponent({ userData }: { userData: any }) {
                                                 defaultChecked={isCustom[asset.name]}
                                                 onChange={(checked) => {
                                                     setIsCustom(prev => ({ ...prev, [asset.name]: checked }));
-                                                    methods.setValue(asset.name, "0");
+                                                    if (checked) {
+                                                        methods.setValue(asset.name, "0");
+                                                    } else {
+                                                        // Revert to initial value if it's within standard range (0-5 or unlimited)
+                                                        const initialVal = initialLimits[asset.name];
+                                                        const isStandard = initialVal === "unlimited" || (Number(initialVal) >= 0 && Number(initialVal) <= 5);
+                                                        methods.setValue(asset.name, isStandard ? String(initialVal) : "0");
+                                                    }
                                                 }}
                                             />
                                         </div>
@@ -366,6 +391,22 @@ export default function UserComponent({ userData }: { userData: any }) {
                         </form>
                     </FormProvider>
                 </div>
+            </Modal>
+
+            {/* 🗑️ Delete Confirmation Modal */}
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                className="max-w-[500px]"
+            >
+                <WarningModel
+                    title="Delete User"
+                    description="Are you sure you want to delete this user? This action cannot be undone."
+                    onClose={() => setIsDeleteModalOpen(false)}
+                    handleModelSave={confirmDelete}
+                    variant="danger"
+                    loading={isDeleting}
+                />
             </Modal>
         </div>
     );

@@ -132,4 +132,11 @@ export enum TAB_KEY {
 export const USER_ROLE = {
     ADMIN: "admin",
     USER: "user",
+    DEMO_USER: "demo_user"
 } as const;
+
+export const USER_ROLE_ARRAY = [
+    { label: "Admin", key: USER_ROLE.ADMIN, color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
+    { label: "User", key: USER_ROLE.USER, color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
+    { label: "Demo User", key: USER_ROLE.DEMO_USER, color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" }
+];

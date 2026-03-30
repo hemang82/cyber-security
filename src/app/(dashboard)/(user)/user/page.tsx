@@ -24,25 +24,23 @@ async function UserContent({ searchParams }: { searchParams: any }) {
 
   // ✅ Fetch user list with filters (server-side)
   const userData = await getUserList({ page, page_size: pageSize, search, role, status });
-  console.log("userData", userData);
   return <UserComponent userData={userData} />;
-
 }
 
 export default function UserPage({ searchParams }: any) {
   return (
     <div className="  ">
-      <PageBreadcrumb pageTitle="User Management" parentName="Dashboard" parentPath="/" />
+      <PageBreadcrumb pageTitle="User List" parentName="Dashboard" parentPath="/" />
 
       <div className="grid gap-8">
         <ComponentCard
-          title="User Directory"
+          // title="User Directory"
           // description="View and manage all system administrators and users."
-          buttonName="Add User"
-          navigation="/add-user"
+          // buttonName="Add User"
+          // navigation="/add-user"
           excel={false}
         >
-          <UserFilter />
+          {/* <UserFilter /> */}
           <Suspense fallback={<TableSkeleton />}>
             <UserContent searchParams={searchParams} />
           </Suspense>

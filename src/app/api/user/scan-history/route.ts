@@ -3,23 +3,21 @@ import { NextResponse } from "next/server";
 import { MIDDLEWARE_COOKIE_KEYS } from "@/common/middleware.constants";
 import { handleBackendResponse } from "@/common/api-handler";
 
-/** ✅ Proxy for User Profile Update */
-export async function POST(req: Request) {
+/** ✅ Proxy for Fetching User-Specific Scan History */
+export async function GET(req: Request) {
   try {
-    const body = await req.json();
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("id");
+    const page = searchParams.get("page") || "1";
+    const pageSize = searchParams.get("page_size") || "15";
+    
+    if (!userId) return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
+
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/api$/, "") || "";
-    const url = `${baseUrl}/api/users/update`;
+    const url = `${baseUrl}/api/scan/history`;
 
     const cookieStore = await cookies();
     const token = cookieStore.get(MIDDLEWARE_COOKIE_KEYS.ACCESS_TOKEN_KEY_COOKIE)?.value;
-
-    // ✅ Map frontend field names to backend names
-    const mappedBody = {
-        ...body,
-        contact_number: body.phone_number,
-        mobile_limit: body.app_limit,
-        plan: body.plan || "basic"
-    };
 
     const response = await fetch(url, {
       method: "POST",
@@ -27,15 +25,20 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify(mappedBody),
+      body: JSON.stringify({ 
+        user_id: userId, 
+        page: page, 
+        page_size: pageSize 
+      }),
       cache: "no-store",
     });
 
-    const data = await response.json();
-    return handleBackendResponse(data, { defaultErrorMsg: "Failed to update user profile" });
+    const result = await response.json();
+
+    return handleBackendResponse(result, { defaultErrorMsg: "Failed to fetch user scan history" });
 
   } catch (error) {
-    console.error("Update User API Error:", error);
+    console.error("User Scan History API Error:", error);
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
 }

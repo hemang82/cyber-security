@@ -12,6 +12,7 @@ import Switch from "@/components/form/switch/Switch";
 import { BoltIcon, InfoIcon, UserIcon } from "@/icons";
 import { ASSETS_INPUTS } from "../Inventory/Assets/AddAssets";
 import { CODES } from "@/common/constant";
+import AddUserSkeleton from "./AddUserSkeleton";
 
 export default function AddUser() {
     const router = useRouter();
@@ -25,6 +26,8 @@ export default function AddUser() {
         app_limit: false,
         cloud_limit: false
     });
+    const [initialLimits, setInitialLimits] = useState<Record<string, string | number>>({});
+    const [fetchingDetails, setFetchingDetails] = useState(false);
 
     const methods = useForm({
         mode: "onBlur"
@@ -35,6 +38,7 @@ export default function AddUser() {
             // Fetch user details for edit mode
             const fetchUserDetails = async () => {
                 try {
+                    setFetchingDetails(true);
                     const res = await fetch(`/api/user/details?id=${userId}`);
                     const result = await res.json();
                     if (result.code === CODES?.SUCCESS) {
@@ -46,12 +50,19 @@ export default function AddUser() {
                             cloud_limit: Number(result.data[ASSETS_INPUTS.CLOUD_LIMIT.name]) > 5,
                         };
                         setIsCustom(limits);
+                        setInitialLimits({
+                            website_limit: result.data[ASSETS_INPUTS.WEBSITE_LIMIT.name],
+                            app_limit: result.data[ASSETS_INPUTS.APP_LIMIT.name],
+                            cloud_limit: result.data[ASSETS_INPUTS.CLOUD_LIMIT.name],
+                        });
                     } else {
                         TOAST_ERROR(result.message || "Failed to fetch user details");
                     }
 
                 } catch (err) {
                     TOAST_ERROR("Failed to fetch user details");
+                } finally {
+                    setFetchingDetails(false);
                 }
             };
             fetchUserDetails();
@@ -82,6 +93,8 @@ export default function AddUser() {
             setLoading(false);
         }
     };
+
+    if (fetchingDetails) return <AddUserSkeleton />;
 
     return (
         <FormProvider {...methods}>
@@ -125,6 +138,19 @@ export default function AddUser() {
                                     />
                                 </div>
                                 <div className="space-y-2">
+                                    <Label className="text-sm font-semibold">User Role <span className="text-red-500">*</span></Label>
+                                    <Select
+                                        name={ASSETS_INPUTS.ROLE.name}
+                                        rules={{ required: ASSETS_INPUTS.ROLE.validation }}
+                                        options={[
+                                            // { value: USER_ROLE.ADMIN, label: "Admin" },
+                                            { value: USER_ROLE.USER, label: "User" },
+                                            { value: USER_ROLE.DEMO_USER, label: "Demo User" }
+                                        ]}
+                                        onChange={(e) => console.log(e)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
                                     <Label className="text-sm font-semibold">Email <span className="text-red-500">*</span></Label>
                                     <Input
                                         name={ASSETS_INPUTS.EMAIL.name}
@@ -135,18 +161,7 @@ export default function AddUser() {
                                         }}
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-sm font-semibold">Password <span className="text-red-500">*</span></Label>
-                                    <Input
-                                        name={ASSETS_INPUTS.PASSWORD.name}
-                                        type={INPUT_TYPE.PASSWORD}
-                                        placeholder={ASSETS_INPUTS.PASSWORD.placeholder}
-                                        rules={{
-                                            required: !userId ? ASSETS_INPUTS.PASSWORD.validation : false,
-                                            pattern: ASSETS_INPUTS.PASSWORD.pattern
-                                        }}
-                                    />
-                                </div>
+
                                 <div className="space-y-2">
                                     <Label className="text-sm font-semibold">Phone Number <span className="text-red-500">*</span></Label>
                                     <Input
@@ -158,6 +173,18 @@ export default function AddUser() {
                                         }}
                                     />
                                 </div>
+                                {/* <div className="space-y-2">
+                                    <Label className="text-sm font-semibold">Password <span className="text-red-500">*</span></Label>
+                                    <Input
+                                        name={ASSETS_INPUTS.PASSWORD.name}
+                                        type={INPUT_TYPE.PASSWORD}
+                                        placeholder={ASSETS_INPUTS.PASSWORD.placeholder}
+                                        rules={{
+                                            required: !userId ? ASSETS_INPUTS.PASSWORD.validation : false,
+                                            pattern: ASSETS_INPUTS.PASSWORD.pattern
+                                        }}
+                                    />
+                                </div> */}
                                 <div className="space-y-2">
                                     <Label className="text-sm font-semibold">Company Name <span className="text-red-500">*</span></Label>
                                     <Input
@@ -168,41 +195,7 @@ export default function AddUser() {
                                         }}
                                     />
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* Section 2: Access & Status */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
-                                <BoltIcon className="size-4 text-brand-600" />
-                                <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400">Permissions & Status</h4>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label className="text-sm font-semibold">User Role <span className="text-red-500">*</span></Label>
-                                    <Select
-                                        name={ASSETS_INPUTS.ROLE.name}
-                                        rules={{ required: ASSETS_INPUTS.ROLE.validation }}
-                                        options={[
-                                            { value: USER_ROLE.ADMIN, label: "Admin" },
-                                            { value: USER_ROLE.USER, label: "User" }
-                                        ]}
-                                        onChange={(e) => console.log(e)}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-sm font-semibold">Account Status</Label>
-                                    <Select
-                                        name={ASSETS_INPUTS.STATUS.name}
-                                        defaultValue="active"
-                                        options={[
-                                            { value: "active", label: "Active" },
-                                            { value: "inactive", label: "Inactive" }
-                                        ]}
-                                        onChange={(e) => console.log(e)}
-                                    />
-                                </div>
                             </div>
                         </div>
 
@@ -229,7 +222,14 @@ export default function AddUser() {
                                                 defaultChecked={isCustom[input.name]}
                                                 onChange={(checked) => {
                                                     setIsCustom(prev => ({ ...prev, [input.name]: checked }));
-                                                    methods.setValue(input.name, "0"); // Reset when switching
+                                                    if (checked) {
+                                                        methods.setValue(input.name, "0");
+                                                    } else {
+                                                        // Revert to initial value if it's within standard range (0-5 or "unlimited")
+                                                        const initialVal = initialLimits[input.name];
+                                                        const isStandard = initialVal === "unlimited" || (Number(initialVal) >= 0 && Number(initialVal) <= 5);
+                                                        methods.setValue(input.name, isStandard ? String(initialVal) : "0");
+                                                    }
                                                 }}
                                             />
                                         </div>
@@ -266,6 +266,7 @@ export default function AddUser() {
                                 ))}
                             </div>
                         </div>
+
                     </div>
 
                     {/* Footer / Submit Section */}
@@ -285,6 +286,7 @@ export default function AddUser() {
                             {loading ? "Processing..." : (userId ? "Update User" : "Create User")}
                         </button>
                     </div>
+
                 </div>
             </form>
         </FormProvider>

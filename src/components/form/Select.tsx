@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 
 interface Option {
@@ -12,7 +12,7 @@ interface Option {
 interface SelectProps {
   options: Option[];
   placeholder?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   className?: string;
   defaultValue?: string;
   rules?: any;
@@ -35,21 +35,27 @@ const Select: React.FC<SelectProps> = ({
 
   const methods = useFormContext();
 
-  // Manage the selected value
-  const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
+  // ✅ Single source of truth: React Hook Form state
+  const watchedValue = methods?.watch(name || "");
 
   // 🛡️ VERY IMPORTANT SAFETY CHECK
   if (!methods) return null;
 
-  const { register, formState: { errors }, } = methods;
+  const { register, formState: { errors } } = methods;
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
-    setSelectedValue(val);
-    onChange(val); // Trigger parent handler
+
+    // ✅ Manually update form state to ensure all components stay in sync
+    if (name) {
+      methods.setValue(name, val, { shouldValidate: true, shouldDirty: true });
+    }
+
+    if (onChange) onChange(val); // Trigger parent handler if provided
   };
 
-  const finalValue = value !== undefined ? value : selectedValue;
+  // ✅ Priority order: prop value > RHF watched value > defaultValue
+  const finalValue = value !== undefined ? value : (watchedValue !== undefined ? watchedValue : defaultValue);
 
   return (<>
     <select
@@ -70,7 +76,6 @@ const Select: React.FC<SelectProps> = ({
       >
         {placeholder}
       </option>
-
 
       {/* Map over options */}
       {options.map((option) => (
