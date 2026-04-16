@@ -87,7 +87,6 @@ export default function AddScan({ resInventoryList, resDomainList }: any) {
                         )}
 
                     </div>
-
                 </div>
             </div>
         </>
