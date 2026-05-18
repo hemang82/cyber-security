@@ -144,10 +144,10 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
       axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { fontSize: '12px', colors: "#6b7280" } }
     },
     yaxis: {
-      title: { text: "Asset Count", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
-      show: true, labels: { style: { fontSize: '12px', colors: "#6b7280" } },
+      title: { text: "Asset Count", style: { fontSize: '12px', fontWeight: 600, color: "#64748b" } },
+      show: true, labels: { style: { fontSize: '12px', colors: "#94a3b8" } },
     },
-    grid: { show: true, borderColor: "#f1f5f9", yaxis: { lines: { show: true } } },
+    grid: { show: true, borderColor: "#f1f5f9", strokeDashArray: 4, yaxis: { lines: { show: true } } },
     legend: { show: false },
     tooltip: { theme: "light" },
   };
@@ -187,10 +187,10 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
       axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { fontSize: '12px', colors: "#6b7280" } }
     },
     yaxis: {
-      title: { text: "Scan Count", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
-      show: true, labels: { style: { fontSize: '12px', colors: "#6b7280" } },
+      title: { text: "Scan Count", style: { fontSize: '12px', fontWeight: 600, color: "#64748b" } },
+      show: true, labels: { style: { fontSize: '12px', colors: "#94a3b8" } },
     },
-    grid: { show: true, borderColor: "#f1f5f9", yaxis: { lines: { show: true } } },
+    grid: { show: true, borderColor: "#f1f5f9", strokeDashArray: 4, yaxis: { lines: { show: true } } },
     legend: { show: false },
     tooltip: { theme: "light" },
   };
@@ -319,11 +319,11 @@ export default function StatisticsChart({ inventory = [], allScans = [], riskCou
       labels: { style: { fontSize: '12px', colors: "#6b7280" } }
     },
     yaxis: {
-      title: { text: "Security Score (%)", style: { fontSize: '12px', fontWeight: 600, color: "#6b7280" } },
+      title: { text: "Security Score (%)", style: { fontSize: '12px', fontWeight: 600, color: "#64748b" } },
       min: 0,
       max: 100,
       tickAmount: 5,
-      labels: { style: { fontSize: '12px', colors: "#6b7280" }, formatter: (val) => val.toFixed(0) },
+      labels: { style: { fontSize: '12px', colors: "#94a3b8" }, formatter: (val) => val.toFixed(0) },
     },
     grid: { show: true, borderColor: "#f1f5f9", strokeDashArray: 4, xaxis: { lines: { show: true } }, yaxis: { lines: { show: true } } },
     legend: { show: true, position: 'top', horizontalAlign: 'right', },

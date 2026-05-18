@@ -17,6 +17,8 @@ import {
   RiSpyLine
 } from "react-icons/ri";
 
+import { SECURITY_COVERAGE_DATA } from "@/constants/securityCoverage";
+
 export default function AuthLayout({ children }: {
   children: React.ReactNode;
 }) {
@@ -25,7 +27,7 @@ export default function AuthLayout({ children }: {
       <ThemeProvider>
         <div className="relative flex lg:flex-row w-full h-screen justify-center flex-col  dark:bg-gray-900 sm:p-0">
           {children}
-          <div className="lg:w-1/2 w-full h-full !bg-[#e8f0fe] dark:bg-white/5 lg:flex items-center justify-center hidden p-12 overflow-y-auto">
+          <div className="lg:w-1/2 w-full h-full bg-slate-50 border-l border-slate-200 dark:bg-gray-900 lg:flex items-center justify-center hidden p-12 overflow-y-auto relative z-10">
             <div className="max-w-xl w-full">
               <div className="mb-12 text-center">
                 <Link href="/" className="inline-block mb-6">
@@ -37,29 +39,19 @@ export default function AuthLayout({ children }: {
                     className="dark:brightness-110"
                   />
                 </Link>
-                <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">
+                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-6 leading-tight text-slate-900 dark:text-white">
                   Next-Gen Security <br />
-                  <span className="text-brand-600">Unified Monitoring</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-blue-600">All-in-One Monitoring</span>
                 </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-lg mx-auto">
+                <p className="text-lg md:text-xl text-slate-600 dark:text-gray-400 max-w-lg mx-auto font-medium leading-relaxed">
                   Global-standard security infrastructure for modern enterprises. Scan, detect, and remediate vulnerabilities in real-time.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {[
-                  { icon: <RiGlobalLine size={24} />, title: "Web Apps", color: "text-blue-600 bg-blue-50 dark:bg-blue-900/20" },
-                  { icon: <RiSmartphoneLine size={24} />, title: "Android/iOS", color: "text-green-600 bg-green-50 dark:bg-green-900/20" },
-                  { icon: <RiCloudLine size={24} />, title: "Cloud Infra", color: "text-sky-600 bg-sky-50 dark:bg-sky-900/20" },
-                  { icon: <RiCodeLine size={24} />, title: "API Security", color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20" },
-                  { icon: <RiLock2Line size={24} />, title: "SSL/TLS", color: "text-amber-600 bg-amber-50 dark:bg-amber-900/20" },
-                  { icon: <RiBugLine size={24} />, title: "OWASP 10", color: "text-red-600 bg-red-50 dark:bg-red-900/20" },
-                  { icon: <RiShieldFlashLine size={24} />, title: "Pentesing", color: "text-rose-600 bg-rose-50 dark:bg-rose-900/20" },
-                  { icon: <RiServerLine size={24} />, title: "Compliance", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20" },
-                  { icon: <RiSpyLine size={24} />, title: "Threat Hunt", color: "text-gray-600 bg-gray-100 dark:bg-gray-800" },
-                ].map((item, idx) => (
+                {SECURITY_COVERAGE_DATA.map((item, idx) => (
                   <div key={idx} className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-xl hover:-translate-y-1 transition-all">
-                    <div className={`p-3 rounded-xl flex-shrink-0 ${item.color}`}>
+                    <div className={`p-3 rounded-xl flex-shrink-0 ${item.color} ${item.bgColor} dark:bg-opacity-20`}>
                       {item.icon}
                     </div>
                     <span className="font-bold text-gray-800 dark:text-white text-xs uppercase text-center">

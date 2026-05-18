@@ -44,11 +44,11 @@ export const Card = ({ title, tooltip, children, className = "" }: any) => {
     }, [showTooltip]);
 
     return (
-        <div className={`h-full rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3 ${className}`}>
+        <div className={`h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3 ${className}`}>
             {title && (
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="text-xl font-bold text-gray-800 dark:text-white">
+                        <div className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                             {title}
                         </div>
                         {tooltip && (
@@ -135,9 +135,9 @@ export const Badge = ({ color, children, classname }: any) => {
 export const safeJoin = (arr: any, separator = ",\n") => Array.isArray(arr) && arr.length > 0 ? arr.join(separator) : "N/A";
 
 const StatCard = ({ label, value, icon, trend, subValue }: any) => (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-white/3">
         <div className="flex items-center justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-600 dark:bg-gray-800 dark:text-gray-400">
                 {icon}
             </div>
             {trend && (
@@ -146,10 +146,10 @@ const StatCard = ({ label, value, icon, trend, subValue }: any) => (
                 </div>
             )}
         </div>
-        <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">{label}</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">{label}</p>
         <div className="flex items-baseline gap-2">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white">{value}</h4>
-            {subValue && <span className="text-sm text-gray-400 font-medium">{subValue}</span>}
+            <h4 className="text-xl font-extrabold text-slate-900 dark:text-white">{value}</h4>
+            {subValue && <span className="text-sm text-slate-400 font-medium">{subValue}</span>}
         </div>
     </div>
 );
@@ -416,7 +416,7 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                     <PDFDownloadLink
                                         document={<PDFDocument data={data} />}
                                         fileName={`${safeText(data?.target)}-Report.pdf`}
-                                        className="flex h-12 items-center justify-center gap-3 rounded-xl bg-brand-500 px-6 py-2 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-600 hover:shadow-brand-500/25 active:scale-95" >
+                                        className="flex h-12 items-center justify-center gap-3 rounded-2xl bg-brand-600 px-6 py-2 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-brand-600/25 active:scale-95" >
                                         {({ loading }) => (
                                             <>
                                                 <HiDownload size={20} />
@@ -425,8 +425,8 @@ export default function WebsiteDetails({ resAssetsDetails }: any) {
                                         )}
                                     </PDFDownloadLink>
                                 ) : (
-                                    <div className="flex h-12 w-48 items-center justify-center gap-3 rounded-xl bg-gray-100 text-sm font-bold text-gray-400 dark:bg-gray-800">
-                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-brand-500" />
+                                    <div className="flex h-12 w-48 items-center justify-center gap-3 rounded-2xl bg-slate-100 text-sm font-bold text-slate-400 dark:bg-gray-800">
+                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-brand-600" />
                                         Loading...
                                     </div>
                                 )}

@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
     // List of public routes
-    const isPublicRoute = pathname === "/signin" || pathname === "/signup" || pathname === "/verify";
+    const isPublicRoute = pathname === "/" || pathname === "/signin" || pathname === "/signup" || pathname === "/verify" || pathname === "/privacy" || pathname === "/terms" || pathname === "/demo-request";
 
     // ✅ Protected admin routes
     const adminRoutes = ["/user", "/add-user", "/user-details"];
@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
     if (token) {
         // If trying to access signin/signup
         if (isPublicRoute) {
-            return NextResponse.redirect(new URL("/", request.url));
+            return NextResponse.redirect(new URL("/dashboard", request.url));
         }
 
         // 🔐 Role-Based Access Control

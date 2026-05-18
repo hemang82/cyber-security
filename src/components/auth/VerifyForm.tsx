@@ -132,27 +132,25 @@ export default function VerifyForm() {
             {is_loading && <Spinner isActive={is_loading} />}
 
             <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-                {/* Back Button (Optional - modeled after SignInForm commented out code) */}
-                {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
+                <div className="w-full max-w-md mt-6 sm:mt-8 mx-auto mb-8 pl-4 lg:pl-0">
                     <Link
-                    href="/signin"
-                    className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        href="/signup"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-full transition-all hover:text-brand-600 hover:border-brand-200 hover:shadow-sm"
                     >
-                    <ChevronLeftIcon />
-                    Back to Sign In
+                        <ChevronLeftIcon />
+                        Back to Sign Up
                     </Link>
-                </div> */}
+                </div>
 
                 <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto ">
-                    <div className="border !border-gray-200 rounded-lg py-6 px-12 ">
-                        <div className="mb-3 sm:mb-5 ">
-                            <h3 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 ">
-                                Two Step Verification
+                    <div className="border border-gray-200 rounded-[2rem] py-6 px-10 md:px-12 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                        <div className="mb-6 text-center sm:text-left">
+                            <h3 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+                                Two-Step Auth
                             </h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                Enter the 6 digit code sent to your email.
-
-                                <span className="text-brand-500"> {temLogin?.email}</span>
+                            <p className="text-sm text-gray-500 font-medium">
+                                Enter the 6-digit code sent to:
+                                <span className="text-brand-600 font-bold block mt-1"> {temLogin?.email}</span>
                             </p>
                         </div>
 

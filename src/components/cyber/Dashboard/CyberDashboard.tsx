@@ -196,26 +196,22 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
         }
     ];
 
-    console.log("recentScans", recentScans);
     return (
         <div className="space-y-6">
 
             {/* Header */}
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            {/* <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Security Command Center</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Comprehensive overview of your digital security posture.</p>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Security Command Center</h1>
+                    <p className="text-base text-slate-500 dark:text-gray-400 font-medium tracking-tight">Comprehensive overview of your digital security posture.</p>
                 </div>
-                {/* <div className="text-sm font-medium text-brand-600 bg-brand-50 px-3 py-1.5 rounded-lg border border-brand-100 dark:bg-brand-900/20 dark:border-brand-800 dark:text-brand-400 animate-pulse">
-                    ● System Operational
-                </div> */}
-            </div>
+            </div> */}
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
 
                 {/* Total Assets (Unique) */}
-                <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 transition-all hover:shadow-md">
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 transition-all hover:shadow-md group">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="p-2 bg-blue-50 text-blue-600 rounded-lg dark:bg-blue-900/20 dark:text-blue-400">
                             <RiGlobalLine size={24} />
@@ -223,7 +219,7 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Assets</span>
                     </div>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                        <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                             <CountUp end={totalAssets} duration={2} />
                         </h3>
                         <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full dark:bg-green-900/20 dark:text-green-400">
@@ -241,7 +237,7 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Scans</span>
                     </div>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                        <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                             <CountUp end={totalScans} duration={2} />
                         </h3>
                         <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full dark:bg-indigo-900/20 dark:text-indigo-400">
@@ -259,7 +255,7 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Security Score</span>
                     </div>
                     <div className="flex items-baseline gap-2">
-                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                        <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                             <CountUp end={avgScore} duration={2.5} />
                         </h3>
                         <span className="text-sm text-gray-400">/ 100</span>
@@ -275,7 +271,7 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Critical Threats</span>
                     </div>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                        <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                             <CountUp end={riskCounts.Critical} duration={2} />
                         </h3>
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${riskCounts.Critical > 0 ? 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400' : 'bg-gray-100 text-gray-500'}`}>
@@ -293,7 +289,7 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Healthy Assets</span>
                     </div>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                        <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                             <CountUp end={riskCounts.Safe + riskCounts.Low} duration={2} />
                         </h3>
                         <span className="text-xs font-medium text-gray-500">
@@ -327,7 +323,7 @@ export default function CyberDashboard({ inventory = [], domains = [] }: CyberDa
                                     <p className="text-xs text-gray-500 uppercase font-semibold">Score</p>
                                     <div className="flex items-center gap-2">
                                         <span className={`text-sm font-bold`}>
-                                            {Number(latestAsset?.security_score || latestAsset?.full_response?.security_score) || 0} 
+                                            {Number(latestAsset?.security_score || latestAsset?.full_response?.security_score) || 0}
                                         </span>
                                     </div>
                                 </div>

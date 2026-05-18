@@ -27,7 +27,7 @@ export default function SignUpForm() {
     mode: "onSubmit", // Trigger validation only on submit
     reValidateMode: "onChange" // Re-validate on change after first submission attempt
   });
-  
+
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -76,6 +76,16 @@ export default function SignUpForm() {
 
     <div className="flex flex-col flex-1  w-full overflow-y-auto no-scrollbar">
 
+      <div className="w-full max-w-md mt-6 sm:mt-8 mx-auto mb-8 pl-4 lg:pl-0">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-full transition-all hover:text-brand-600 hover:border-brand-200 hover:shadow-sm"
+        >
+          <ChevronLeftIcon />
+          Back to Home
+        </Link>
+      </div>
+
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto ">
         {/* <div className="w-full max-w-md mx-auto mb-5 mb-10 flex justify-center">
           <Image
@@ -86,13 +96,13 @@ export default function SignUpForm() {
             priority
           />
         </div> */}
-        <div className="border !border-gray-200 rounded-lg py-6 px-6 ">
-          <div className="mb-5 sm:mb-8">
-            <h3 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 ">
-              Sign Up
+        <div className="border border-gray-200 rounded-[2rem] py-6 px-10 md:px-12 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="mb-6 text-center sm:text-left">
+            <h3 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+              Create Account
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign up!
+            <p className="text-base text-slate-500 font-medium">
+              Join the most secure platform. Fill in your details below.
             </p>
           </div>
           <div>
@@ -108,7 +118,7 @@ export default function SignUpForm() {
 
             <FormProvider {...methods}>
               <form method="post" onSubmit={methods.handleSubmit(onSubmit)}>
-                <div className="space-y-6">
+                <div className="space-y-4">
 
                   <div>
                     <Label>
@@ -235,11 +245,17 @@ export default function SignUpForm() {
 
             </FormProvider>
 
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
+            <div className="mt-5 space-y-2 text-center sm:text-left">
+              <p className="text-sm font-normal text-gray-700 dark:text-gray-400">
                 Already have an account?
-                <Link href="/signin" className="text-brand-500 hover:text-brand-600 dark:text-brand-400 ms-1" >
+                <Link href="/signin" className="text-brand-500 hover:text-brand-600 dark:text-brand-400 font-bold ms-1" >
                   Sign In
+                </Link>
+              </p>
+              <p className="text-sm font-normal text-gray-700 dark:text-gray-400">
+                Want to see a live demo? {""}
+                <Link href="/demo-request" className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-bold" >
+                  Request Access
                 </Link>
               </p>
             </div>

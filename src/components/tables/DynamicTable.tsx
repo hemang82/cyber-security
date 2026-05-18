@@ -26,18 +26,18 @@ interface DynamicTableProps<T> {
 
 export default function DynamicTable<T>({ columns, data, className }: DynamicTableProps<T>) {
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] shadow-sm">
             <div className="max-w-full overflow-x-auto">
                 <div className={className ? className : "min-w-[1000px]"}>
                     <Table>
                         {/* HEADER */}
-                        <TableHeader className="border-b border-gray-200 dark:border-white/[0.05] bg-[#ecf3ff]">
+                        <TableHeader className="border-b border-slate-200 dark:border-white/[0.05] bg-slate-50/50">
                             <TableRow>
                                 {columns.map((col, index) => (
                                     <TableCell
                                         key={index}
                                         isHeader
-                                        className={`px-5 py-3 text-start text-base text-[#344054] font-medium text-gray-600 dark:text-gray-600 ${col.className ?? ""}`}
+                                        className={`px-5 py-4 text-start text-sm uppercase tracking-wider text-slate-500 font-bold dark:text-gray-400 ${col.className ?? ""}`}
                                     >
                                         {col.title}
                                     </TableCell>
@@ -60,7 +60,7 @@ export default function DynamicTable<T>({ columns, data, className }: DynamicTab
                                 data.map((row, rowIndex) => (
                                     <TableRow key={rowIndex}>
                                         {columns.map((col, colIndex) => (
-                                            <TableCell key={colIndex} className="px-5 py-3 text-start text-theme-sm text-gray-800 dark:text-gray-400" >
+                                            <TableCell key={colIndex} className="px-5 py-4 text-start text-sm font-medium text-slate-700 dark:text-gray-300" >
                                                 {/* {col.render
                                                     ? col.render(row)
                                                     : (row[col.key as keyof T] as React.ReactNode)} */}

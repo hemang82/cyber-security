@@ -8,6 +8,7 @@ import { useSidebar } from "../context/SidebarContext";
 import { USER_ROLE } from "@/common/commonVariable";
 import { BiPurchaseTag } from "react-icons/bi";
 import { RiHandbagLine, RiGlobalLine, RiShieldCheckLine, RiAlertLine, RiCheckDoubleLine, RiFileList3Line, RiShieldFlashLine, RiLock2Line, RiServerLine, RiSpyLine, RiCodeLine, RiBugLine, RiEarthLine, RiSpeedUpLine, RiEyeLine, RiApps2Line, RiCloudLine, RiSmartphoneLine, RiLogoutBoxLine } from "react-icons/ri";
+import { FiShield } from "react-icons/fi";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { WarningModel } from "@/components/ui/modal/WarningModel";
@@ -414,32 +415,22 @@ const AppSidebar = () => {
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)} >
 
-      <div className={`py-6 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`} >
+      <div className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start pl-6"}`} >
         <Link href="/" prefetch={true} onClick={() => handleNav("/")}>
           {isExpanded || isHovered || isMobileOpen ? (
-            <>
+            <div className="flex items-center gap-3">
               <Image
-                className="dark:hidden ms-8"
-                src="/images/logo/logo.png"
-                alt="Logo"
-                width={180}
-                height={60}
-              />
-              <Image
-                className="hidden dark:block ms-8"
-                src="/images/logo/logo.png"
-                alt="Logo"
-                width={150}
+                width={160}
                 height={40}
+                src="/images/logo/logo.png"
+                alt="CyberSafe Logo"
+                className="object-contain"
               />
-            </>
+            </div>
           ) : (
-            <Image
-              src="/images/logo/logo-small.png"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
+            <div className="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center p-2 shadow-sm ml-1.5">
+              <FiShield className="w-full h-full text-white" />
+            </div>
           )}
         </Link>
       </div>
@@ -481,7 +472,11 @@ const AppSidebar = () => {
 
       {/* Logout Section - Fixed at the very bottom */}
       <div className="pb-8 px-4 mt-auto">
-        <button onClick={openModal} className={`flex items-center gap-3 p-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 transition-all shadow-sm border border-red-100 dark:border-red-900/20 w-full ${!isExpanded && !isHovered ? "justify-center" : "justify-start"}`} title="Logout" >
+        <button 
+          onClick={openModal} 
+          className={`flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all shadow-sm w-full ${!isExpanded && !isHovered ? "justify-center" : "justify-start"}`} 
+          title="Logout" 
+        >
           <RiLogoutBoxLine size={24} className="flex-shrink-0" />
           {(isExpanded || isHovered || isMobileOpen) && (
             <span className="font-bold text-sm uppercase tracking-wider">Logout</span>

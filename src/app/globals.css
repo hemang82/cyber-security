@@ -175,6 +175,10 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   *,
   ::after,
@@ -190,6 +194,9 @@
   body {
     @apply relative font-normal font-outfit z-1 bg-gray-50;
   }
+  section[id] {
+    scroll-margin-top: 100px;
+  }
 }
 
 @utility menu-item {
@@ -197,11 +204,11 @@
 }
 
 @utility menu-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-brand-600 dark:bg-brand-500/[0.12] dark:text-brand-400 font-bold;
 }
 
 @utility menu-item-inactive {
-  @apply text-gray-700 hover:bg-gray-100 group-hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300;
+  @apply text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all dark:text-gray-300 dark:hover:bg-white/5;
 }
 
 @utility menu-item-icon {
@@ -209,11 +216,11 @@
 }
 
 @utility menu-item-icon-active {
-  @apply text-brand-500 dark:text-brand-400;
+  @apply text-brand-600 dark:text-brand-400;
 }
 
 @utility menu-item-icon-inactive {
-  @apply text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300;
+  @apply text-slate-400 group-hover:text-slate-600 dark:text-gray-400 dark:group-hover:text-gray-300;
 }
 
 @utility menu-item-arrow {
@@ -233,7 +240,7 @@
 }
 
 @utility menu-dropdown-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-brand-600 dark:bg-brand-500/[0.12] dark:text-brand-400 font-bold;
 }
 
 @utility menu-dropdown-item-inactive {

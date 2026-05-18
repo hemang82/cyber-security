@@ -51,7 +51,7 @@ export default function SignInForm() {
 
       if (responseData.code == CODES?.SUCCESS) {
         loginRedirection(responseData.data);
-        router.replace("/");
+        router.replace("/dashboard");
         window.location.reload();
       } else {
         TOAST_ERROR(responseData.message);
@@ -70,15 +70,15 @@ export default function SignInForm() {
 
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
 
-      {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
+      <div className="w-full max-w-md mt-6 sm:mt-8 mx-auto mb-8 pl-4 lg:pl-0">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-full transition-all hover:text-brand-600 hover:border-brand-200 hover:shadow-sm"
         >
           <ChevronLeftIcon />
-          Back to dashboard
+          Back to Home
         </Link>
-      </div> */}
+      </div>
 
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto ">
         {/* <div className="w-full max-w-md mx-auto mb-5 mb-10 flex justify-center">
@@ -90,21 +90,20 @@ export default function SignInForm() {
             priority
           />
         </div> */}
-        <div className="border !border-gray-200 rounded-lg py-6 px-12 ">
-
-          <div className="mb-3 sm:mb-5 ">
-            <h3 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 ">
-              Sign In
+        <div className="border border-gray-200 rounded-[2rem] py-6 px-10 md:px-12 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="mb-6 text-center sm:text-left">
+            <h3 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+              Welcome Back
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign in!
+            <p className="text-base text-slate-500 font-medium">
+              Enter your email and password to sign in securely.
             </p>
           </div>
           <div>
 
             <FormProvider {...methods}>
               <form method="post" onSubmit={methods.handleSubmit(onSubmit)}>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div>
                     <Label>
                       Email <span className="text-error-500">*</span>{" "}
@@ -176,11 +175,17 @@ export default function SignInForm() {
 
             </FormProvider>
 
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
+            <div className="mt-5 space-y-2 text-center sm:text-left">
+              <p className="text-sm font-normal text-gray-700 dark:text-gray-400">
                 Don&apos;t have an account? {""}
-                <Link href="/signup" className="text-brand-500 hover:text-brand-600 dark:text-brand-400" >
+                <Link href="/signup" className="text-brand-500 hover:text-brand-600 dark:text-brand-400 font-bold" >
                   Sign Up
+                </Link>
+              </p>
+              <p className="text-sm font-normal text-gray-700 dark:text-gray-400">
+                Want to see a live demo? {""}
+                <Link href="/demo-request" className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-bold" >
+                  Request Access
                 </Link>
               </p>
             </div>
